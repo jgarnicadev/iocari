@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Button } from 'react-native';
+import { withNavigation } from 'react-navigation';
 
-export default class LoginPage extends React.Component {
+class LoginPage extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -10,12 +11,12 @@ export default class LoginPage extends React.Component {
             <TextInput  placeholder="E-mail" style={styles.input}/>
             <TextInput  placeholder="Contraseña" style={styles.input}/>
             <View style={styles.btnAcceder}>
-              <Button title="Acceder" color="#f50057"/>
+              <Button title="Acceder" color="#f50057" onPress={() => this.props.navigation.navigate('home')}/>
             </View>
         </View>
         <View style={styles.footer}>
             <Text style={styles.textoFooter}>¿No tienes una cuenta?</Text>
-            <Button title="Crea una cuenta ahora"/>
+            <Button title="Crea una cuenta ahora" onPress={() => this.props.navigation.navigate('register')}/>
         </View>
       </View>
     );
@@ -62,3 +63,5 @@ const styles = StyleSheet.create({
     fontSize:20,
   },
 });
+
+export default withNavigation(LoginPage);
