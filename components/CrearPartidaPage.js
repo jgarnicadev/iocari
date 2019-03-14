@@ -3,6 +3,8 @@ import { StyleSheet, View, Image, Button, TextInput, Text, Switch } from 'react-
 import { withNavigation } from 'react-navigation';
 import { ImagePicker } from 'expo';
 
+import Header from './Header';
+
 class CrearPartidaPage extends React.Component {
   state = {
     image: null,

@@ -6,12 +6,14 @@ class Footer extends React.Component {
   render() {
     return (
         <View style={styles.container}>
-          <Button title="Crear partida" onPress={() => this.props.navigation.navigate('crearPartida')}/>
+          <View style={styles.btnCrearPartida}>
+            <Button title="Crear partida" onPress={() => this.props.navigation.navigate('crearPartida')}/>
+          </View>
           <View style={styles.footer}>
-            <Text>Home</Text>
-            <Text>Biblioteca</Text>
-            <Text>Perfil</Text>
-            <Text>Alertas</Text>
+            <View style={styles.boton}><Text>Home</Text></View>
+            <View style={styles.boton}><Text>Biblioteca</Text></View>
+            <View style={styles.boton}><Text>Perfil</Text></View>
+            <View style={styles.boton}><Text>Alertas</Text></View>
           </View>
         </View>
     );
@@ -22,7 +24,20 @@ const styles = StyleSheet.create({
 
     },
     footer: {
-
+      flexDirection:'row',
+      justifyContent: 'space-between',
+      paddingHorizontal:10,
+    },
+    btnCrearPartida: {
+      paddingHorizontal:15,
+      marginVertical:10,
+    },
+    boton: {
+      paddingTop:50,
+      paddingHorizontal:15,
+      paddingBottom:20,
+      alignItems:'center',
+      justifyContent:'center',
     }
 });
 

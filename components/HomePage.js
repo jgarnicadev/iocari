@@ -13,9 +13,11 @@ class HomePage extends React.Component {
       <View style={styles.container}>
         <Header title="Home" />
         <View style={styles.buscador}>
-          <TextInput placeholder="¿Qué estás buscando?"/>
+          <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?"/>
         </View>
-        <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!"/>
+        <View style={styles.main}>
+          <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!"/>
+        </View>
         <Footer />
       </View>
     );
@@ -29,7 +31,20 @@ const styles = StyleSheet.create({
     justifyContent:'flex-start',
   },
   buscador: {
-    
+    backgroundColor:'#03a9f4',
+    padding:10,
+  },
+  buscadorInput: {
+    backgroundColor:'white',
+    padding:10,
+    fontSize:15,
+    borderRadius:5,
+  },
+  main: {
+    flex:1,
+    paddingVertical:20,
+    paddingHorizontal:15,
+    backgroundColor:'#f3f1f1',
   },
 });
 

@@ -7,7 +7,7 @@ class RegisterPage2 extends React.Component {
     return (
       <View style={styles.container}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
-        <Text>Sólo tu país y ciudad serán visibles en tu perfil.</Text>
+        <Text style={styles.texto}>Sólo tu país y ciudad serán visibles en tu perfil.</Text>
         <TextInput  placeholder="Nombre" style={styles.input}/>
         <TextInput  placeholder="Apellido" style={styles.input}/>
         <TextInput  placeholder="Fecha de nacimiento" style={styles.input}/>
@@ -15,7 +15,7 @@ class RegisterPage2 extends React.Component {
         <TextInput  placeholder="Ciudad" style={styles.input}/>
         <TextInput  placeholder="CP" style={styles.input}/>
         <View style={styles.btnWrapper}>
-            <Button title="Atrás" color="transparent" onPress={() => this.props.navigation.goBack()} />
+            <Button title="Atrás" color="#1e253d" onPress={() => this.props.navigation.goBack()} />
             <Button title="¡Listo!" color="#f50057" onPress={() => this.props.navigation.navigate('home')} />
         </View>
       </View>
@@ -44,7 +44,13 @@ const styles = StyleSheet.create({
     },
     btnWrapper: {
         marginTop:30,
+        flexDirection:'row',
+        justifyContent: 'space-between',
       },
+    texto: {
+      color:'white',
+      fontStyle: 'italic',
+    },
 });  
 
 export default withNavigation(RegisterPage2);
