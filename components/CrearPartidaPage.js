@@ -22,14 +22,15 @@ class CrearPartidaPage extends React.Component {
   };
 
   publicar() {
-  if (
-      !this.state.image ||
+    if (
+      // !this.state.image ||
       !this.state.nombre ||
       !this.state.juegos ||
       !this.state.fecha ||
       !this.state.hora ||
       !this.state.duracion ||
       !this.state.tope_apuntarse ||
+      !this.state.lugar ||
       !this.state.players ||
       !this.state.descripcion
     ) {
@@ -38,7 +39,8 @@ class CrearPartidaPage extends React.Component {
       );
       return;
     }
-    fetch('http://afcserviciosweb.com/iocari-api.php',{
+    // Alert.alert('En desarrollo');
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
       method: 'POST',
       mode: 'no-cors',
       headers: {
@@ -46,6 +48,7 @@ class CrearPartidaPage extends React.Component {
       },
       body: JSON.stringify(this.state)
     });
+    Alert.alert('Partida Creada');
     this.props.navigation.navigate('home');
   }
 
@@ -66,8 +69,8 @@ class CrearPartidaPage extends React.Component {
           </View>
           <View  style={styles.fondoNormal}>
             <TextInput style={styles.inputText} placeholder="Nombre para la partida"
-            onChangeText={(text) => this.setState({nombre_partida: text})}
-            value={this.state.nombre_partida}
+            onChangeText={(text) => this.setState({nombre: text})}
+            value={this.state.nombre}
             />
           </View>
           <View style={styles.fondoOscuro}>
