@@ -8,6 +8,22 @@ import Footer from './Footer';
 import CarruselPartidas from './CarruselPartidas';
 
 class HomePage extends React.Component {
+  state = {
+    mis_partidas: [],
+  };
+
+  componentDidMount() {
+    //load mis partidas
+    fetch('http://www.afcserviciosweb.com/iocari-api.php')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({'mis_partidas':responseJson});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -16,7 +32,7 @@ class HomePage extends React.Component {
           <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?"/>
         </View>
         <View style={styles.main}>
-          <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!"/>
+          <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />
         </View>
         <Footer />
       </View>
