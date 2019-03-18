@@ -33,12 +33,12 @@ class LoginPage extends React.Component {
               theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
             />
             <View style={styles.btnAcceder}>
-              <Button style={styles.button} contentStyle={styles.buttonText} mode="contained" dark="true" color="#f50057" onPress={() => this.props.navigation.navigate('home')}>Acceder</Button>
+              <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={() => this.props.navigation.navigate('home')}>Acceder</Button>
             </View>
         </LinearGradient>
         <View style={styles.footer}>
             <Text style={styles.textoFooter}>¿No tienes una cuenta?</Text>
-            <Button style={styles.button} contentStyle={styles.buttonText} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('register')}>Crea una cuenta ahora</Button>
+            <Button style={styles.button} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('register')}>Crea una cuenta ahora</Button>
         </View>
       </View>
     );
@@ -85,9 +85,6 @@ const styles = StyleSheet.create({
   },
   button: {
     paddingVertical:10,
-  },
-  buttonText: {
-    fontSize:60,
   },
 });
 

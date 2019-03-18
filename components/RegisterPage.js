@@ -1,20 +1,58 @@
 import React from 'react';
-import { StyleSheet, View, Image, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import { LinearGradient } from 'expo';
+import { Button, TextInput } from 'react-native-paper';
 
 class RegisterPage extends React.Component {
+  state = {
+    nombre: '',
+    email: '',
+    password: '',
+    password_repeat: '',
+  };
+
   render() {
     return (
-      <View style={styles.container}>
+      <LinearGradient 
+        colors={['#1d253d','#0b7e8a']} style={styles.container}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
-        <TextInput  placeholder="Nombre de Player" style={styles.input}/>
-        <TextInput  placeholder="E-mail" style={styles.input}/>
-        <TextInput  placeholder="Contraseña" style={styles.input}/>
-        <TextInput  placeholder="Repetir contraseña" style={styles.input}/>
+        <TextInput 
+              label="Nombre de Player" style={styles.input}
+              underlineColor="#4db6ac"
+              selectionColor="#4db6ac"
+              onChangeText={(text) => this.setState({nombre: text})}
+              value={this.state.nombre}
+              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
+              />
+        <TextInput 
+              label="E-mail" style={styles.input}
+              underlineColor="#4db6ac"
+              selectionColor="#4db6ac"
+              onChangeText={(text) => this.setState({email: text})}
+              value={this.state.email}
+              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
+              />
+        <TextInput 
+              label="Contraseña" style={styles.input}
+              underlineColor="#4db6ac"
+              selectionColor="#4db6ac"
+              onChangeText={(text) => this.setState({password: text})}
+              value={this.state.password}
+              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
+              />
+        <TextInput 
+              label="Repetir contraseña" style={styles.input}
+              underlineColor="#4db6ac"
+              selectionColor="#4db6ac"
+              onChangeText={(text) => this.setState({password_repeat: text})}
+              value={this.state.password_repeat}
+              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
+              />
         <View style={styles.btnWrapper}>
-            <Button title="Siguiente" color="#f50057" onPress={() => this.props.navigation.navigate('register2')} />
+            <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={() => this.props.navigation.navigate('register2')}>Siguiente</Button>
         </View>
-      </View>
+      </LinearGradient>
     )
   }
 }
@@ -33,14 +71,16 @@ const styles = StyleSheet.create({
         marginBottom:50,
     },
     input: {
-        backgroundColor: 'white',
-        marginTop: 10,
-        marginBottom: 10,
-        padding:10,
+      backgroundColor: 'white',
+      marginVertical: 10,
+      padding:10,
     },
     btnWrapper: {
         marginTop:30,
-      },
-});  
+    },
+    button: {
+        paddingVertical:10,
+    },
+  });  
 
 export default withNavigation(RegisterPage);
