@@ -1,44 +1,14 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import * as React from 'react';
+import { AppRegistry } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
+import App from './components/App';
 
-import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage';
-import RegisterPage2 from './components/RegisterPage2';
-import HomePage from './components/HomePage';
-import CrearPartidaPage from './components/CrearPartidaPage';
-
-class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <LoginPage></LoginPage>        
-      </View>
-    );
-  }
+export default function Main() {
+  return (
+    <PaperProvider>
+      <App />
+    </PaperProvider>
+  );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems:'stretch',
-    justifyContent: 'center',
-  },
-});
-
-const AppNavigator = createStackNavigator(
-  {
-    login: App,
-    register: RegisterPage,
-    register2: RegisterPage2,
-    home: HomePage,
-    crearPartida: CrearPartidaPage
-  },
-  {
-    initialRouteName: "login",
-    headerMode:'none'
-  }
-);
-
-export default createAppContainer(AppNavigator);
+AppRegistry.registerComponent('main', () => Main);
