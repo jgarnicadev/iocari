@@ -13,7 +13,15 @@ class HomePage extends React.Component {
   };
 
   componentDidMount() {
-    //load mis partidas
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        this.cargarMisPartidas();
+      }
+    );
+  }
+
+  cargarMisPartidas() {
     fetch('http://www.afcserviciosweb.com/iocari-api.php')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -23,7 +31,7 @@ class HomePage extends React.Component {
         console.log(error);
       });
   }
-
+  
   render() {
     return (
       <View style={styles.container}>

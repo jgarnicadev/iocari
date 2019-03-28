@@ -8,6 +8,7 @@ import Header from './Header';
 class CrearPartidaPage extends React.Component {
   state = {
     image: null,
+    imageBase64: '',
     nombre: '',
     juegos: '',
     fecha: '',
@@ -23,7 +24,7 @@ class CrearPartidaPage extends React.Component {
 
   publicar() {
     if (
-      // !this.state.image ||
+      !this.state.image ||
       !this.state.nombre ||
       !this.state.juegos ||
       !this.state.fecha ||
@@ -47,9 +48,11 @@ class CrearPartidaPage extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(this.state)
+    })
+    .then(() => {
+      Alert.alert('Partida Creada');
+      this.props.navigation.navigate('home');  
     });
-    Alert.alert('Partida Creada');
-    this.props.navigation.navigate('home');
   }
 
   render() {
@@ -60,7 +63,7 @@ class CrearPartidaPage extends React.Component {
         <ScrollView>
           <View  style={styles.fondoNormal}>
             {image &&
-              <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+              <Image source={{ uri: image }} style={styles.image} />}
             <Button
               title="Elige una imagen"
               color="#dcdcdc"
@@ -161,12 +164,12 @@ class CrearPartidaPage extends React.Component {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [4, 3],
+      base64: true
     });
 
-    console.log(result);
 
     if (!result.cancelled) {
-      this.setState({ image: result.uri });
+      this.setState({ image: result.uri, imageBase64: result.base64 });
     }
   };
 }
@@ -215,6 +218,11 @@ const styles = StyleSheet.create({
     borderRadius:5,
     flex:1,
   },
+  image: {
+    width: 200, 
+    height: 200, 
+    alignSelf: 'center',
+  }
 });
 
 export default withNavigation(CrearPartidaPage);

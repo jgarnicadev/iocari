@@ -1,27 +1,31 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { Card, Title } from 'react-native-paper';
 
 class CarruselPartida extends React.Component {
     render() {
       return (
-        <View style={styles.container}>
+        <Card style={styles.container} elevation={5}>
             {this.props.partida.image != '' &&
-              <Image style={styles.imagen_partida} source={{uri: this.props.partida.image}} /> }
-            <Text>{this.props.partida.nombre}</Text>
-            <Text>Fecha: {this.props.partida.fecha} {this.props.partida.hora}</Text>
-            <Text>Jugadores: {this.props.partida.fecha} {this.props.partida.players}</Text>
-        </View>
+              <Card.Cover source={{uri: this.props.partida.image}} /> }
+            <Card.Content>
+              <Title>{this.props.partida.nombre}</Title>
+              <Text>Fecha: {this.props.partida.fecha} {this.props.partida.hora}</Text>
+              <Text>Jugadores: {this.props.partida.players}</Text>
+            </Card.Content>
+        </Card>
       );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
+      marginRight:15,
+      marginBottom:20,
+      marginLeft:10,
+      marginTop:5,
+      width:250,
     },
-    imagen_partida: {
-      width:80,
-      height:60,
-    }
 });
 
 export default CarruselPartida;
