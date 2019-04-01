@@ -1,14 +1,39 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo';
 import { Button, TextInput } from 'react-native-paper';
 
 class LoginPage extends React.Component {
   state = {
+    op:'login',
     email: '',
     password: '',
   };
+
+  login() {
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(this.state)
+    })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.result) {
+        this.props.navigation.navigate('home');  
+      } else {
+        Alert.alert(
+          'Login incorrecto'
+        );
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
 
   render() {
     return (
@@ -31,9 +56,10 @@ class LoginPage extends React.Component {
               onChangeText={(text) => this.setState({password: text})}
               value={this.state.password}
               theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
+              secureTextEntry={true}
             />
             <View style={styles.btnAcceder}>
-              <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={() => this.props.navigation.navigate('home')}>Acceder</Button>
+              <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.login.bind(this)}>Acceder</Button>
             </View>
         </LinearGradient>
         <View style={styles.footer}>

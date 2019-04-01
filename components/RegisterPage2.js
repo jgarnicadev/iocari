@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Text } from 'react-native';
+import { StyleSheet, View, Image, Text, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo';
 import { Button, TextInput } from 'react-native-paper';
@@ -14,6 +14,13 @@ class RegisterPage2 extends React.Component {
     ciudad: '',
     codigo_postal: '',
   };
+
+  submit() {
+    Alert.alert(
+      'En desarrollo...'
+    );
+    //TODO
+  }
 
   render() {
     return (
@@ -73,7 +80,7 @@ class RegisterPage2 extends React.Component {
           </View>
         <View style={[styles.btnWrapper, styles.twoColsWarp]}>
             <Button style={[styles.button, styles.twoCols]} mode="outlined" color="white" theme={{ dark: true, colors: {primary: 'white'} }} onPress={() => this.props.navigation.goBack()}>Atrás</Button>
-            <Button style={[styles.button, styles.twoCols]} mode="contained" dark="true" color="#f50057" onPress={() => this.props.navigation.navigate('home')}>¡Listo!</Button>
+            <Button style={[styles.button, styles.twoCols]} mode="contained" dark="true" color="#f50057" onPress={this.submit.bind(this)}>¡Listo!</Button>
         </View>
       </LinearGradient>
     )
