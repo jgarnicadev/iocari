@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Text, Alert } from 'react-native';
+import { StyleSheet, View, Image, Text, Alert, ScrollView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo';
 import { Button, TextInput } from 'react-native-paper';
@@ -26,6 +26,7 @@ class RegisterPage2 extends React.Component {
     return (
       <LinearGradient 
         colors={['#1d253d','#0b7e8a']} style={styles.container}>
+        <ScrollView style={styles.containerWrap}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
         <Text style={styles.texto}>Sólo tu país y ciudad serán visibles en tu perfil.</Text>
         <TextInput 
@@ -82,6 +83,7 @@ class RegisterPage2 extends React.Component {
             <Button style={[styles.button, styles.twoCols]} mode="outlined" color="white" theme={{ dark: true, colors: {primary: 'white'} }} onPress={() => this.props.navigation.goBack()}>Atrás</Button>
             <Button style={[styles.button, styles.twoCols]} mode="contained" dark="true" color="#f50057" onPress={this.submit.bind(this)}>¡Listo!</Button>
         </View>
+        </ScrollView>
       </LinearGradient>
     )
   }
@@ -93,11 +95,13 @@ const styles = StyleSheet.create({
       alignItems: 'stretch',
       justifyContent:'flex-start',
       backgroundColor: '#1e253d',
+    },
+    containerWrap: {
       paddingHorizontal:40,
     },
     logo: {
         alignSelf:'center',
-        marginTop:200,
+        marginTop:'15%',
         marginBottom:50,
     },
     input: {
@@ -106,7 +110,8 @@ const styles = StyleSheet.create({
       padding:10,
     },
     btnWrapper: {
-        marginTop:30,
+        marginTop:20,
+        marginBottom:10,
       },
     texto: {
       color:'white',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import Header from './Header';
@@ -12,6 +12,11 @@ class HomePage extends React.Component {
     mis_partidas: [],
   };
 
+  async getAccessToken() {
+    const data =  await AsyncStorage.getItem('accessToken');
+    return data;
+  }
+
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
@@ -22,6 +27,7 @@ class HomePage extends React.Component {
   }
 
   cargarMisPartidas() {
+    this.getAccessToken().then( response => console.log(response) );
     fetch('http://www.afcserviciosweb.com/iocari-api.php')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -40,7 +46,9 @@ class HomePage extends React.Component {
           <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?"/>
         </View>
         <View style={styles.main}>
+          <ScrollView style={styles.mainWrap}>
           <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />
+          </ScrollView>
         </View>
         <Footer />
       </View>
@@ -66,10 +74,13 @@ const styles = StyleSheet.create({
   },
   main: {
     flex:1,
-    paddingVertical:20,
-    paddingHorizontal:15,
     backgroundColor:'#f3f1f1',
+    paddingVertical:20,
   },
+  mainWrap: {
+    paddingHorizontal:15,
+
+  }
 });
 
 export default withNavigation(HomePage);

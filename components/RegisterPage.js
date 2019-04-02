@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Alert } from 'react-native';
+import { StyleSheet, View, Image, Alert, ScrollView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo';
 import { Button, TextInput } from 'react-native-paper';
@@ -78,6 +78,7 @@ class RegisterPage extends React.Component {
     return (
       <LinearGradient 
         colors={['#1d253d','#0b7e8a']} style={styles.container}>
+        <ScrollView style={styles.containerWrap}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
         <TextInput 
               label="Nombre de Player" style={styles.input}
@@ -116,6 +117,7 @@ class RegisterPage extends React.Component {
         <View style={styles.btnWrapper}>
             <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.submit.bind(this)}>Siguiente</Button>
         </View>
+        </ScrollView>
       </LinearGradient>
     )
   }
@@ -127,11 +129,13 @@ const styles = StyleSheet.create({
       alignItems: 'stretch',
       justifyContent:'flex-start',
       backgroundColor: '#1e253d',
+    },
+    containerWrap: {
       paddingHorizontal:40,
     },
     logo: {
         alignSelf:'center',
-        marginTop:200,
+        marginTop:'15%',
         marginBottom:50,
     },
     input: {
@@ -140,7 +144,8 @@ const styles = StyleSheet.create({
       padding:10,
     },
     btnWrapper: {
-        marginTop:30,
+        marginTop:20,
+        marginBottom:10,
     },
     button: {
         paddingVertical:10,

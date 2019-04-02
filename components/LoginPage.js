@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, Alert, ScrollView, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo';
 import { Button, TextInput } from 'react-native-paper';
@@ -10,6 +10,10 @@ class LoginPage extends React.Component {
     email: '',
     password: '',
   };
+
+  async guardarAccessToken(token) {
+    await AsyncStorage.setItem('accessToken', token);
+  }
 
   login() {
     fetch('http://www.afcserviciosweb.com/iocari-api.php',{
@@ -22,7 +26,9 @@ class LoginPage extends React.Component {
     })
     .then((response) => response.json())
     .then((response) => {
+      console.log(response);
       if (response.result) {
+        this.guardarAccessToken(response.token);
         this.props.navigation.navigate('home');  
       } else {
         Alert.alert(
@@ -41,6 +47,7 @@ class LoginPage extends React.Component {
         <LinearGradient 
           colors={['#1d253d','#0b7e8a']}
           style={styles.top}>
+          <ScrollView style={styles.topWrap}>
             <Image source={require('../assets/logo.png')} style={styles.logo} />
             <TextInput 
               label="E-mail" style={styles.input}
@@ -61,6 +68,7 @@ class LoginPage extends React.Component {
             <View style={styles.btnAcceder}>
               <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.login.bind(this)}>Acceder</Button>
             </View>
+            </ScrollView>
         </LinearGradient>
         <View style={styles.footer}>
             <Text style={styles.textoFooter}>¿No tienes una cuenta?</Text>
@@ -81,12 +89,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#1e253d',
     alignItems: 'stretch',
     justifyContent:'flex-start',
-    paddingHorizontal:40,
     flex:7,
+  },
+  topWrap: {
+    paddingHorizontal:40,
   },
   logo: {
     alignSelf:'center',
-    marginTop:200,
+    marginTop:'15%',
     marginBottom:50,
   },
   input: {
@@ -95,7 +105,8 @@ const styles = StyleSheet.create({
     padding:10,
   },
   btnAcceder: {
-    marginTop:30,
+    marginTop:20,
+    marginBottom:10,
   },
   footer: {
     flex:1,
@@ -103,6 +114,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent:'center',
     paddingHorizontal:40,
+    paddingVertical:20,
   },
   textoFooter: {
     alignSelf:'center',
