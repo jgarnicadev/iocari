@@ -1,25 +1,78 @@
 import React from 'react';
-import { StyleSheet, View, Image, Text, Alert, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, Text, Alert, ScrollView, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo';
 import { Button, TextInput } from 'react-native-paper';
 
 class RegisterPage2 extends React.Component {
   state = {
+    op: 'register',
+    nombre_player: '',
+    email: '',
+    password: '',
     nombre: '',
     apellido: '',
     fecha_nacimiento: '',
     direccion: '',
-    pais: '',
     ciudad: '',
     codigo_postal: '',
   };
 
-  submit() {
-    Alert.alert(
-      'En desarrollo...'
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        const { navigation } = this.props;
+        this.setState({
+          nombre_player: navigation.getParam('nombre_player', ''),
+          email: navigation.getParam('email', ''),
+          password: navigation.getParam('password', '')
+        });
+      }
     );
-    //TODO
+  }
+
+  async guardarAccessToken(token) {
+    await AsyncStorage.setItem('accessToken', token);
+  }
+
+  submit() {
+    if (
+      !this.state.nombre ||
+      !this.state.apellido ||
+      !this.state.fecha_nacimiento ||
+      !this.state.direccion ||
+      !this.state.ciudad ||
+      !this.state.codigo_postal
+    ) {
+      Alert.alert(
+        'Debes rellenar todos los campos'
+      );
+      return;
+    }
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(this.state)
+    })
+    .then((response) => response.json())
+    .then((response) => {
+      console.log(response);
+      if (response.result) {
+        this.guardarAccessToken(response.token);
+        this.props.navigation.navigate('home');  
+      } else {
+        Alert.alert(
+          'No se ha podido registrar el usuario, intentela de nuevo'
+        );
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   render() {
