@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextInput, ScrollView, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, AsyncStorage, Image, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import Header from './Header';
@@ -9,6 +9,7 @@ import CarruselPartidas from './CarruselPartidas';
 
 class HomePage extends React.Component {
   state = {
+    accessToken: '',
     mis_partidas: [],
   };
 
@@ -21,14 +22,24 @@ class HomePage extends React.Component {
     this.props.navigation.addListener(
       'didFocus',
       payload => {
-        this.cargarMisPartidas();
+        this.getAccessToken().then( value => {
+          this.setState({'accessToken':value});
+          this.cargarMisPartidas();
+
+        });
       }
     );
   }
 
   cargarMisPartidas() {
-    this.getAccessToken().then( response => console.log(response) );
-    fetch('http://www.afcserviciosweb.com/iocari-api.php')
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({op:'getMisPartidas', accessToken:this.state.accessToken})
+    })
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({'mis_partidas':responseJson});
@@ -36,6 +47,13 @@ class HomePage extends React.Component {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  submitSearch() {
+    Alert.alert(
+      'En desarrollo...'
+    );
+    //TODO
   }
   
   render() {
@@ -45,7 +63,7 @@ class HomePage extends React.Component {
         <View style={styles.buscador}>
           <View style={styles.buscadorInputWrap}>
             <Image source={require('../assets/icon-search.png')} style={styles.buscadorIcon} />
-            <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?"/>
+            <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?" onSubmitEditing={this.submitSearch}/>
           </View>
         </View>
         <View style={styles.main}>

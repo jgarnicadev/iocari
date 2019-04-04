@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert } from 'react-native';
+import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { ImagePicker } from 'expo';
 
@@ -7,6 +7,8 @@ import Header from './Header';
 
 class CrearPartidaPage extends React.Component {
   state = {
+    op: 'crearPartida',
+    accessToken: '',
     image: null,
     imageBase64: '',
     nombre: '',
@@ -21,6 +23,22 @@ class CrearPartidaPage extends React.Component {
     privada: true,
     controlar_solicitudes: false,
   };
+
+  async getAccessToken() {
+    const data =  await AsyncStorage.getItem('accessToken');
+    return data;
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        this.getAccessToken().then( value => {
+          this.setState({'accessToken':value});
+        });
+      }
+    );
+  }
 
   publicar() {
     if (

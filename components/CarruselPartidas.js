@@ -13,7 +13,7 @@ class CarruselPartidas extends React.Component {
               <Text>{this.props.msgEmpty}</Text>
             ) : (
               this.props.partidas.map((elem) => 
-                <CarruselPartida key="{elem.id}" partida={elem} />
+                <CarruselPartida key={elem.id} partida={elem} />
               )
             )}
             </ScrollView>

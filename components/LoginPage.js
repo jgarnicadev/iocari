@@ -26,7 +26,6 @@ class LoginPage extends React.Component {
     })
     .then((response) => response.json())
     .then((response) => {
-      console.log(response);
       if (response.result) {
         this.guardarAccessToken(response.token);
         this.props.navigation.navigate('home');  
