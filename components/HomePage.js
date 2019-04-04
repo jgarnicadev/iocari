@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextInput, ScrollView, AsyncStorage } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, AsyncStorage, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import Header from './Header';
@@ -43,7 +43,10 @@ class HomePage extends React.Component {
       <View style={styles.container}>
         <Header title="Home" />
         <View style={styles.buscador}>
-          <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?"/>
+          <View style={styles.buscadorInputWrap}>
+            <Image source={require('../assets/icon-search.png')} style={styles.buscadorIcon} />
+            <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?"/>
+          </View>
         </View>
         <View style={styles.main}>
           <ScrollView style={styles.mainWrap}>
@@ -65,6 +68,16 @@ const styles = StyleSheet.create({
   buscador: {
     backgroundColor:'#03a9f4',
     padding:10,
+  },
+  buscadorInputWrap: {
+    backgroundColor:'white',
+    flexDirection:'row',
+    borderRadius:5,
+  },
+  buscadorIcon: {
+    alignSelf:'center',
+    marginLeft:15,
+    marginRight:5,
   },
   buscadorInput: {
     backgroundColor:'white',
