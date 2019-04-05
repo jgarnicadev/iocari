@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import { ImagePicker } from 'expo';
+import { ImagePicker, Permissions } from 'expo';
 
 import Header from './Header';
 
@@ -42,7 +42,6 @@ class CrearPartidaPage extends React.Component {
 
   publicar() {
     if (
-      !this.state.image ||
       !this.state.nombre ||
       !this.state.juegos ||
       !this.state.fecha ||
@@ -179,15 +178,21 @@ class CrearPartidaPage extends React.Component {
     );
   }
   _pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      base64: true
-    });
+    const { Permissions } = Expo;
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status === 'granted') {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        base64: true
+      });
 
 
-    if (!result.cancelled) {
-      this.setState({ image: result.uri, imageBase64: result.base64 });
+      if (!result.cancelled) {
+        this.setState({ image: result.uri, imageBase64: result.base64 });
+      }
+    } else {
+      Alert.alert('Se necesita permiso para acceder a tu camera roll');
     }
   };
 }
