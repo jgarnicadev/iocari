@@ -7,6 +7,7 @@ import RegisterPage from './RegisterPage';
 import RegisterPage2 from './RegisterPage2';
 import HomePage from './HomePage';
 import CrearPartidaPage from './CrearPartidaPage';
+import Partida from './Partida';
 
 // class App extends React.Component {
 //   render() {
@@ -33,7 +34,8 @@ const AppNavigator = createStackNavigator(
     register: RegisterPage,
     register2: RegisterPage2,
     home: HomePage,
-    crearPartida: CrearPartidaPage
+    crearPartida: CrearPartidaPage,
+    partida: Partida,
   },
   {
     initialRouteName: "login",

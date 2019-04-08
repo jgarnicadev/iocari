@@ -1,10 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { Card, Title, IconButton } from 'react-native-paper';
+import { withNavigation } from 'react-navigation';
 
 class CarruselPartida extends React.Component {
+
+    showPartida() {
+      this.props.navigation.navigate('partida', {
+        id_partida: this.props.partida.id
+      });
+    }
+
     render() {
       return (
+        <TouchableHighlight onPress={this.showPartida.bind(this)}>
         <Card style={styles.container} elevation={5}>
             <Card.Cover source={{uri: this.props.partida.image}} />
             <Card.Content>
@@ -16,6 +25,7 @@ class CarruselPartida extends React.Component {
               <Text style={{ color: 'white' }}>{this.props.partida.jugadores_apuntados} / {this.props.partida.players}</Text>
             </View>
         </Card>
+        </TouchableHighlight>
       );
     }
 }
@@ -39,4 +49,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CarruselPartida;
+export default withNavigation(CarruselPartida);
