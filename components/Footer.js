@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableHighlight, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { IconButton } from 'react-native-paper';
 
@@ -16,30 +16,65 @@ class Footer extends React.Component {
                   style={{ width: size, height: size }}
                 />
               )}
-              onPress={() => this.props.navigation.navigate('crearPartida')}
+              onPress={this.crearPartida}
             />
           </View>
           <View style={styles.footer}>
-            <View style={styles.boton}>
-              <IconButton icon="home"></IconButton>
-              <Text>Home</Text>
-            </View>
-            <View style={styles.boton}>
-              <IconButton icon="view-list" color="#bbb"></IconButton>
-              <Text style={{ color: '#bbb'}}>Biblioteca</Text>
-            </View>
-            <View style={styles.boton}>
-              <IconButton icon="person" color="#bbb"></IconButton>
-              <Text style={{ color: '#bbb'}}>Perfil</Text>
-            </View>
-            <View style={styles.boton}>
-              <IconButton icon="notifications" color="#bbb"></IconButton>
-              <Text style={{ color: '#bbb'}}>Alertas</Text>
-            </View>
+            <TouchableHighlight onPress={this.home}>
+              <View style={styles.boton}>
+                <IconButton icon="home" color={this.props.activo!='home'?'#bbb':'black'} ></IconButton>
+                <Text style={this.props.activo!='home'?{color:'#bbb'}:{color:'black'}}>Home</Text>
+              </View>
+              </TouchableHighlight>
+            <TouchableHighlight onPress={this.biblioteca}>
+              <View style={styles.boton}>
+                <IconButton icon="view-list" color={this.props.activo!='biblioteca'?'#bbb':'black'}></IconButton>
+                <Text style={this.props.activo!='biblioteca'?{color:'#bbb'}:{color:'black'}}>Biblioteca</Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.perfil}>
+              <View style={styles.boton}>
+                <IconButton icon="person" color={this.props.activo!='perfil'?'#bbb':'black'}></IconButton>
+                <Text style={this.props.activo!='perfil'?{color:'#bbb'}:{color:'black'}}>Perfil</Text>
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.alertas}>
+              <View style={styles.boton}>
+                <IconButton icon="notifications" color={this.props.activo!='alertas'?'#bbb':'black'}></IconButton>
+                <Text style={this.props.activo!='alertas'?{color:'#bbb'}:{color:'black'}}>Alertas</Text>
+              </View>
+            </TouchableHighlight>
           </View>
         </View>
     );
   }
+
+  crearPartida = () => {
+    this.props.navigation.navigate('crearPartida')
+  }
+
+  home = () => {
+    this.props.navigation.navigate('home');
+  }
+
+  biblioteca = () => {
+    this.props.navigation.navigate('biblioteca');
+  }
+
+  perfil = () => {
+    Alert.alert(
+      'En desarrollo...'
+    );
+    //TODO    
+  }
+
+  alertas = () => {
+    Alert.alert(
+      'En desarrollo...'
+    );
+    //TODO    
+  }
+
 }
 const styles = StyleSheet.create({
     container: {

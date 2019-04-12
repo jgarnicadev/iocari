@@ -11,6 +11,7 @@ class HomePage extends React.Component {
   state = {
     accessToken: '',
     mis_partidas: [],
+    partidas_hoy: [],
   };
 
   async getAccessToken() {
@@ -25,7 +26,7 @@ class HomePage extends React.Component {
         this.getAccessToken().then( value => {
           this.setState({'accessToken':value});
           this.cargarMisPartidas();
-
+          this.cargarPartidasHoy();
         });
       }
     );
@@ -49,6 +50,24 @@ class HomePage extends React.Component {
       });
   }
 
+  cargarPartidasHoy() {
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({op:'getPartidasHoy', accessToken:this.state.accessToken})
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({'partidas_hoy':responseJson});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   submitSearch() {
     Alert.alert(
       'En desarrollo...'
@@ -59,7 +78,7 @@ class HomePage extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header title="Home" />
+        <Header title="Home" hideBack={true} />
         <View style={styles.buscador}>
           <View style={styles.buscadorInputWrap}>
             <Image source={require('../assets/icon-search.png')} style={styles.buscadorIcon} />
@@ -68,10 +87,11 @@ class HomePage extends React.Component {
         </View>
         <View style={styles.main}>
           <ScrollView style={styles.mainWrap}>
-          <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />
+            <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />
+            <CarruselPartidas title="Hoy" msgEmpty="No se han encontrado partidas para hoy" partidas={this.state.partidas_hoy} />
           </ScrollView>
         </View>
-        <Footer />
+        <Footer activo="home" />
       </View>
     );
   }
