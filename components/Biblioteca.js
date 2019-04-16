@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, TextInput, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, TextInput, Alert, ScrollView, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import Header from './Header';
@@ -9,15 +9,46 @@ import CarruselJuegos from './CarruselJuegos';
 
 class Biblioteca extends React.Component {
     state = {
-        recomendaciones: [
-            {
-                id: 1,
-                image: 'http://www.afcserviciosweb.com/iocari-images/alchemists.png',
-                nombre: 'Alchemists',
-            }
-        ],
+        accessToken: '',
+        recomendaciones: [],
     }
 
+    async getAccessToken() {
+        const data =  await AsyncStorage.getItem('accessToken');
+        return data;
+      }
+    
+    componentDidMount() {
+    this.props.navigation.addListener(
+        'didFocus',
+        payload => {
+        this.getAccessToken().then( value => {
+            this.setState({'accessToken':value});
+            this.cargarRecomendaciones();
+        });
+        }
+    );
+    }
+
+    cargarRecomendaciones() {
+        fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({op:'getJuegos', accessToken:this.state.accessToken})
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            this.setState({'recomendaciones':responseJson});
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+    
+          
     render() {
         return (
             <View style={styles.container}>
