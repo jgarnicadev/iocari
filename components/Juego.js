@@ -10,6 +10,9 @@ class Juego extends React.Component {
     accessToken: '',
     juego: null,
     loading: true,
+    loQuiero: false,
+    quieroJugar: false,
+    enBiblioteca: false,
   }
 
   async getAccessToken() {
@@ -44,6 +47,12 @@ class Juego extends React.Component {
       .then((response) => response.json())
       .then((responseJson) => {
         this.setState({'juego':responseJson});
+        let loQuiero = (responseJson.loQuiero == 1);
+        let quieroJugar = (responseJson.quieroJugar == 1);
+        let enBiblioteca = (responseJson.enBiblioteca == 1);
+        this.setState({'loQuiero':loQuiero});
+        this.setState({'quieroJugar':quieroJugar});
+        this.setState({'enBiblioteca':enBiblioteca});
         this.setState({'loading':false});
       })
       .catch((error) => {
@@ -76,22 +85,22 @@ class Juego extends React.Component {
           <View style={styles.main}>
             <ScrollView style={styles.mainWrap}>
               <View style={{ flexDirection:'row', justifyContent: 'space-between', marginTop:30}}>
-                <TouchableHighlight onPress={this.enDesarrollo}>
-                  <View style={{ borderWidth:2, borderColor:'#0277bd', borderRadius:5, flexDirection:'row', padding:15, alignItems:'center', width:150 }}>
+                <TouchableHighlight onPress={this.loQuiero}>
+                  <View style={this.state.loQuiero ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
                     <Image source={require('../assets/ico-btn-loquiero.png')} style={{ width: 25, height: 25, margin:0,  marginRight:10 }}/>
-                    <Text style={{ color:'#0277bd' }}>¡Lo quiero!</Text>
+                    <Text style={this.state.loQuiero ? styles.txtBtnActive : styles.txtBtnInactive}>¡Lo quiero!</Text>
                   </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={this.enDesarrollo}>
-                  <View style={{ borderWidth:2, borderColor:'#0277bd', borderRadius:5, flexDirection:'row', padding:15, alignItems:'center', width:150 }}>
+                <TouchableHighlight onPress={this.quieroJugar}>
+                  <View style={this.state.quieroJugar ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
                     <Image source={require('../assets/ico-btn-quierojugar.png')} style={{ width: 25, height: 25, margin:0,  marginRight:10 }}/>
-                    <Text style={{ color:'#0277bd' }}>Quiero jugar</Text>
+                    <Text style={this.state.quieroJugar ? styles.txtBtnActive : styles.txtBtnInactive}>Quiero jugar</Text>
                   </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={this.enDesarrollo}>
-                  <View style={{ borderWidth:2, borderColor:'#0277bd', borderRadius:5, flexDirection:'row', padding:15, alignItems:'center', width:150 }}>
+                <TouchableHighlight onPress={this.enBiblioteca}>
+                  <View style={this.state.enBiblioteca ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
                     <Image source={require('../assets/ico-btn-anadir.png')} style={{ width: 25, height: 25, margin:0,  marginRight:10 }}/>
-                    <Text style={{ color:'#0277bd' }}>Añadir</Text>
+                    <Text style={this.state.enBiblioteca ? styles.txtBtnActive : styles.txtBtnInactive}>Añadir</Text>
                   </View>
                 </TouchableHighlight>
               </View>
@@ -120,6 +129,54 @@ class Juego extends React.Component {
 
   enDesarrollo = () => {
     Alert.alert('En desarrollo...');
+  }
+
+  loQuiero = () => {
+    let value = this.state.loQuiero ? 0 : 1;
+    this.setState({'loQuiero':!this.state.loQuiero});
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'loQuiero', value: value, accessToken:this.state.accessToken})
+    })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  quieroJugar = () => {
+    let value = this.state.quieroJugar ? 0 : 1;
+    this.setState({'quieroJugar':!this.state.quieroJugar});
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'quieroJugar', value: value, accessToken:this.state.accessToken})
+    })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  enBiblioteca = () => {
+    let value = this.state.enBiblioteca ? 0 : 1;
+    this.setState({'enBiblioteca':!this.state.enBiblioteca});
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'enBiblioteca', value: value, accessToken:this.state.accessToken})
+    })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
 }
@@ -156,6 +213,28 @@ const styles = StyleSheet.create({
     top:90,
     right:0,
   }
+  , 
+  btn: {
+    borderWidth:2,
+    borderColor:'#0277bd',
+    borderRadius:5,
+    flexDirection:'row',
+    padding:15,
+    alignItems:'center',
+    width:150
+  },
+  btnInactive: {
+    backgroundColor:'transparent',
+  },
+  btnActive: {
+    backgroundColor:'#0277bd',
+  },
+  txtBtnActive: {
+    color:'white',
+  },
+  txtBtnInactive: {
+    color:'#0277bd',
+  },
 });
 
 export default Juego;
