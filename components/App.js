@@ -10,6 +10,7 @@ import CrearPartidaPage from './CrearPartidaPage';
 import Partida from './Partida';
 import Biblioteca from './Biblioteca';
 import Juego from './Juego';
+import Perfil from './Perfil';
 
 // class App extends React.Component {
 //   render() {
@@ -40,6 +41,7 @@ const AppNavigator = createStackNavigator(
     partida: Partida,
     biblioteca: Biblioteca,
     juego: Juego,
+    perfil: Perfil,
   },
   {
     initialRouteName: "login",

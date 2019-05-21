@@ -62,10 +62,7 @@ class Footer extends React.Component {
   }
 
   perfil = () => {
-    Alert.alert(
-      'En desarrollo...'
-    );
-    //TODO    
+    this.props.navigation.navigate('perfil');
   }
 
   alertas = () => {

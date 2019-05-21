@@ -3,6 +3,7 @@ import { View, StyleSheet, ImageBackground, Image, ScrollView, AsyncStorage, Act
 import { IconButton } from 'react-native-paper';
 
 import Header from './Header';
+import CarruselJuegos from './CarruselJuegos';
 
 class Juego extends React.Component {
   state = {
@@ -66,6 +67,16 @@ class Juego extends React.Component {
         <View><ActivityIndicator /></View>
       );
     }
+
+
+    let creditosObj = JSON.parse(this.state.juego.creditos);
+    let creditos = Object.keys(creditosObj).map(key => 
+      (<View key={key} style={styles.credito}>
+        <Text style={styles.creditoTitle}>{key}</Text>
+        <Text style={styles.creditoValue}>{creditosObj[key]}</Text>
+      </View>)
+    );
+
     return (
       <View style={styles.container}>
         <Header title={this.state.juego.nombre} />
@@ -103,6 +114,31 @@ class Juego extends React.Component {
                     <Text style={this.state.enBiblioteca ? styles.txtBtnActive : styles.txtBtnInactive}>Añadir</Text>
                   </View>
                 </TouchableHighlight>
+              </View>
+              <Text style={styles.descripcion}>{this.state.juego.descripcion}</Text>
+              <View style={styles.creditos}>{creditos}</View>
+              <View style={styles.seccion}>
+                <Text style={styles.seccionTitle}>Mecánicas</Text>
+                <View style={styles.seccionDataContainer}>
+                {this.state.juego.mecanicas.map((mecanica, index) => 
+                  <Text key={index} style={styles.seccionData}>{mecanica}</Text>
+                )}
+                </View>
+              </View>
+              <View style={styles.seccion}>
+                <Text style={styles.seccionTitle}>Categorías</Text>
+                <View style={styles.seccionDataContainer}>
+                {this.state.juego.categorias.map((categoria, index) => 
+                  <Text key={index} style={styles.seccionData}>{categoria}</Text>
+                )}
+                </View>
+              </View>
+              <CarruselJuegos title="Expansiones" msgEmpty="Este juego no tiene expansiones" juegos={this.state.juego.expansiones} />
+              <View style={styles.seccion}>
+                <Text style={styles.seccionTitle}>Premios</Text>
+                <View style={styles.seccionDataContainer}>
+                  <Text style={styles.seccionData}>{this.state.juego.premios}</Text>
+                </View>
               </View>
             </ScrollView>
           </View>
@@ -234,6 +270,38 @@ const styles = StyleSheet.create({
   },
   txtBtnInactive: {
     color:'#0277bd',
+  },
+  descripcion: {
+    marginTop:30,
+  },
+  creditos: {
+    marginTop:30,
+  },
+  credito: {
+    marginBottom:5,
+  },
+  creditoTitle: {
+    fontSize:14,
+  },
+  creditoValue: {
+    fontSize:12,
+  },
+  seccion: {
+    marginTop:20,
+  },
+  seccionTitle: {
+    fontSize:18,
+    marginBottom:7,
+  },
+  seccionDataContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start'
+  },
+  seccionData: {
+    fontSize:12,
+    width:'50%',
+    marginBottom:5,
   },
 });
 
