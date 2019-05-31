@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextInput, ScrollView, AsyncStorage, Image, Alert } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, AsyncStorage, Image, Alert, BackHandler } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 import Header from './Header';
@@ -23,6 +23,7 @@ class HomePage extends React.Component {
     this.props.navigation.addListener(
       'didFocus',
       payload => {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         this.getAccessToken().then( value => {
           this.setState({'accessToken':value});
           this.cargarMisPartidas();
@@ -30,7 +31,17 @@ class HomePage extends React.Component {
         });
       }
     );
+    this.props.navigation.addListener(
+      'didBlur',
+      payload => {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+      }
+    );
   }
+
+  handleBackPress = () => {
+    BackHandler.exitApp();
+  }  
 
   cargarMisPartidas() {
     fetch('http://www.afcserviciosweb.com/iocari-api.php',{

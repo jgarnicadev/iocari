@@ -2,18 +2,19 @@ import React from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
+import { DrawerActions } from 'react-navigation-drawer';
 
 class Header extends React.Component {
+  state = {
+    visible: false,
+  };
 
   back = () => {
     this.props.navigation.goBack();
   }
 
   menu = () => {
-    Alert.alert(
-      'En desarrollo...'
-    );
-    //TODO    
+    this.props.navigation.dispatch(DrawerActions.openDrawer())
   }
 
   render() {

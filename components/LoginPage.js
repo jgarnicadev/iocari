@@ -11,6 +11,36 @@ class LoginPage extends React.Component {
     password: '',
   };
 
+  async getAccessToken() {
+    const data =  await AsyncStorage.getItem('accessToken');
+    return data;
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        this.getAccessToken().then( value => {
+          //validate accessToken is valid
+          fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({op:'validateAccessToken', accessToken:value})
+          })
+          .then((response) => response.json())
+          .then((response) => {
+            if (response.result) {
+              this.props.navigation.navigate('home');  
+            }
+          });
+        });
+      }
+    );
+  }
+
   async guardarAccessToken(token) {
     await AsyncStorage.setItem('accessToken', token);
   }

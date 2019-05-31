@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { View } from 'react-native';
+import { createDrawerNavigator, createAppContainer } from "react-navigation";
 
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
@@ -11,6 +11,7 @@ import Partida from './Partida';
 import Biblioteca from './Biblioteca';
 import Juego from './Juego';
 import Perfil from './Perfil';
+import Menu from './Menu';
 
 // class App extends React.Component {
 //   render() {
@@ -31,7 +32,7 @@ import Perfil from './Perfil';
 //   },
 // });
 
-const AppNavigator = createStackNavigator(
+const AppNavigator = createDrawerNavigator(
   {
     login: LoginPage,
     register: RegisterPage,
@@ -45,7 +46,11 @@ const AppNavigator = createStackNavigator(
   },
   {
     initialRouteName: "login",
-    headerMode:'none'
+    contentComponent: props => (
+      <View style={{flex:1,paddingTop:60,paddingHorizontal:10}}>
+        <Menu />
+      </View>
+    )
   }
 );
 
