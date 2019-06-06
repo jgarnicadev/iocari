@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Text, Alert, ScrollView, AsyncStorage } from '
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo';
 import { Button, TextInput } from 'react-native-paper';
+import DatePicker from 'react-native-datepicker';
 
 class RegisterPage2 extends React.Component {
   state = {
@@ -102,10 +103,20 @@ class RegisterPage2 extends React.Component {
               label="Fecha de nacimiento" style={styles.input}
               underlineColor="#4db6ac"
               selectionColor="#4db6ac"
-              onChangeText={(text) => this.setState({fecha_nacimiento: text})}
               value={this.state.fecha_nacimiento}
               theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
+              onTouchStart={this.openCalendar.bind(this)}
+              editable={false}
               />
+        <DatePicker
+          style={{width: 0, height: 0}}
+          showIcon={false}
+          ref="datepicker"
+          date={this.state.fecha_nacimiento}
+          mode="date"
+          format="DD/MM/YYYY"
+          onDateChange={this.fechaSelect.bind(this)}
+        />  
         <TextInput 
               label="Dirección" style={styles.input}
               underlineColor="#4db6ac"
@@ -133,12 +144,19 @@ class RegisterPage2 extends React.Component {
                 />
           </View>
         <View style={[styles.btnWrapper, styles.twoColsWarp]}>
-            <Button style={[styles.button, styles.twoCols]} mode="outlined" color="white" theme={{ dark: true, colors: {primary: 'white'} }} onPress={() => this.props.navigation.goBack()}>Atrás</Button>
+            <Button style={[styles.button, styles.twoCols]} mode="outlined" color="white" theme={{ dark: true, colors: {primary: 'white'} }} onPress={() => this.props.navigation.navigate('register')}>Atrás</Button>
             <Button style={[styles.button, styles.twoCols]} mode="contained" dark="true" color="#f50057" onPress={this.submit.bind(this)}>¡Listo!</Button>
         </View>
         </ScrollView>
       </LinearGradient>
     )
+  }
+
+  openCalendar() {
+    this.refs.datepicker.onPressDate()
+  }
+  fechaSelect(fecha) {
+    this.setState({fecha_nacimiento: fecha});
   }
 }
 

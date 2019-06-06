@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { ImagePicker, Permissions } from 'expo';
 
@@ -23,6 +23,11 @@ class CrearPartidaPage extends React.Component {
     privada: true,
     controlar_solicitudes: false,
   };
+
+  constructor(props) {
+    super(props);
+    this.publicar = this.publicar.bind(this);
+  }
 
   async getAccessToken() {
     const data =  await AsyncStorage.getItem('accessToken');
@@ -72,20 +77,25 @@ class CrearPartidaPage extends React.Component {
     });
   }
 
+  handleBack = () => {
+    this.props.navigation.navigate('home');  
+  }
+
   render() {
     let { image } = this.state;
     return (
       <View style={styles.container}>
-        <Header title="Crear Partida" />
+        <Header title="Crear Partida" onBack={this.handleBack} onCrearPartida={this.publicar} />
         <ScrollView>
           <View  style={styles.fondoNormal}>
-            {image &&
-              <Image source={{ uri: image }} style={styles.image} />}
-            <Button
-              title="Elige una imagen"
-              color="#dcdcdc"
-              onPress={this._pickImage}
-            />
+            {image ?
+              <Image source={{ uri: image }} style={styles.image} />
+              :
+              <Image source={require('../assets/image-partida-default.png')} style={styles.imageDefault} />
+            }
+            <TouchableHighlight onPress={this._pickImage} style={styles.btnSelectImage}>
+              <Text style={styles.btnSelectImageTxt}>Elige una imagen</Text>
+            </TouchableHighlight>
           </View>
           <View  style={styles.fondoNormal}>
             <TextInput style={styles.inputText} placeholder="Nombre para la partida"
@@ -171,7 +181,7 @@ class CrearPartidaPage extends React.Component {
 			/>
           </View>
           <View style={styles.fondoNormal}>
-            <Button title="Publicar" color="#f50057" onPress={this.publicar.bind(this)}/>
+            <Button title="Publicar" color="#f50057" onPress={this.publicar}/>
           </View>
         </ScrollView>
       </View>
@@ -245,7 +255,17 @@ const styles = StyleSheet.create({
     width: 200, 
     height: 200, 
     alignSelf: 'center',
-  }
+  },
+  imageDefault: {
+    alignSelf: 'center',
+  },
+  btnSelectImage: {
+    alignSelf:'center',
+    marginTop:20,
+  },
+  btnSelectImageTxt: {
+    color:'#7c7c7c',
+  },
 });
 
 export default withNavigation(CrearPartidaPage);
