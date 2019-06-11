@@ -1,18 +1,18 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { ImagePicker, Permissions } from 'expo';
+import { TextInput as TextInputPaper, Dialog, Portal, withTheme } from 'react-native-paper';
 
 import Header from './Header';
 
 class CrearPartidaPage extends React.Component {
   state = {
-    op: 'crearPartida',
     accessToken: '',
     image: null,
     imageBase64: '',
     nombre: '',
-    juegos: '',
+    juegos: [],
     fecha: '',
     hora: '',
     duracion: '',
@@ -22,11 +22,15 @@ class CrearPartidaPage extends React.Component {
     descripcion: '',
     privada: true,
     controlar_solicitudes: false,
+    selectorJuegosVisible: false,
+    todosJuegos: [],
   };
 
   constructor(props) {
     super(props);
     this.publicar = this.publicar.bind(this);
+    this.loadJuegos = this.loadJuegos.bind(this);
+    this.seleccionJuego = this.seleccionJuego.bind(this);
   }
 
   async getAccessToken() {
@@ -40,15 +44,53 @@ class CrearPartidaPage extends React.Component {
       payload => {
         this.getAccessToken().then( value => {
           this.setState({'accessToken':value});
+          this.loadJuegos();
         });
       }
     );
   }
 
+  loadJuegos() {
+    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({op:'getJuegos', accessToken:this.state.accessToken})
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      var j = [];
+      responseJson.forEach(juego => {
+        var t = {
+          key: juego.id,
+          nombre: juego.nombre
+        }
+        j.push(t);
+      });
+      this.setState({'todosJuegos':j});
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+  }
+  
+  seleccionJuego(idJuego) {
+    this.ocultarJuegosSelect();
+    var temp = this.state.juegos;
+    this.state.todosJuegos.forEach(el => {
+      if (el.key == idJuego) {
+        temp.push(el);
+      }
+    })
+    this.setState({'juegos':temp});
+  }
+
   publicar() {
     if (
       !this.state.nombre ||
-      !this.state.juegos ||
+      this.state.juegos.length == 0 ||
       !this.state.fecha ||
       !this.state.hora ||
       !this.state.duracion ||
@@ -63,13 +105,31 @@ class CrearPartidaPage extends React.Component {
       return;
     }
     // Alert.alert('En desarrollo');
+    let data = {
+      op: 'crearPartida',
+      accessToken: this.state.accessToken,
+      image: this.state.image,
+      imageBase64: this.state.imageBase64,
+      nombre: this.state.nombre,
+      juegos: this.state.juegos,
+      fecha: this.state.fecha,
+      hora: this.state.hora,
+      duracion: this.state.duracion,
+      tope_apuntarse: this.state.tope_apuntarse,
+      lugar: this.state.lugar,
+      players: this.state.players,
+      descripcion: this.state.descripcion,
+      privada: this.state.privada,
+      controlar_solicitudes: this.state.controlar_solicitudes,
+    };
+    var dataStr = JSON.stringify(data);
     fetch('http://www.afcserviciosweb.com/iocari-api.php',{
       method: 'POST',
       mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(this.state)
+      body: dataStr
     })
     .then(() => {
       Alert.alert('Partida Creada');
@@ -98,19 +158,33 @@ class CrearPartidaPage extends React.Component {
             </TouchableHighlight>
           </View>
           <View  style={styles.fondoNormal}>
-            <TextInput style={styles.inputText} placeholder="Nombre para la partida"
-            onChangeText={(text) => this.setState({nombre: text})}
-            value={this.state.nombre}
+            <TextInputPaper 
+              label="Nombre para la partida" style={styles.input}
+              underlineColor="#7C7C7C"
+              selectionColor="#7C7C7C"
+              onChangeText={(text) => this.setState({nombre: text})}
+              value={this.state.nombre}
+              theme={{ colors: {primary: '#7C7C7C', placeholder: '#7C7C7C'} }}
+              maxLength={100}
             />
+            <Text style={styles.textoSmall}>Máx. 100 caracteres</Text>
           </View>
-          <View style={styles.fondoOscuro}>
+          <View style={[styles.fondoOscuro,{justifyContent:'flex-start'}]}>
+            <Image source={require('../assets/ico-juegos.png')} style={styles.iconOscuro} />
             <Text style={styles.textoOscuro}>Juegos</Text>
           </View>
           <View  style={styles.fondoNormal}>
-            <TextInput style={styles.inputText} placeholder="¿Qué juegos tendrás en la partida?"
-            onChangeText={(text) => this.setState({juegos: text})}
-            value={this.state.juegos}
-            />
+            <TouchableHighlight onPress={this.mostrarJuegosSelect}>
+              <View style={styles.juegosSelect}>
+                <Image source={require('../assets/icon-search.png')} style={styles.juegosSelectIcon} />
+                <Text style={styles.juegosSelectText}>¿Qué juegos tendrás en la partida?</Text>
+              </View>
+            </TouchableHighlight>
+            <View style={{marginTop:10,flexDirection:'row',justifyContent:'flex-start'}}>
+              {this.state.juegos.map((elem) => 
+                <Text key={elem.key} style={styles.juegoSeleccionado}>{elem.nombre}</Text>
+              )}
+            </View>
           </View>
           <View style={styles.fondoOscuro}>
             <Text style={styles.textoOscuro}>Elige el día de la partida</Text>
@@ -184,6 +258,19 @@ class CrearPartidaPage extends React.Component {
             <Button title="Publicar" color="#f50057" onPress={this.publicar}/>
           </View>
         </ScrollView>
+        <Portal>
+          <Dialog visible={this.state.selectorJuegosVisible} onDismiss={this.ocultarJuegosSelect}>
+              <Dialog.Content>
+                <FlatList
+                 style={{height:200}}
+                 data={this.state.todosJuegos}
+                 extraData={this.state.todosJuegos}
+                 renderItem={({item}) => <TouchableHighlight onPress={() => this.seleccionJuego(item.key)}><Text style={styles.listJuegosText}>{item.nombre}</Text></TouchableHighlight>}
+                 ItemSeparatorComponent={() => <View style={styles.listJuegosSeparator}/>}
+                />
+              </Dialog.Content>
+          </Dialog>
+        </Portal>
       </View>
     );
   }
@@ -205,6 +292,13 @@ class CrearPartidaPage extends React.Component {
       Alert.alert('Se necesita permiso para acceder a tu camera roll');
     }
   };
+
+  mostrarJuegosSelect = () => {
+    this.setState({selectorJuegosVisible:true})
+  }
+  ocultarJuegosSelect = () => {
+    this.setState({selectorJuegosVisible:false})
+  }
 }
 
 const styles = StyleSheet.create({
@@ -224,6 +318,10 @@ const styles = StyleSheet.create({
     fontSize:13,
     borderRadius:5,
   },
+  input: {
+    backgroundColor: 'white',
+    padding:10,
+  },
   fondoOscuro: {
     backgroundColor:'#dcdcdc',
     padding:15,
@@ -233,7 +331,12 @@ const styles = StyleSheet.create({
     alignItems:'center',
     justifyContent:'space-between',
   },
+  iconOscuro: {
+    marginRight:10,
+  },
   textoOscuro: {
+    fontSize:15,
+    color:'#7C7C7C',
     marginRight:10,
   },
   inputTextOscuro: {
@@ -266,6 +369,51 @@ const styles = StyleSheet.create({
   btnSelectImageTxt: {
     color:'#7c7c7c',
   },
+  textoSmall: {
+    fontSize:13,
+    color:'#7C7C7C',
+  },
+  juegosSelect: {
+    backgroundColor:'white',
+    flexDirection:'row',
+    alignItems:'center',
+    paddingVertical:17,
+    paddingHorizontal:15,
+    borderRadius:5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    
+    elevation: 4,
+  },
+  juegosSelectIcon: {
+    marginRight:15,
+  },
+  juegosSelectText: {
+    fontSize:15,
+    color:'#7C7C7C',
+  },
+  listJuegosText: {
+    paddingVertical:17,
+    paddingHorizontal:10,
+    fontSize:15,
+    color:'#7C7C7C',
+  },
+  listJuegosSeparator: {
+    height:1,
+    backgroundColor:'#7C7C7C',
+  },
+  juegoSeleccionado: {
+    marginRight:5,
+    backgroundColor:'#084b80',
+    color:'white',
+    padding:5,
+    borderRadius:5,
+  }
 });
 
 export default withNavigation(CrearPartidaPage);
