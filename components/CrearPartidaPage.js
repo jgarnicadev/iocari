@@ -3,6 +3,7 @@ import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, A
 import { withNavigation } from 'react-navigation';
 import { ImagePicker, Permissions } from 'expo';
 import { TextInput as TextInputPaper, Dialog, Portal, withTheme } from 'react-native-paper';
+import DatePicker from 'react-native-datepicker';
 
 import Header from './Header';
 
@@ -24,6 +25,8 @@ class CrearPartidaPage extends React.Component {
     controlar_solicitudes: false,
     selectorJuegosVisible: false,
     todosJuegos: [],
+    proximasFechas: [],
+    fechaCalendar: '-',
   };
 
   constructor(props) {
@@ -31,6 +34,12 @@ class CrearPartidaPage extends React.Component {
     this.publicar = this.publicar.bind(this);
     this.loadJuegos = this.loadJuegos.bind(this);
     this.seleccionJuego = this.seleccionJuego.bind(this);
+    this.loadProximasFechas = this.loadProximasFechas.bind(this)
+    this.openCalendar = this.openCalendar.bind(this)
+    this.fechaSelect = this.fechaSelect.bind(this)
+    this.loadToday = this.loadToday.bind(this)
+    this.selectFechaHoy = this.selectFechaHoy.bind(this);
+    this.selectFechaProx = this.selectFechaProx.bind(this);
   }
 
   async getAccessToken() {
@@ -48,6 +57,51 @@ class CrearPartidaPage extends React.Component {
         });
       }
     );
+    this.loadToday();
+    this.loadProximasFechas();
+  }
+
+  loadToday() {
+    var todayTime = new Date();
+    var month = todayTime.getMonth() + 1;
+    var day = todayTime.getDate();
+    var year = todayTime.getFullYear();
+    var str = '';
+    if (day < 10) str+= '0';
+    str += day + '/';
+    if (month < 10) str+= '0';
+    str += month + '/';
+    str += year;
+    this.setState({'today': str,'fecha': str});
+  }
+
+  loadProximasFechas() {
+    var today = new Date(),
+        fechas = [],
+        diasSemana = ['DOM.', 'LUN.','MAR.','MIE.','JUE.','VIE.','SAB.'],
+        meses = ['Ene.','Feb.','Mar.','Abr.','May.','Jun.','Jul.','Ago.','Sep.','Oct.','Nov.','Dic.'];
+    
+    for (var i=1;i < 7;i++) {
+      today.setDate(today.getDate() + 1); 
+      var month = today.getMonth() + 1;
+      var day = today.getDate();
+      var year = today.getFullYear();
+      var str = '';
+      if (day < 10) str+= '0';
+      str += day + '/';
+      if (month < 10) str+= '0';
+      str += month + '/';
+      str += year;
+      var item = {
+        diaSemana: diasSemana[today.getDay()],
+        fecha: today.getDate() + ' ' + meses[today.getMonth()],
+        fechaFormat: str
+      }
+      fechas.push(item);
+    }
+
+    this.setState({'proximasFechas':fechas});
+
   }
 
   loadJuegos() {
@@ -85,6 +139,19 @@ class CrearPartidaPage extends React.Component {
       }
     })
     this.setState({'juegos':temp});
+  }
+
+  openCalendar() {
+    this.refs.datepicker.onPressDate()
+  }
+  fechaSelect(fechasel) {
+    this.setState({fecha: fechasel, fechaCalendar: fechasel});
+  }
+  selectFechaHoy() {
+    this.setState({fecha: this.state.today, fechaCalendar: '-'});
+  }
+  selectFechaProx(fechasel) {
+    this.setState({fecha: fechasel, fechaCalendar: '-'});
   }
 
   publicar() {
@@ -186,13 +253,41 @@ class CrearPartidaPage extends React.Component {
               )}
             </View>
           </View>
-          <View style={styles.fondoOscuro}>
+          <View style={[styles.fondoOscuro,{justifyContent:'flex-start',marginBottom:0}]}>
+            <Image source={require('../assets/ico-dia-partida.png')} style={styles.iconOscuro} />
             <Text style={styles.textoOscuro}>Elige el día de la partida</Text>
-            <TextInput style={styles.inputTextOscuro} placeholder="dd/mm/aaaa"
-            onChangeText={(text) => this.setState({fecha: text})}
-            value={this.state.fecha}
-            />
           </View>
+          <ScrollView horizontal="true" style={{marginBottom:5}}>
+            <TouchableHighlight onPress={this.openCalendar}>
+              <View style={this.state.fecha==this.state.fechaCalendar?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
+                <Image source={require('../assets/abrir-calendario.png')} />
+                <Text style={[this.state.fecha==this.state.fechaCalendar?{color:'white'}:{color:'#7C7C7C'},{fontSize:12}]}>Abrir Calendario</Text> 
+                <Text style={[this.state.fecha==this.state.fechaCalendar?{color:'white'}:{color:'#7C7C7C'},{fontSize:12}]}>{this.state.fechaCalendar}</Text>
+                <DatePicker
+                  style={{display:'none'}}
+                  showIcon={false}
+                  ref="datepicker"
+                  date={this.state.fecha}
+                  mode="date"
+                  format="DD/MM/YYYY"
+                  onDateChange={this.fechaSelect}
+                />  
+              </View>
+            </TouchableHighlight>
+            <TouchableHighlight onPress={this.selectFechaHoy}>
+              <View style={this.state.fecha==this.state.today?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
+                <Text style={[this.state.fecha==this.state.today?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>¡HOY!</Text>  
+              </View>
+            </TouchableHighlight>
+            {this.state.proximasFechas.map((elem) => 
+              <TouchableHighlight key={elem.fecha} onPress={() => this.selectFechaProx(elem.fechaFormat)}>
+                <View style={this.state.fecha==elem.fechaFormat?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
+                  <Text style={[this.state.fecha==elem.fechaFormat?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>{elem.diaSemana}</Text>  
+                  <Text style={[this.state.fecha==elem.fechaFormat?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>{elem.fecha}</Text>  
+                </View>
+              </TouchableHighlight>
+            )}
+          </ScrollView>
           <View style={styles.fondoOscuro}>
             <Text style={styles.textoOscuro}>¿A qué hora empieza?</Text>
             <TextInput style={styles.inputTextOscuro} placeholder="hh:mm"
@@ -413,6 +508,13 @@ const styles = StyleSheet.create({
     color:'white',
     padding:5,
     borderRadius:5,
+  },
+  botonCarruselDiaPartida: {
+    backgroundColor:'white',
+    height:75,
+    justifyContent:'center',
+    alignItems:'center',
+    paddingHorizontal:30,
   }
 });
 
