@@ -51,20 +51,51 @@ class RegisterPage2 extends React.Component {
       );
       return;
     }
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/signUp',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(this.state)
+      body: JSON.stringify({
+        user: {
+          email: this.state.email,
+          username: this.state.nombre_player,
+          password: this.state.password,
+          name: this.state.nombre,
+          last_name: this.state.apellido,
+          born_date: this.state.fecha_nacimiento,
+          address: this.state.direccion,
+          city: this.state.ciudad,
+          postal_code: this.state.codigo_postal
+        }
+      })
     })
     .then((response) => response.json())
     .then((response) => {
-      console.log(response);
-      if (response.result) {
-        this.guardarAccessToken(response.token);
-        this.props.navigation.navigate('home');  
+      if (response.result == 'OK') {
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: {
+              email: this.state.email,
+              password: this.state.password
+            }
+          })
+        })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.result == 'OK') {
+            let data = {
+              token: response.token,
+              email: response.user.email
+            }
+            this.guardarAccessToken(data);
+            this.props.navigation.navigate('home');  
+          }
+        })
       } else {
         Alert.alert(
           'No se ha podido registrar el usuario, intentela de nuevo'

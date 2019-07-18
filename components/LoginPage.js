@@ -22,17 +22,21 @@ class LoginPage extends React.Component {
       payload => {
         this.getAccessToken().then( value => {
           //validate accessToken is valid
-          fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+          fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
             method: 'POST',
-            mode: 'no-cors',
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({op:'validateAccessToken', accessToken:value})
+            body: JSON.stringify({
+              token: value.token, 
+              user: {
+                email: value.email
+              }
+            })
           })
           .then((response) => response.json())
           .then((response) => {
-            if (response.result) {
+            if (response.result == 'OK') {
               this.props.navigation.navigate('home');  
             }
           });
@@ -46,18 +50,26 @@ class LoginPage extends React.Component {
   }
 
   login() {
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(this.state)
+      body: JSON.stringify({
+        user: {
+          email: this.state.email,
+          password: this.state.password
+        }
+      })
     })
     .then((response) => response.json())
     .then((response) => {
-      if (response.result) {
-        this.guardarAccessToken(response.token);
+      if (response.result == 'OK') {
+        let data = {
+          token: response.token,
+          email: response.user.email
+        }
+        this.guardarAccessToken(data);
         this.props.navigation.navigate('home');  
       } else {
         Alert.alert(

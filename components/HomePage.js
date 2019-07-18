@@ -9,7 +9,10 @@ import CarruselPartidas from './CarruselPartidas';
 
 class HomePage extends React.Component {
   state = {
-    accessToken: '',
+    accessToken: {
+      token: '',
+      email: ''
+    },
     mis_partidas: [],
     partidas_hoy: [],
   };

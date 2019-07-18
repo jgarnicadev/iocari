@@ -41,6 +41,7 @@ class RegisterPage extends React.Component {
       );
       return;
     }
+    /*
     let response = await fetch('http://www.afcserviciosweb.com/iocari-api.php',{
       method: 'POST',
       mode: 'no-cors',
@@ -71,7 +72,8 @@ class RegisterPage extends React.Component {
       );
       return
     }
-    this.props.navigation.navigate('register2', {
+    */
+   this.props.navigation.navigate('register2', {
       nombre_player: this.state.nombre,
       email: this.state.email,
       password: this.state.password
