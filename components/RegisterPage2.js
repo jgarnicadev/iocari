@@ -34,6 +34,7 @@ class RegisterPage2 extends React.Component {
   }
 
   async guardarAccessToken(token) {
+    token = JSON.stringify(token);
     await AsyncStorage.setItem('accessToken', token);
   }
 

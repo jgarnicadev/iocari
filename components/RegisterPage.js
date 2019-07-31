@@ -73,10 +73,35 @@ class RegisterPage extends React.Component {
       return
     }
     */
-   this.props.navigation.navigate('register2', {
-      nombre_player: this.state.nombre,
-      email: this.state.email,
-      password: this.state.password
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/signUp',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: {
+          email: this.state.email,
+          username: this.state.nombre,
+          password: this.state.password
+        }
+      })
+    })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.result == 'OK') {
+        this.props.navigation.navigate('register2', {
+          nombre_player: this.state.nombre,
+          email: this.state.email,
+          password: this.state.password
+        });
+      } else {
+        Alert.alert(
+          'Usuario ya existente, introduzca otros datos'
+        );
+      }
+    })
+    .catch((error) => {
+      console.log(error);
     });
   }
 

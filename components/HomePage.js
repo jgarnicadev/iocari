@@ -28,7 +28,7 @@ class HomePage extends React.Component {
       payload => {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         this.getAccessToken().then( value => {
-          this.setState({'accessToken':value});
+          this.setState({'accessToken':JSON.parse(value)});
           this.cargarMisPartidas();
           this.cargarPartidasHoy();
         });
@@ -47,39 +47,51 @@ class HomePage extends React.Component {
   }  
 
   cargarMisPartidas() {
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyBattles',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({op:'getMisPartidas', accessToken:this.state.accessToken})
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({'mis_partidas':responseJson});
+      body: JSON.stringify({
+        token: this.state.accessToken.token, 
+        user: {
+          email: this.state.accessToken.email
+        }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+    })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.result == 'OK') {
+        this.setState({'mis_partidas':response.battles});
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   cargarPartidasHoy() {
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getBattles',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({op:'getPartidasHoy', accessToken:this.state.accessToken})
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({'partidas_hoy':responseJson});
+      body: JSON.stringify({
+        token: this.state.accessToken.token, 
+        user: {
+          email: this.state.accessToken.email
+        }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+    })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.result == 'OK') {
+        this.setState({'partidas_hoy':response.battles});
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   submitSearch() {

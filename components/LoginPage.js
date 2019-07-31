@@ -21,6 +21,7 @@ class LoginPage extends React.Component {
       'didFocus',
       payload => {
         this.getAccessToken().then( value => {
+          let data = JSON.parse(value);
           //validate accessToken is valid
           fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
             method: 'POST',
@@ -28,9 +29,9 @@ class LoginPage extends React.Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              token: value.token, 
+              token: data.token, 
               user: {
-                email: value.email
+                email: data.email
               }
             })
           })
@@ -46,6 +47,7 @@ class LoginPage extends React.Component {
   }
 
   async guardarAccessToken(token) {
+    token = JSON.stringify(token);
     await AsyncStorage.setItem('accessToken', token);
   }
 

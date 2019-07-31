@@ -15,14 +15,14 @@ class CarruselPartida extends React.Component {
       return (
         <TouchableHighlight onPress={this.showPartida.bind(this)}>
         <Card style={styles.container} elevation={5}>
-            <Card.Cover source={{uri: this.props.partida.image}} />
+            <Card.Cover source={{uri: this.props.partida.image_url}} />
             <Card.Content>
-              <Title>{this.props.partida.nombre}</Title>
-              <Text>Fecha: {this.props.partida.fecha} {this.props.partida.hora}</Text>
+              <Title>{this.props.partida.name}</Title>
+              <Text>Fecha: {this.props.partida.init_date}</Text>
             </Card.Content>
             <View style={styles.txtJugadores}>
               <IconButton icon="wc" color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
-              <Text style={{ color: 'white' }}>{this.props.partida.jugadores_apuntados} / {this.props.partida.players}</Text>
+              <Text style={{ color: 'white' }}>{this.props.partida.current_players} / {this.props.partida.num_players}</Text>
             </View>
         </Card>
         </TouchableHighlight>
