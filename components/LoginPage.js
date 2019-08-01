@@ -21,26 +21,30 @@ class LoginPage extends React.Component {
       'didFocus',
       payload => {
         this.getAccessToken().then( value => {
-          let data = JSON.parse(value);
-          //validate accessToken is valid
-          fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              token: data.token, 
-              user: {
-                email: data.email
-              }
+          try {
+            let data = JSON.parse(value);
+            //validate accessToken is valid
+            fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                token: data.token, 
+                user: {
+                  email: data.email
+                }
+              })
             })
-          })
-          .then((response) => response.json())
-          .then((response) => {
-            if (response.result == 'OK') {
-              this.props.navigation.navigate('home');  
-            }
-          });
+            .then((response) => response.json())
+            .then((response) => {
+              if (response.result == 'OK') {
+                this.props.navigation.navigate('home');  
+              }
+            });
+          } catch(e) {
+            //accesstoken guardado no es json
+          }
         });
       }
     );
