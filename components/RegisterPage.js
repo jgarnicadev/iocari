@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Image, Alert, ScrollView } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
 
 class RegisterPage extends React.Component {

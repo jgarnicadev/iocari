@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Image, Text, Alert, ScrollView, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 

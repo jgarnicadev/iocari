@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Alert, ScrollView, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import { LinearGradient } from 'expo';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
 
 class LoginPage extends React.Component {
@@ -49,6 +49,7 @@ class LoginPage extends React.Component {
       }
     );
   }
+
 
   async guardarAccessToken(token) {
     token = JSON.stringify(token);

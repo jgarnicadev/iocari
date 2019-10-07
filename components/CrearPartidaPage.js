@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import { ImagePicker, Permissions } from 'expo';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
 import { TextInput as TextInputPaper, Dialog, Portal, withTheme } from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 
