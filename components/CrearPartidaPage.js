@@ -53,7 +53,7 @@ class CrearPartidaPage extends React.Component {
       'didFocus',
       payload => {
         this.getAccessToken().then( value => {
-          this.setState({'accessToken':value});
+          this.setState({'accessToken':JSON.parse(value)});
           this.loadJuegos();
         });
       }
@@ -106,25 +106,31 @@ class CrearPartidaPage extends React.Component {
   }
 
   loadJuegos() {
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGames',{
         method: 'POST',
-        mode: 'no-cors',
         headers: {
         'Content-Type': 'application/json'
         },
-        body: JSON.stringify({op:'getJuegos', accessToken:this.state.accessToken})
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+            email: this.state.accessToken.email
+          }
+        })
     })
     .then((response) => response.json())
-    .then((responseJson) => {
-      var j = [];
-      responseJson.forEach(juego => {
-        var t = {
-          key: juego.id,
-          nombre: juego.nombre
-        }
-        j.push(t);
-      });
-      this.setState({'todosJuegos':j});
+    .then((response) => {
+      if (response.result == 'OK') {
+        var j = [];
+        response.games.forEach(juego => {
+          var t = {
+            key: String(juego.id),
+            nombre: juego.name
+          }
+          j.push(t);
+        });
+        this.setState({'todosJuegos':j});
+      }
     })
     .catch((error) => {
         console.log(error);
@@ -172,8 +178,7 @@ class CrearPartidaPage extends React.Component {
       );
       return;
     }
-    // Alert.alert('En desarrollo');
-    let data = {
+    /*let data = {
       op: 'crearPartida',
       accessToken: this.state.accessToken,
       image: this.state.image,
@@ -190,18 +195,56 @@ class CrearPartidaPage extends React.Component {
       privada: this.state.privada,
       controlar_solicitudes: this.state.controlar_solicitudes,
     };
-    var dataStr = JSON.stringify(data);
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    var dataStr = JSON.stringify(data);*/
+    var pattern_fecha = /(\d{2})\/(\d{2})\/(\d{4})/;
+    var str_date = this.state.fecha.replace(pattern_fecha,'$3-$2-$1') + 'T' + this.state.hora;
+    var init_date = new Date(str_date);
+    var end_date = new Date(str_date);
+    init_date = init_date.toJSON().slice(0, 19).replace('T', ' ');
+    var duracion = parseInt(this.state.duracion);
+    console.log(end_date);
+    if (!isNaN(duracion)) {
+      end_date.setHours(end_date.getHours() + duracion);
+    }
+    console.log(end_date);
+    end_date = end_date.toJSON().slice(0, 19).replace('T', ' ');
+    var games = [];
+    this.state.juegos.forEach(juego => {
+      var id_game = parseInt(juego.key);
+      games.push(id_game);
+    });
+    let data2 = {
+      token: this.state.accessToken.token, 
+      user: {
+        email: this.state.accessToken.email, 
+      },
+      battle: {
+        name: this.state.nombre,
+        init_date: init_date,
+        end_date: end_date,
+        description: this.state.descripcion,
+        num_players: this.state.players,
+        address: this.state.lugar,
+        games: games
+      }
+    }
+    console.log(data2);
+    var dataStr2 = JSON.stringify(data2);
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/newBattle',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: dataStr
+      body: dataStr2
     })
-    .then(() => {
-      Alert.alert('Partida Creada');
-      this.props.navigation.navigate('home');  
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.result == 'OK') {
+        Alert.alert('Partida Creada');
+        this.props.navigation.navigate('home');  
+      } else if (response.result == 'NOK') { 
+        Alert.alert('Error en creación partida, datos incorrectos');
+      }
     });
   }
 
@@ -371,8 +414,7 @@ class CrearPartidaPage extends React.Component {
     );
   }
   _pickImage = async () => {
-    const { Permissions } = Expo;
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
     if (status === 'granted') {
       let result = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
