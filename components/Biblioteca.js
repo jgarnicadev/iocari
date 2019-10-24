@@ -9,8 +9,11 @@ import CarruselJuegos from './CarruselJuegos';
 
 class Biblioteca extends React.Component {
     state = {
-        accessToken: '',
-        recomendaciones: [],
+        accessToken: {
+            token: '',
+            email: ''
+          },
+          recomendaciones: [],
     }
 
     async getAccessToken() {
@@ -23,7 +26,7 @@ class Biblioteca extends React.Component {
         'didFocus',
         payload => {
         this.getAccessToken().then( value => {
-            this.setState({'accessToken':value});
+            this.setState({'accessToken':JSON.parse(value)});
             this.cargarRecomendaciones();
         });
         }
@@ -31,17 +34,23 @@ class Biblioteca extends React.Component {
     }
 
     cargarRecomendaciones() {
-        fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGames',{
             method: 'POST',
-            mode: 'no-cors',
             headers: {
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify({op:'getJuegos', accessToken:this.state.accessToken})
+            body: JSON.stringify({
+                token: this.state.accessToken.token, 
+                user: {
+                    email: this.state.accessToken.email
+                }
+            })
         })
         .then((response) => response.json())
-        .then((responseJson) => {
-            this.setState({'recomendaciones':responseJson});
+        .then((response) => {
+            if (response.result == 'OK') {
+                this.setState({'recomendaciones':response.games});
+            }
         })
         .catch((error) => {
             console.log(error);
@@ -53,12 +62,12 @@ class Biblioteca extends React.Component {
         return (
             <View style={styles.container}>
                 <Header title="Biblioteca" hideBack={true} />
-                <View style={styles.buscador}>
+                {/* <View style={styles.buscador}>
                     <View style={styles.buscadorInputWrap}>
                         <Image source={require('../assets/icon-search.png')} style={styles.buscadorIcon} />
                         <TextInput style={styles.buscadorInput} placeholder="Buscar Juegos" onSubmitEditing={this.submitSearch}/>
                     </View>
-                </View>
+                </View> */}
                 <View style={styles.main}>
                   <ScrollView style={styles.mainWrap}>
                     <CarruselJuegos title="Tus Recomendaciones" msgEmpty="" juegos={this.state.recomendaciones} />

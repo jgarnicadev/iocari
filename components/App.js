@@ -13,25 +13,6 @@ import Juego from './Juego';
 import Perfil from './Perfil';
 import Menu from './Menu';
 
-// class App extends React.Component {
-//   render() {
-//     return (
-//       <View style={styles.container}>
-//         <LoginPage></LoginPage>        
-//       </View>
-//     );
-//   }
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems:'stretch',
-//     justifyContent: 'center',
-//   },
-// });
-
 const AppNavigator = createDrawerNavigator(
   {
     login: LoginPage,

@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList } from 'react-native';
+import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList, Platform } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { TextInput as TextInputPaper, Dialog, Portal, withTheme } from 'react-native-paper';
+import { TextInput as TextInputPaper, Dialog, Portal, Searchbar } from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
+import TimePicker from "react-native-24h-timepicker";
 
 import Header from './Header';
 
@@ -27,7 +28,7 @@ class CrearPartidaPage extends React.Component {
     selectorJuegosVisible: false,
     todosJuegos: [],
     proximasFechas: [],
-    fechaCalendar: '-',
+    fechaCalendar: '-'
   };
 
   constructor(props) {
@@ -337,8 +338,16 @@ class CrearPartidaPage extends React.Component {
             <TextInput style={styles.inputTextOscuro} placeholder="hh:mm"
             onChangeText={(text) => this.setState({hora: text})}
             value={this.state.hora}
+            onFocus={this.showTimePickerHora}
             />
           </View>
+          <TimePicker
+            ref={ref => {
+              this.TimePickerHora = ref;
+            }}
+            onCancel={() => this.onCancelTimePickerHora()}
+            onConfirm={(hour, minute) => this.onConfirmTimePickerHora(hour, minute)}
+          />       
           <View style={styles.fondoOscuro}>
             <Text style={styles.textoOscuro}>¿Cuanto durará?</Text>
             <TextInput style={styles.inputTextOscuro} placeholder="1hr"
@@ -351,8 +360,16 @@ class CrearPartidaPage extends React.Component {
             <TextInput style={styles.inputTextOscuro} placeholder="hh:mm"
             onChangeText={(text) => this.setState({tope_apuntarse: text})}
             value={this.state.tope_apuntarse}
+            onFocus={this.showTimePickerTope}
             />
           </View>
+          <TimePicker
+            ref={ref => {
+              this.TimePickerTope = ref;
+            }}
+            onCancel={() => this.onCancelTimePickerTope()}
+            onConfirm={(hour, minute) => this.onConfirmTimePickerTope(hour, minute)}
+          />       
           <View style={styles.fondoOscuro}>
             <TextInput style={styles.inputTextOscuroLargo} placeholder="¿Dónde?"
             onChangeText={(text) => this.setState({lugar: text})}
@@ -406,6 +423,7 @@ class CrearPartidaPage extends React.Component {
                  extraData={this.state.todosJuegos}
                  renderItem={({item}) => <TouchableHighlight onPress={() => this.seleccionJuego(item.key)}><Text style={styles.listJuegosText}>{item.nombre}</Text></TouchableHighlight>}
                  ItemSeparatorComponent={() => <View style={styles.listJuegosSeparator}/>}
+                 ListHeaderComponent={this.headerListJuegos}                             
                 />
               </Dialog.Content>
           </Dialog>
@@ -437,6 +455,54 @@ class CrearPartidaPage extends React.Component {
   ocultarJuegosSelect = () => {
     this.setState({selectorJuegosVisible:false})
   }
+
+  headerListJuegos = () => {
+    return (      
+      <Searchbar        
+        placeholder="Buscar juego..."        
+        onChangeText={text => this.filterJuego(text)}
+      />    
+    ); 
+  }
+
+  filterJuego = text => {   
+    let arrayHolder = this.state.todosJuegos; 
+    const newData = arrayHolder.filter(item => {      
+      const itemData = `${item.nombre.toUpperCase()}`;
+      const textData = text.toUpperCase();
+      return itemData.indexOf(textData) > -1;    
+    });
+    this.setState({ todosJuegos: newData });  
+  };
+
+  showTimePickerHora = () => {
+    this.TimePickerHora.open();
+  }
+
+  onCancelTimePickerHora() {
+    this.TimePickerHora.close();
+  }
+ 
+  onConfirmTimePickerHora(hour, minute) {
+    this.setState({ hora: `${hour}:${minute}` });
+    this.TimePickerHora.close();
+  }
+
+  showTimePickerTope = () => {
+    this.TimePickerTope.open();
+  }
+
+  onCancelTimePickerTope() {
+    this.TimePickerTope.close();
+  }
+ 
+  onConfirmTimePickerTope(hour, minute) {
+    this.setState({ tope_apuntarse: `${hour}:${minute}` });
+    this.TimePickerTope.close();
+  }
+
+
+
 }
 
 const styles = StyleSheet.create({
