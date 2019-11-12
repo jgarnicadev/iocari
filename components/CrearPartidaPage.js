@@ -203,12 +203,13 @@ class CrearPartidaPage extends React.Component {
     var end_date = new Date(str_date);
     init_date = init_date.toJSON().slice(0, 19).replace('T', ' ');
     var duracion = parseInt(this.state.duracion);
-    console.log(end_date);
     if (!isNaN(duracion)) {
       end_date.setHours(end_date.getHours() + duracion);
     }
-    console.log(end_date);
     end_date = end_date.toJSON().slice(0, 19).replace('T', ' ');
+    str_date = this.state.fecha.replace(pattern_fecha,'$3-$2-$1') + 'T' + this.state.tope_apuntarse;
+    var join_date = new Date(str_date);
+    join_date = join_date.toJSON().slice(0, 19).replace('T', ' ');
     var games = [];
     this.state.juegos.forEach(juego => {
       var id_game = parseInt(juego.key);
@@ -223,10 +224,13 @@ class CrearPartidaPage extends React.Component {
         name: this.state.nombre,
         init_date: init_date,
         end_date: end_date,
+        join_date: join_date,
         description: this.state.descripcion,
         num_players: this.state.players,
         address: this.state.lugar,
-        games: games
+        games: games,
+        private: this.state.privada ? 1:0,
+        request_join: this.state.controlar_solicitudes ? 1:0
       }
     }
     console.log(data2);
@@ -484,6 +488,7 @@ class CrearPartidaPage extends React.Component {
   }
  
   onConfirmTimePickerHora(hour, minute) {
+    if (hour.length == 1) hour = '0'+hour;
     this.setState({ hora: `${hour}:${minute}` });
     this.TimePickerHora.close();
   }
@@ -497,6 +502,7 @@ class CrearPartidaPage extends React.Component {
   }
  
   onConfirmTimePickerTope(hour, minute) {
+    if (hour.length == 1) hour = '0'+hour;
     this.setState({ tope_apuntarse: `${hour}:${minute}` });
     this.TimePickerTope.close();
   }

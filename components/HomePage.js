@@ -62,6 +62,7 @@ class HomePage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
+        console.log(response);
         this.setState({'mis_partidas':response.battles});
       }
     })
