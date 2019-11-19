@@ -7,8 +7,11 @@ import CarruselJuegos from './CarruselJuegos';
 
 class Juego extends React.Component {
   state = {
+    accessToken: {
+      token: '',
+      email: ''
+    },
     id_juego: 0,
-    accessToken: '',
     juego: null,
     loading: true,
     loQuiero: false,
@@ -28,7 +31,7 @@ class Juego extends React.Component {
           this.setState({'loading':true});
           const { navigation } = this.props;
           this.getAccessToken().then( value => {
-            this.setState({'accessToken':value});
+            this.setState({'accessToken':JSON.parse(value)});
             this.setState({'id_juego': navigation.getParam('id_juego', '')});
             this.loadJuego();
           });
@@ -37,28 +40,42 @@ class Juego extends React.Component {
   }
 
   loadJuego() {
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGame',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({op:'getJuego', id: this.state.id_juego, accessToken:this.state.accessToken})
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({'juego':responseJson});
-        let loQuiero = (responseJson.loQuiero == 1);
-        let quieroJugar = (responseJson.quieroJugar == 1);
-        let enBiblioteca = (responseJson.enBiblioteca == 1);
-        this.setState({'loQuiero':loQuiero});
-        this.setState({'quieroJugar':quieroJugar});
-        this.setState({'enBiblioteca':enBiblioteca});
-        this.setState({'loading':false});
+      body: JSON.stringify({
+        token: this.state.accessToken.token, 
+        user: {
+            email: this.state.accessToken.email
+        },
+        game: {
+          id: this.state.id_juego, 
+        }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+    })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.result == 'OK') {
+        response.game.creditos = [];
+        response.game.mecanicas = [];
+        response.game.categorias = [];
+        response.game.expansiones = [];
+        response.game.premios = '';
+        this.setState({'juego':response.game});
+        // let loQuiero = (responseJson.loQuiero == 1);
+        // let quieroJugar = (responseJson.quieroJugar == 1);
+        // let enBiblioteca = (responseJson.enBiblioteca == 1);
+        // this.setState({'loQuiero':loQuiero});
+        // this.setState({'quieroJugar':quieroJugar});
+        // this.setState({'enBiblioteca':enBiblioteca});
+        this.setState({'loading':false});
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   render() {
@@ -68,28 +85,19 @@ class Juego extends React.Component {
       );
     }
 
-
-    let creditosObj = JSON.parse(this.state.juego.creditos);
-    let creditos = Object.keys(creditosObj).map(key => 
-      (<View key={key} style={styles.credito}>
-        <Text style={styles.creditoTitle}>{key}</Text>
-        <Text style={styles.creditoValue}>{creditosObj[key]}</Text>
-      </View>)
-    );
-
     return (
       <View style={styles.container}>
-        <Header title={this.state.juego.nombre} />
+        <Header title={this.state.juego.name} />
         <View style={styles.container}>
-          <ImageBackground style={styles.cabecera} source={{ uri: this.state.juego.image }} imageStyle={{ resizeMode: 'cover', opacity: 0.3 }} >
+          <ImageBackground style={styles.cabecera} source={{ uri: this.state.juego.image_url }} imageStyle={{ resizeMode: 'cover', opacity: 0.3 }} >
             <View style={{ flexDirection:'row', justifyContent: 'flex-end', marginTop:30, marginRight:20 }}>
               <View style={{ flexDirection:'row', alignItems:'center', marginRight:20 }}>
                 <Image source={require('../assets/ico-jugadores-blanco.png')} style={{ width: 13, height: 11, margin:0,  marginRight:5 }}/>
-                <Text style={{ fontSize:15, color:'white' }}>{this.state.juego.jugadores_min}-{this.state.juego.jugadores_max}</Text>
+                <Text style={{ fontSize:15, color:'white' }}>{this.state.juego.min_players}-{this.state.juego.max_players}</Text>
               </View>
               <View style={{ flexDirection:'row', alignItems:'center' }}>
                 <Image source={require('../assets/ico-duracion-blanco.png')} style={{ width: 9, height: 11, margin:0,  marginRight:5 }}/>
-                <Text style={{ fontSize:15, color:'white' }}>{this.state.juego.duraccion_min}-{this.state.juego.duraccion_max}</Text>
+                <Text style={{ fontSize:15, color:'white' }}>{this.state.juego.playing_time}</Text>
               </View>
             </View>
           </ImageBackground>
@@ -115,8 +123,15 @@ class Juego extends React.Component {
                   </View>
                 </TouchableHighlight>
               </View>
-              <Text style={styles.descripcion}>{this.state.juego.descripcion}</Text>
-              <View style={styles.creditos}>{creditos}</View>
+              <Text style={styles.descripcion}>{this.state.juego.description}</Text>
+              <View style={styles.creditos}>
+              {this.state.juego.creditos.map((credito, index) => 
+                  (<View key={index} style={styles.credito}>
+                    <Text style={styles.creditoTitle}>{credito.title}</Text>
+                    <Text style={styles.creditoValue}>{credito.value}</Text>
+                  </View>)
+                )}
+              </View>
               <View style={styles.seccion}>
                 <Text style={styles.seccionTitle}>Mecánicas</Text>
                 <View style={styles.seccionDataContainer}>
@@ -142,7 +157,7 @@ class Juego extends React.Component {
               </View>
             </ScrollView>
           </View>
-          <Image style={styles.imageJuego}  source={{ uri: this.state.juego.image }} />
+          <Image style={styles.imageJuego}  source={{ uri: this.state.juego.image_url }} />
           <IconButton
               size={100}
               icon={({ size }) => (
@@ -168,6 +183,7 @@ class Juego extends React.Component {
   }
 
   loQuiero = () => {
+    this.enDesarrollo(); return;
     let value = this.state.loQuiero ? 0 : 1;
     this.setState({'loQuiero':!this.state.loQuiero});
     fetch('http://www.afcserviciosweb.com/iocari-api.php',{
@@ -184,6 +200,7 @@ class Juego extends React.Component {
   }
 
   quieroJugar = () => {
+    this.enDesarrollo(); return;
     let value = this.state.quieroJugar ? 0 : 1;
     this.setState({'quieroJugar':!this.state.quieroJugar});
     fetch('http://www.afcserviciosweb.com/iocari-api.php',{
@@ -200,6 +217,7 @@ class Juego extends React.Component {
   }
 
   enBiblioteca = () => {
+    this.enDesarrollo(); return;
     let value = this.state.enBiblioteca ? 0 : 1;
     this.setState({'enBiblioteca':!this.state.enBiblioteca});
     fetch('http://www.afcserviciosweb.com/iocari-api.php',{

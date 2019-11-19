@@ -15,19 +15,19 @@ class CarruselJuego extends React.Component {
       return (
         <TouchableHighlight onPress={this.showJuego}>
         <Card style={styles.container} elevation={5}>
-            <Card.Cover source={{uri: this.props.juego.image}} />
+            <Card.Cover source={{uri: this.props.juego.image_url}} />
             <Card.Content>
               <View style={{ flexDirection:'row', justifyContent: 'space-between', marginVertical:5 }}>
                 <View style={{ flexDirection:'row', backgroundColor:"#ccc", alignItems:'center', paddingHorizontal:5 }}>
                   <Image source={require('../assets/ico-jugadores-gris.png')} style={{ width: 10, height: 10, margin:0,  marginRight:5 }}/>
-                  <Text style={{ fontSize:13 }}>{this.props.juego.jugadores_min}-{this.props.juego.jugadores_max}</Text>
+                  <Text style={{ fontSize:13 }}>{this.props.juego.min_players}-{this.props.juego.max_players}</Text>
                 </View>
                 <View style={{ flexDirection:'row', backgroundColor:"#ccc", alignItems:'center', paddingHorizontal:5 }}>
                   <Image source={require('../assets/ico-duracion-gris.png')} style={{ width: 10, height: 10, margin:0,  marginRight:5 }}/>
-                  <Text style={{ fontSize:13 }}>{this.props.juego.duraccion_min}-{this.props.juego.duraccion_max}</Text>
+                  <Text style={{ fontSize:13 }}>{this.props.juego.playing_time}</Text>
                 </View>
               </View>
-              <Title>{this.props.juego.nombre}</Title>
+              <Title>{this.props.juego.name}</Title>
             </Card.Content>
         </Card>
         </TouchableHighlight>

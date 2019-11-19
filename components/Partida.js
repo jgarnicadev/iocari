@@ -6,10 +6,13 @@ import Header from './Header';
 
 class Partida extends React.Component {
     state = {
-        id_partida: 0,
-        accessToken: '',
-        partida: null,
-        loading: true,
+      accessToken: {
+        token: '',
+        email: ''
+      },
+      id_partida: 0,
+      partida: null,
+      loading: true,
     }
 
     async getAccessToken() {
@@ -24,7 +27,7 @@ class Partida extends React.Component {
             this.setState({'loading':true});
             const { navigation } = this.props;
             this.getAccessToken().then( value => {
-              this.setState({'accessToken':value});
+              this.setState({'accessToken':JSON.parse(value)});
               this.setState({'id_partida': navigation.getParam('id_partida', '')});
               this.loadPartida();
             });
@@ -33,22 +36,37 @@ class Partida extends React.Component {
     }
 
     loadPartida() {
-      fetch('http://www.afcserviciosweb.com/iocari-api.php',{
-        method: 'POST',
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getBattle',{
         mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({op:'getPartida', id: this.state.id_partida, accessToken:this.state.accessToken})
-      })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          this.setState({'partida':responseJson});
-          this.setState({'loading':false});
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+          }
         })
-        .catch((error) => {
-          console.log(error);
-        });
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.result == 'OK') {
+          let juegos = [];
+          response.games.forEach(juego => {
+            juegos.push(juego.name);
+          });
+          response.battle.juegos = juegos.join(', ');
+          response.battle.jugadores = response.users;
+          this.setState({'partida':response.battle});
+          this.setState({'loading':false});
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
     
     render() {
@@ -59,23 +77,23 @@ class Partida extends React.Component {
         }
         return (
             <View style={styles.container}>
-              <Header title={this.state.partida.nombre} />
-              <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
+              <Header title={this.state.partida.name} />
+              <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-fecha.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
-                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.fecha}</Text>
+                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.init_date}</Text>
                 </View>
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-hora.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
-                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.hora}</Text>
+                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.init_date}</Text>
                 </View>
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-duracion.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
-                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.duracion}</Text>
+                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.end_date}</Text>
                 </View>
                 <View style={styles.txtJugadores}>
                   <IconButton icon="wc" color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
-                  <Text style={styles.txtBlanco}>{this.state.partida.jugadores_apuntados} / {this.state.partida.players}</Text>
+                  <Text style={styles.txtBlanco}>{this.state.partida.current_players} / {this.state.partida.num_players}</Text>
                 </View>
               </ImageBackground>
               <View style={styles.contenedor}>
@@ -86,16 +104,16 @@ class Partida extends React.Component {
                 <Text style={styles.txtGris}>{this.state.partida.juegos}</Text>
               </View>
               <View style={[styles.contenedor, styles.bordeContenedor]}>
-                <Text style={styles.txtGris}>{this.state.partida.descripcion}</Text>
+                <Text style={styles.txtGris}>{this.state.partida.description}</Text>
               </View>
               <View style={styles.contenedor}>
                 <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Personas apuntadas</Text>
                 {this.state.partida.jugadores.map((elem) => 
-                  <Text style={styles.txtGris} key={elem.id}>{elem.player_name}</Text>
+                  <Text style={styles.txtGris} key={elem.username}>{elem.username}</Text>
                 )}
               </View>
               <ImageBackground style={styles.contenedorLugar} source={require('../assets/mapa.jpg')} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
-                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.lugar}</Text>
+                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.address}</Text>
                   <IconButton icon="place" color="white" size={20} style={styles.markerLugar}></IconButton>
               </ImageBackground>
               <View style={styles.contenedor}>

@@ -8,7 +8,10 @@ import Footer from './Footer';
 
 class Perfil extends React.Component {
     state = {
-        accessToken: '',
+        accessToken: {
+            token: '',
+            email: ''
+        },
     }
 
     async getAccessToken() {
@@ -21,7 +24,7 @@ class Perfil extends React.Component {
             'didFocus',
             payload => {
                 this.getAccessToken().then( value => {
-                    this.setState({'accessToken':value});
+                    this.setState({'accessToken':JSON.parse(value)});
                 });
             }
         );

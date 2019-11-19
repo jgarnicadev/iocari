@@ -6,7 +6,6 @@ import { Button, TextInput } from 'react-native-paper';
 
 class LoginPage extends React.Component {
   state = {
-    op:'login',
     email: '',
     password: '',
   };

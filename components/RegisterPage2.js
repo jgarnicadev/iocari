@@ -7,7 +7,6 @@ import DatePicker from 'react-native-datepicker';
 
 class RegisterPage2 extends React.Component {
   state = {
-    op: 'register',
     nombre_player: '',
     email: '',
     password: '',
