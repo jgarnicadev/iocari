@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Alert, ScrollView, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Image, Alert, ScrollView, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
@@ -90,7 +90,7 @@ class LoginPage extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <LinearGradient 
           colors={['#1d253d','#0b7e8a']}
           style={styles.top}>
@@ -121,7 +121,7 @@ class LoginPage extends React.Component {
             <Text style={styles.textoFooter}>¿No tienes una cuenta?</Text>
             <Button style={styles.button} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('register')}>Crea una cuenta ahora</Button>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

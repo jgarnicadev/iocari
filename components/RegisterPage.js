@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Alert, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
@@ -107,8 +107,9 @@ class RegisterPage extends React.Component {
 
   render() {
     return (
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <LinearGradient 
-        colors={['#1d253d','#0b7e8a']} style={styles.container}>
+        colors={['#1d253d','#0b7e8a']}>
         <ScrollView style={styles.containerWrap}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
         <TextInput 
@@ -150,6 +151,7 @@ class RegisterPage extends React.Component {
         </View>
         </ScrollView>
       </LinearGradient>
+      </KeyboardAvoidingView>
     )
   }
 }

@@ -64,12 +64,12 @@ class Juego extends React.Component {
         response.game.expansiones = [];
         response.game.premios = '';
         this.setState({'juego':response.game});
-        // let loQuiero = (responseJson.loQuiero == 1);
-        // let quieroJugar = (responseJson.quieroJugar == 1);
-        // let enBiblioteca = (responseJson.enBiblioteca == 1);
-        // this.setState({'loQuiero':loQuiero});
-        // this.setState({'quieroJugar':quieroJugar});
-        // this.setState({'enBiblioteca':enBiblioteca});
+        let quieroJugar = (response.game.owned == 1);
+        let loQuiero = (response.game.owned == 2);
+        let enBiblioteca = (response.game.owned >= 3);
+        this.setState({'loQuiero':loQuiero});
+        this.setState({'quieroJugar':quieroJugar});
+        this.setState({'enBiblioteca':enBiblioteca});
         this.setState({'loading':false});
       }
     })
@@ -183,16 +183,24 @@ class Juego extends React.Component {
   }
 
   loQuiero = () => {
-    this.enDesarrollo(); return;
+    // this.enDesarrollo(); return;
     let value = this.state.loQuiero ? 0 : 1;
     this.setState({'loQuiero':!this.state.loQuiero});
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/wishGame',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'loQuiero', value: value, accessToken:this.state.accessToken})
+      body: JSON.stringify({
+        token: this.state.accessToken.token, 
+        user: {
+            email: this.state.accessToken.email
+        },
+        game: {
+          id: this.state.id_juego, 
+        }
+      })
+      // body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'loQuiero', value: value, accessToken:this.state.accessToken})
     })
       .catch((error) => {
         console.log(error);
@@ -200,16 +208,24 @@ class Juego extends React.Component {
   }
 
   quieroJugar = () => {
-    this.enDesarrollo(); return;
+    // this.enDesarrollo(); return;
     let value = this.state.quieroJugar ? 0 : 1;
     this.setState({'quieroJugar':!this.state.quieroJugar});
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/wantPlayGame',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'quieroJugar', value: value, accessToken:this.state.accessToken})
+      body: JSON.stringify({
+        token: this.state.accessToken.token, 
+        user: {
+            email: this.state.accessToken.email
+        },
+        game: {
+          id: this.state.id_juego, 
+        }
+      })
+      // body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'quieroJugar', value: value, accessToken:this.state.accessToken})
     })
       .catch((error) => {
         console.log(error);
@@ -217,16 +233,24 @@ class Juego extends React.Component {
   }
 
   enBiblioteca = () => {
-    this.enDesarrollo(); return;
+    // this.enDesarrollo(); return;
     let value = this.state.enBiblioteca ? 0 : 1;
     this.setState({'enBiblioteca':!this.state.enBiblioteca});
-    fetch('http://www.afcserviciosweb.com/iocari-api.php',{
+    fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/gotGame',{
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'enBiblioteca', value: value, accessToken:this.state.accessToken})
+      body: JSON.stringify({
+        token: this.state.accessToken.token, 
+        user: {
+            email: this.state.accessToken.email
+        },
+        game: {
+          id: this.state.id_juego, 
+        }
+      })
+      // body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'enBiblioteca', value: value, accessToken:this.state.accessToken})
     })
       .catch((error) => {
         console.log(error);

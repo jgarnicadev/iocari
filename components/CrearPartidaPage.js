@@ -27,6 +27,7 @@ class CrearPartidaPage extends React.Component {
     controlar_solicitudes: false,
     selectorJuegosVisible: false,
     todosJuegos: [],
+    filterJuegos: [],
     proximasFechas: [],
     fechaCalendar: '-'
   };
@@ -131,6 +132,7 @@ class CrearPartidaPage extends React.Component {
           j.push(t);
         });
         this.setState({'todosJuegos':j});
+        this.setState({'filterJuegos':j});
       }
     })
     .catch((error) => {
@@ -141,7 +143,7 @@ class CrearPartidaPage extends React.Component {
   seleccionJuego(idJuego) {
     this.ocultarJuegosSelect();
     var temp = this.state.juegos;
-    this.state.todosJuegos.forEach(el => {
+    this.state.filterJuegos.forEach(el => {
       if (el.key == idJuego) {
         temp.push(el);
       }
@@ -423,8 +425,8 @@ class CrearPartidaPage extends React.Component {
               <Dialog.Content>
                 <FlatList
                  style={{height:200}}
-                 data={this.state.todosJuegos}
-                 extraData={this.state.todosJuegos}
+                 data={this.state.filterJuegos}
+                 extraData={this.state.filterJuegos}
                  renderItem={({item}) => <TouchableHighlight onPress={() => this.seleccionJuego(item.key)}><Text style={styles.listJuegosText}>{item.nombre}</Text></TouchableHighlight>}
                  ItemSeparatorComponent={() => <View style={styles.listJuegosSeparator}/>}
                  ListHeaderComponent={this.headerListJuegos}                             
@@ -476,7 +478,7 @@ class CrearPartidaPage extends React.Component {
       const textData = text.toUpperCase();
       return itemData.indexOf(textData) > -1;    
     });
-    this.setState({ todosJuegos: newData });  
+    this.setState({ filterJuegos: newData });  
   };
 
   showTimePickerHora = () => {

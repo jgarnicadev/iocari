@@ -37,7 +37,7 @@ class Partida extends React.Component {
 
     loadPartida() {
       fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getBattle',{
-        mode: 'no-cors',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
