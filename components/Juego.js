@@ -184,8 +184,12 @@ class Juego extends React.Component {
 
   loQuiero = () => {
     // this.enDesarrollo(); return;
-    let value = this.state.loQuiero ? 0 : 1;
-    this.setState({'loQuiero':!this.state.loQuiero});
+    if (this.state.loQuiero) return;
+    this.setState({
+      'loQuiero':1,
+      'quieroJugar':0,
+      'enBiblioteca':0
+    });
     fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/wishGame',{
       method: 'POST',
       headers: {
@@ -200,17 +204,20 @@ class Juego extends React.Component {
           id: this.state.id_juego, 
         }
       })
-      // body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'loQuiero', value: value, accessToken:this.state.accessToken})
     })
-      .catch((error) => {
-        console.log(error);
-      });
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   quieroJugar = () => {
     // this.enDesarrollo(); return;
-    let value = this.state.quieroJugar ? 0 : 1;
-    this.setState({'quieroJugar':!this.state.quieroJugar});
+    if (this.state.quieroJugar) return;
+    this.setState({
+      'loQuiero':0,
+      'quieroJugar':1,
+      'enBiblioteca':0
+    });
     fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/wantPlayGame',{
       method: 'POST',
       headers: {
@@ -225,17 +232,20 @@ class Juego extends React.Component {
           id: this.state.id_juego, 
         }
       })
-      // body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'quieroJugar', value: value, accessToken:this.state.accessToken})
     })
-      .catch((error) => {
-        console.log(error);
-      });
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   enBiblioteca = () => {
     // this.enDesarrollo(); return;
-    let value = this.state.enBiblioteca ? 0 : 1;
-    this.setState({'enBiblioteca':!this.state.enBiblioteca});
+    if (this.state.enBiblioteca) return;
+    this.setState({
+      'loQuiero':0,
+      'quieroJugar':0,
+      'enBiblioteca':1
+    });
     fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/gotGame',{
       method: 'POST',
       headers: {
@@ -250,11 +260,10 @@ class Juego extends React.Component {
           id: this.state.id_juego, 
         }
       })
-      // body: JSON.stringify({op:'setJuegoBiblioteca', id: this.state.id_juego, state: 'enBiblioteca', value: value, accessToken:this.state.accessToken})
     })
-      .catch((error) => {
-        console.log(error);
-      });
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
 }
