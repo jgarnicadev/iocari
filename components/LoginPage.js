@@ -90,7 +90,8 @@ class LoginPage extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container2} behavior="padding" enabled>
         <LinearGradient 
           colors={['#1d253d','#0b7e8a']}
           style={styles.top}>
@@ -117,26 +118,31 @@ class LoginPage extends React.Component {
             </View>
             </ScrollView>
         </LinearGradient>
+        </KeyboardAvoidingView>
         <View style={styles.footer}>
             <Text style={styles.textoFooter}>¿No tienes una cuenta?</Text>
             <Button style={styles.button} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('register')}>Crea una cuenta ahora</Button>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'stretch',
     justifyContent:'flex-start',
+    flex:1,
   },
-  top: {
-    backgroundColor: '#1e253d',
+  container2: {
     alignItems: 'stretch',
     justifyContent:'flex-start',
     flex:7,
+  },
+  top: {
+    alignItems: 'stretch',
+    justifyContent:'flex-start',
+    flex:1,
   },
   topWrap: {
     paddingHorizontal:40,
