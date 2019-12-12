@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Image, Text, Alert, ScrollView, AsyncStorage } from 'react-native';
+import { StyleSheet, View, Image, Alert, ScrollView, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, Text } from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 
 class RegisterPage2 extends React.Component {
@@ -109,77 +109,72 @@ class RegisterPage2 extends React.Component {
 
   render() {
     return (
-      <LinearGradient 
-        colors={['#1d253d','#0b7e8a']} style={styles.container}>
-        <ScrollView style={styles.containerWrap}>
-        <Image source={require('../assets/logo.png')} style={styles.logo} />
-        <Text style={styles.texto}>Sólo tu país y ciudad serán visibles en tu perfil.</Text>
-        <TextInput 
-              label="Nombre" style={styles.input}
-              underlineColor="#4db6ac"
-              selectionColor="#4db6ac"
-              onChangeText={(text) => this.setState({nombre: text})}
-              value={this.state.nombre}
-              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
-              />
-        <TextInput 
-              label="Apellido" style={styles.input}
-              underlineColor="#4db6ac"
-              selectionColor="#4db6ac"
-              onChangeText={(text) => this.setState({apellido: text})}
-              value={this.state.apellido}
-              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
-              />
-        <TextInput 
-              label="Fecha de nacimiento" style={styles.input}
-              underlineColor="#4db6ac"
-              selectionColor="#4db6ac"
-              value={this.state.fecha_nacimiento}
-              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
-              onTouchStart={this.openCalendar.bind(this)}
-              editable={false}
-              />
-        <DatePicker
-          style={{width: 0, height: 0}}
-          showIcon={false}
-          ref="datepicker"
-          date={this.state.fecha_nacimiento}
-          mode="date"
-          format="DD/MM/YYYY"
-          onDateChange={this.fechaSelect.bind(this)}
-        />  
-        <TextInput 
-              label="Dirección" style={styles.input}
-              underlineColor="#4db6ac"
-              selectionColor="#4db6ac"
-              onChangeText={(text) => this.setState({direccion: text})}
-              value={this.state.direccion}
-              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
-              />
-        <View style={styles.twoColsWarp}>
-          <TextInput 
-                label="Ciudad" style={[styles.input, styles.twoCols]}
-                underlineColor="#4db6ac"
-                selectionColor="#4db6ac"
-                onChangeText={(text) => this.setState({ciudad: text})}
-                value={this.state.ciudad}
-                theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
-                />
-          <TextInput 
-                label="Código Postal" style={[styles.input, styles.twoCols]}
-                underlineColor="#4db6ac"
-                selectionColor="#4db6ac"
-                onChangeText={(text) => this.setState({codigo_postal: text})}
-                value={this.state.codigo_postal}
-                theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
-                />
-          </View>
-        <View style={[styles.btnWrapper, styles.twoColsWarp]}>
-            <Button style={[styles.button, styles.twoCols]} mode="outlined" color="white" theme={{ dark: true, colors: {primary: 'white'} }} onPress={() => this.props.navigation.navigate('register')}>Atrás</Button>
-            <Button style={[styles.button, styles.twoCols]} mode="contained" dark="true" color="#f50057" onPress={this.submit.bind(this)}>¡Listo!</Button>
-        </View>
-        </ScrollView>
-      </LinearGradient>
+      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+        <LinearGradient  style={styles.container} colors={['#1d253d','#0b7e8a']}>
+          <ScrollView style={styles.hPad}>
+            <Image source={require('../assets/logo.png')} style={styles.logo} />
+            <Text style={styles.texto}>Sólo tu país y ciudad serán visibles en tu perfil.</Text>
+            <TextInput 
+                  label="Nombre" style={styles.input}
+                  underlineColor="#4db6ac"
+                  dense={true}
+                  onChangeText={(text) => this.setState({nombre: text})}
+                  value={this.state.nombre}
+                  />
+            <TextInput 
+                  label="Apellido" style={styles.input}
+                  underlineColor="#4db6ac"
+                  dense={true}
+                  onChangeText={(text) => this.setState({apellido: text})}
+                  value={this.state.apellido}
+                  />
+            <TextInput 
+                  label="Fecha de nacimiento" style={styles.input}
+                  underlineColor="#4db6ac"
+                  dense={true}
+                  value={this.state.fecha_nacimiento}
+                  onTouchStart={this.openCalendar.bind(this)}
+                  editable={false}
+                  />
+            <DatePicker
+              style={{width: 0, height: 0}}
+              showIcon={false}
+              ref="datepicker"
+              date={this.state.fecha_nacimiento}
+              mode="date"
+              format="DD/MM/YYYY"
+              onDateChange={this.fechaSelect.bind(this)}
+            />  
+            <TextInput 
+                  label="Dirección" style={styles.input}
+                  underlineColor="#4db6ac"
+                  dense={true}
+                  onChangeText={(text) => this.setState({direccion: text})}
+                  value={this.state.direccion}
+                  />
+            <View style={styles.twoColsWarp}>
+              <TextInput 
+                    label="Ciudad" style={[styles.input, styles.twoCols]}
+                    underlineColor="#4db6ac"
+                    dense={true}
+                    onChangeText={(text) => this.setState({ciudad: text})}
+                    value={this.state.ciudad}
+                    />
+              <TextInput 
+                    label="Código Postal" style={[styles.input, styles.twoCols]}
+                    underlineColor="#4db6ac"
+                    dense={true}
+                    onChangeText={(text) => this.setState({codigo_postal: text})}
+                    value={this.state.codigo_postal}
+                    />
+              </View>
+            <View style={[styles.btnWrapper, styles.twoColsWarp]}>
+                <Button style={[styles.button, styles.twoCols]} mode="outlined" color="white" theme={{ dark: true, colors: {primary: 'white'} }} onPress={() => this.props.navigation.navigate('register')}>Atrás</Button>
+                <Button style={[styles.button, styles.twoCols]} mode="contained" dark="true" color="#f50057" onPress={this.submit.bind(this)}>¡Listo!</Button>
+            </View>
+          </ScrollView>
+        </LinearGradient>
+      </KeyboardAvoidingView>
     )
   }
 
@@ -194,22 +189,17 @@ class RegisterPage2 extends React.Component {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'stretch',
-      justifyContent:'flex-start',
-      backgroundColor: '#1e253d',
     },
-    containerWrap: {
-      paddingHorizontal:40,
+    hPad: {
+      paddingHorizontal:20,
     },
     logo: {
-        alignSelf:'center',
-        marginTop:'15%',
-        marginBottom:50,
+      alignSelf:'center',
+      marginTop:60,
+      marginBottom:50,
     },
     input: {
-      backgroundColor: 'white',
       marginVertical: 10,
-      padding:10,
     },
     btnWrapper: {
         marginTop:20,

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, Alert, ScrollView, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, Subheading } from 'react-native-paper';
 
 class LoginPage extends React.Component {
   state = {
@@ -91,37 +91,31 @@ class LoginPage extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-      <KeyboardAvoidingView style={styles.container2} behavior="padding" enabled>
-        <LinearGradient 
-          colors={['#1d253d','#0b7e8a']}
-          style={styles.top}>
-          <ScrollView style={styles.topWrap}>
-            <Image source={require('../assets/logo.png')} style={styles.logo} />
-            <TextInput 
-              label="E-mail" style={styles.input}
-              underlineColor="#4db6ac"
-              selectionColor="#4db6ac"
-              onChangeText={(text) => this.setState({email: text})}
-              value={this.state.email}
-              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
+        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+          <LinearGradient style={styles.container} colors={['#1d253d','#0b7e8a']}>
+            <ScrollView style={styles.hPad}>
+              <Image source={require('../assets/logo.png')} style={styles.logo} />
+              <TextInput 
+                label="E-mail" style={styles.input}
+                underlineColor="#4db6ac"
+                dense={true}
+                onChangeText={(text) => this.setState({email: text})}
+                value={this.state.email}
+                />
+              <TextInput  label="Contraseña" style={styles.input}
+                underlineColor="#4db6ac"
+                dense={true}
+                secureTextEntry={true}
+                onChangeText={(text) => this.setState({password: text})}
+                value={this.state.password}
               />
-            <TextInput  label="Contraseña" style={styles.input}
-              underlineColor="#4db6ac"
-              selectionColor="#4db6ac"
-              onChangeText={(text) => this.setState({password: text})}
-              value={this.state.password}
-              theme={{ colors: {primary: '#4db6ac', placeholder: '#4db6ac'} }}
-              secureTextEntry={true}
-            />
-            <View style={styles.btnAcceder}>
-              <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.login.bind(this)}>Acceder</Button>
-            </View>
+              <Button style={[styles.button, styles.btnAcceder]} mode="contained" dark="true" color="#f50057" onPress={this.login.bind(this)}>Acceder</Button>
             </ScrollView>
-        </LinearGradient>
+          </LinearGradient>
         </KeyboardAvoidingView>
-        <View style={styles.footer}>
-            <Text style={styles.textoFooter}>¿No tienes una cuenta?</Text>
-            <Button style={styles.button} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('register')}>Crea una cuenta ahora</Button>
+        <View style={[styles.footer, styles.hPad]}>
+            <Subheading style={styles.textoFooter}>¿No tienes una cuenta?</Subheading>
+            <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('register')}>Crea una cuenta ahora</Button>
         </View>
       </View>
     );
@@ -130,53 +124,40 @@ class LoginPage extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'stretch',
-    justifyContent:'flex-start',
-    flex:1,
+    flex:1
   },
-  container2: {
-    alignItems: 'stretch',
-    justifyContent:'flex-start',
-    flex:7,
-  },
-  top: {
-    alignItems: 'stretch',
-    justifyContent:'flex-start',
-    flex:1,
-  },
-  topWrap: {
-    paddingHorizontal:40,
+  hPad: {
+    paddingHorizontal:20,
   },
   logo: {
     alignSelf:'center',
-    marginTop:'15%',
+    marginTop:60,
     marginBottom:50,
   },
   input: {
-    backgroundColor: 'white',
     marginVertical: 10,
-    padding:10,
   },
   btnAcceder: {
     marginTop:20,
     marginBottom:10,
   },
   footer: {
-    flex:1,
     backgroundColor: '#f3f3f3',
-    alignItems: 'stretch',
-    justifyContent:'center',
-    paddingHorizontal:40,
-    paddingVertical:20,
+    paddingVertical:10,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0
   },
   textoFooter: {
     alignSelf:'center',
-    marginBottom:10,
-    fontSize:20,
   },
   button: {
     paddingVertical:10,
   },
+  btnRegistro: {
+    marginVertical:10,
+  }
 });
 
 export default withNavigation(LoginPage);
