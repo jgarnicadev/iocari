@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, Image } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { DrawerActions } from 'react-navigation-drawer';
 
@@ -23,14 +23,21 @@ class Header extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <Appbar.Header style={styles.container}>
         {this.props.hideBack || 
-          <IconButton icon="chevron-left" color="white" size={30} style={styles.icoBtn} onPress={this.back}></IconButton> 
+          <Appbar.BackAction onPress={this.back} />
+          //<IconButton icon="chevron-left" color="white" size={30} style={styles.icoBtn} onPress={this.back}></IconButton> 
         }
         {!this.props.hideBack || 
-          <IconButton icon="menu" color="white" size={30} style={styles.icoBtn} onPress={this.menu}></IconButton> 
+          <Appbar.Action icon="menu" onPress={this.menu} />
+          //<IconButton icon="menu" color="white" size={30} style={styles.icoBtn} onPress={this.menu}></IconButton> 
         }
-        <Text style={styles.texto}>{this.props.title}</Text>
+        <Appbar.Content
+          title={this.props.title}
+        />
+        {
+          //<Text style={styles.texto}>{this.props.title}</Text>
+        }
         {!this.props.onCrearPartida || 
           <TouchableHighlight onPress={this.props.onCrearPartida} style={styles.btnPublicar}>
             <View style={styles.btnPublicarWrp}>
@@ -39,7 +46,7 @@ class Header extends React.Component {
             </View>
           </TouchableHighlight>
         }
-      </View>
+      </Appbar.Header>
     );
   }
 }
@@ -47,11 +54,6 @@ class Header extends React.Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor:'#0277bd',
-    paddingHorizontal:20,
-    paddingTop:40,
-    paddingBottom:15,
-    flexDirection:'row',
-    alignItems:'center',
   },
   texto: {
     color:'white',

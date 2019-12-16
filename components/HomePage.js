@@ -62,7 +62,7 @@ class HomePage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
-        console.log(response);
+        //console.log(response);
         this.setState({'mis_partidas':response.battles});
       }
     })
@@ -106,12 +106,14 @@ class HomePage extends React.Component {
     return (
       <View style={styles.container}>
         <Header title="Home" hideBack={true} />
+        {/*
         <View style={styles.buscador}>
           <View style={styles.buscadorInputWrap}>
             <Image source={require('../assets/icon-search.png')} style={styles.buscadorIcon} />
             <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?" onSubmitEditing={this.submitSearch}/>
           </View>
         </View>
+        */}
         <View style={styles.main}>
           <ScrollView style={styles.mainWrap}>
             <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />
@@ -127,8 +129,6 @@ class HomePage extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'stretch',
-    justifyContent:'flex-start',
   },
   buscador: {
     backgroundColor:'#03a9f4',

@@ -15,9 +15,9 @@ class CarruselPartida extends React.Component {
       return (
         <TouchableHighlight onPress={this.showPartida.bind(this)}>
         <Card style={styles.container} elevation={5}>
-            <Card.Cover source={{uri: this.props.partida.image_url}} />
+            <Card.Cover style={styles.cover} source={{uri: this.props.partida.image_url?this.props.partida.image_url:'https://images-na.ssl-images-amazon.com/images/I/A1uDIngqMDL._SX466_.jpg'}} />
             <Card.Content>
-              <Title>{this.props.partida.name}</Title>
+              <Text>{this.props.partida.name}</Text>
               <Text>Fecha: {this.props.partida.init_date}</Text>
             </Card.Content>
             <View style={styles.txtJugadores}>
@@ -32,17 +32,20 @@ class CarruselPartida extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-      marginRight:15,
+      marginRight:5,
       marginBottom:20,
       marginLeft:10,
       marginTop:5,
-      width:250,
+      width:190,
       paddingBottom:5,
+    },
+    cover: {
+      height:150,
     },
     txtJugadores: {
       position:"absolute",
       left:10,
-      top:155,
+      top:115,
       backgroundColor:"rgba(0, 0, 0, 0.5)",
       flexDirection:'row',
       alignItems:'center',

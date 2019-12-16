@@ -1,24 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, TouchableHighlight, Alert } from 'react-native';
+import { View, StyleSheet, Image, TouchableHighlight, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import { IconButton } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 
 class Footer extends React.Component {
   render() {
     return (
         <View style={styles.container}>
-          <View style={styles.btnCrearPartida}>
-            <IconButton
-              size={150}
-              icon={({ size }) => (
-                <Image
-                  source={require('../assets/btnCrearPartida.png')}
-                  style={{ width: size, height: size }}
-                />
-              )}
-              onPress={this.crearPartida}
-            />
-          </View>
           <View style={styles.footer}>
             <TouchableHighlight onPress={this.home}>
               <View style={styles.boton}>
@@ -32,6 +20,7 @@ class Footer extends React.Component {
                 <Text style={this.props.activo!='biblioteca'?{color:'#bbb'}:{color:'black'}}>Biblioteca</Text>
               </View>
             </TouchableHighlight>
+            <View style={styles.boton}></View>
             <TouchableHighlight onPress={this.perfil}>
               <View style={styles.boton}>
                 <IconButton icon="person" color={this.props.activo!='perfil'?'#bbb':'black'}></IconButton>
@@ -45,6 +34,17 @@ class Footer extends React.Component {
               </View>
             </TouchableHighlight>
           </View>
+          <IconButton
+            style={styles.btnCrearPartida}
+            size={100}
+            icon={({ size }) => (
+              <Image
+                source={require('../assets/btnCrearPartida.png')}
+                style={{ width: size, height: size }}
+              />
+            )}
+            onPress={this.crearPartida}
+          />
         </View>
     );
   }
@@ -75,22 +75,24 @@ class Footer extends React.Component {
 }
 const styles = StyleSheet.create({
     container: {
-
+      backgroundColor:'#f3f1f1',
+    },
+    btnCrearPartida: {
+      position:"absolute",
+      top:-10,
+      alignSelf:'center',
+      paddingLeft:15,
     },
     footer: {
       flexDirection:'row',
       justifyContent: 'space-between',
-      paddingHorizontal:10,
-    },
-    btnCrearPartida: {
-      paddingHorizontal:15,
-      alignItems:"center",
+      backgroundColor: 'white',
     },
     boton: {
       paddingHorizontal:15,
-      paddingBottom:20,
+      paddingBottom:10,
       alignItems:'center',
-      justifyContent:'center',
+      justifyContent:'flex-start',
     }
 });
 
