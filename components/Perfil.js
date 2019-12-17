@@ -60,7 +60,7 @@ class Perfil extends React.Component {
                     <Text style={styles.nombreUsuario}>Sideshow Bob</Text>
                     <Text style={styles.sloganUsuario}>App Pioneer</Text>
                     <View style={styles.ubicacion}>
-                        <IconButton icon="place" color="black" size={20} style={styles.ubicacionIcon}></IconButton>
+                        <IconButton icon="map-marker" color="black" size={20} style={styles.ubicacionIcon}></IconButton>
                         <Text style={styles.ubicacionText}>Madrid, España</Text>
                     </View>
                     <View style={styles.estadisticas}>

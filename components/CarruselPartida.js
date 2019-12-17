@@ -21,7 +21,7 @@ class CarruselPartida extends React.Component {
               <Text>Fecha: {this.props.partida.init_date}</Text>
             </Card.Content>
             <View style={styles.txtJugadores}>
-              <IconButton icon="wc" color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
+              <IconButton icon="human-male-female" color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
               <Text style={{ color: 'white' }}>{this.props.partida.current_players} / {this.props.partida.num_players}</Text>
             </View>
         </Card>

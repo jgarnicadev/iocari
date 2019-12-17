@@ -92,7 +92,7 @@ class Partida extends React.Component {
                   <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.end_date}</Text>
                 </View>
                 <View style={styles.txtJugadores}>
-                  <IconButton icon="wc" color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
+                  <IconButton icon="human-male-male" color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
                   <Text style={styles.txtBlanco}>{this.state.partida.current_players} / {this.state.partida.num_players}</Text>
                 </View>
               </ImageBackground>
@@ -114,7 +114,7 @@ class Partida extends React.Component {
               </View>
               <ImageBackground style={styles.contenedorLugar} source={require('../assets/mapa.jpg')} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                   <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.address}</Text>
-                  <IconButton icon="place" color="white" size={20} style={styles.markerLugar}></IconButton>
+                  <IconButton icon="map-marker" color="white" size={20} style={styles.markerLugar}></IconButton>
               </ImageBackground>
               <View style={styles.contenedor}>
                   <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Comentarios</Text>

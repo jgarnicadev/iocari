@@ -23,20 +23,20 @@ class Footer extends React.Component {
             <View style={styles.boton}></View>
             <TouchableHighlight onPress={this.perfil}>
               <View style={styles.boton}>
-                <IconButton icon="person" color={this.props.activo!='perfil'?'#bbb':'black'}></IconButton>
+                <IconButton icon="account" color={this.props.activo!='perfil'?'#bbb':'black'}></IconButton>
                 <Text style={this.props.activo!='perfil'?{color:'#bbb'}:{color:'black'}}>Perfil</Text>
               </View>
             </TouchableHighlight>
             <TouchableHighlight onPress={this.alertas}>
               <View style={styles.boton}>
-                <IconButton icon="notifications" color={this.props.activo!='alertas'?'#bbb':'black'}></IconButton>
+                <IconButton icon="bell" color={this.props.activo!='alertas'?'#bbb':'black'}></IconButton>
                 <Text style={this.props.activo!='alertas'?{color:'#bbb'}:{color:'black'}}>Alertas</Text>
               </View>
             </TouchableHighlight>
           </View>
           <IconButton
             style={styles.btnCrearPartida}
-            size={100}
+            size={80}
             icon={({ size }) => (
               <Image
                 source={require('../assets/btnCrearPartida.png')}
@@ -78,11 +78,13 @@ const styles = StyleSheet.create({
       backgroundColor:'#f3f1f1',
     },
     btnCrearPartida: {
-      position:"absolute",
-      top:-10,
       alignSelf:'center',
       paddingLeft:15,
-    },
+      width:60,
+      height:60,
+      position:'absolute',
+      top:-20,
+      },
     footer: {
       flexDirection:'row',
       justifyContent: 'space-between',
