@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, AsyncStorage, TouchableHighlight, Alert, Image, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, AsyncStorage, Alert, Image } from 'react-native';
+import { Text, TouchableRipple, Title } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { IconButton } from 'react-native-paper';
 
@@ -36,28 +37,28 @@ class Perfil extends React.Component {
                 <Header title="Perfil" hideBack={true} />
                 <ScrollView style={styles.main}>
                     <View style={styles.botoneraSuperior}>
-                        <TouchableHighlight onPress={this.enDesarrollo} style={{flex:1}}>
+                        <TouchableRipple onPress={this.enDesarrollo} style={{flex:1}}>
                             <View style={styles.botonSuperior}>
                             <Image source={require('../assets/misPartidas.png')} style={styles.botonSuperiorIcon} />
                             <Text style={styles.botonSuperiorText}>Mis Partidas</Text>
                             </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight onPress={this.enDesarrollo} style={{flex:1}}>
+                        </TouchableRipple>
+                        <TouchableRipple onPress={this.enDesarrollo} style={{flex:1}}>
                             <View style={styles.botonSuperior}>
                             <Image source={require('../assets/miEstanteria.png')} style={styles.botonSuperiorIcon} />
                             <Text style={styles.botonSuperiorText}>Mi estantería</Text>
                             </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight onPress={this.enDesarrollo} style={{flex:1}}>
+                        </TouchableRipple>
+                        <TouchableRipple onPress={this.enDesarrollo} style={{flex:1}}>
                             <View style={styles.botonSuperior}>
                             <Image source={require('../assets/amigos.png')} style={styles.botonSuperiorIcon} />
                             <Text style={styles.botonSuperiorText}>Amigos</Text>
                             </View>
-                        </TouchableHighlight>
+                        </TouchableRipple>
                     </View>
-                    <Image source={require('../assets/bannerPerfil.jpg')} style={styles.banner} />
-                    <Image source={require('../assets/avatarPerfil.jpg')} style={styles.avatar} />
-                    <Text style={styles.nombreUsuario}>Sideshow Bob</Text>
+                    <Image source={require('../assets/bannerPerfil.jpg')} style={styles.banner} resizeMode="cover"/>
+                    <Image source={require('../assets/avatarPerfil.png')} style={styles.avatar} resizeMode="cover" />
+                    <Title style={styles.nombreUsuario}>Sideshow Bob</Title>
                     <Text style={styles.sloganUsuario}>App Pioneer</Text>
                     <View style={styles.ubicacion}>
                         <IconButton icon="map-marker" color="black" size={20} style={styles.ubicacionIcon}></IconButton>
@@ -108,8 +109,6 @@ class Perfil extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'stretch',
-        justifyContent:'flex-start',
     },
     main: {
         flex:1,
@@ -121,27 +120,30 @@ const styles = StyleSheet.create({
     },
     botonSuperior: {
         alignItems:'center',
-        paddingVertical:30,
+        paddingVertical:20,
     },
     botonSuperiorText: {
-        marginTop:8,
         color:'white',
     },
+    bannerWrapper: {
+        height:170,
+    },
     banner: {
-        width:'100%',
+        height:170,
     },
     avatar: {
         alignSelf:'center',
         width:200,
         height:200,
         marginTop:-100,
-        marginBottom:10,
+        marginBottom:-30,
+        padding:0,
     },
     nombreUsuario: {
-        fontSize:17,
-        fontWeight:'bold',
         alignSelf:'center',
         color:'#0277bd',
+        margin:0,
+        padding:0,
     },
     sloganUsuario: {
         alignSelf:'center',
@@ -168,27 +170,33 @@ const styles = StyleSheet.create({
         borderColor:'#ccc',
         alignItems:'center',
         flex:1,
-        paddingVertical:5,
+        paddingVertical:2,
     },
     estadisticasValue: {
         color:'#0277bd',
-        fontSize:19,
+        fontSize:18,
+        lineHeight:20,
+    },
+    estadisticasLabel: {
+        fontSize:12,
+        lineHeight:12
     },
     dobleColumna: {
         padding:20,
         flexDirection:'row',
     },
     columna80: {
-        width:'80%',
+        width:'75%',
     },
     columna20: {
-        width:'20%',
+        width:'25%',
     },
     tituloApartado: {
-        fontSize:19,
+        fontSize:15,
         marginBottom:5,
     },
     textoApartado: {
+        fontSize:13,
         lineHeight:18,
         textAlign:'justify',
     },
