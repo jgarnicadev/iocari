@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList, Platform } from 'react-native';
+import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList, Platform, KeyboardAvoidingView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { TextInput as TextInputPaper, Dialog, Portal, Searchbar } from 'react-native-paper';
+import { TextInput as TextInputPaper, Dialog, Portal, Searchbar, IconButton } from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 import TimePicker from "react-native-24h-timepicker";
 
@@ -262,6 +262,7 @@ class CrearPartidaPage extends React.Component {
   render() {
     let { image } = this.state;
     return (
+    <KeyboardAvoidingView style={{flex:1}} behavior="padding" enabled>
       <View style={styles.container}>
         <Header title="Crear Partida" onBack={this.handleBack} onCrearPartida={this.publicar} />
         <ScrollView>
@@ -298,7 +299,7 @@ class CrearPartidaPage extends React.Component {
                 <Text style={styles.juegosSelectText}>¿Qué juegos tendrás en la partida?</Text>
               </View>
             </TouchableHighlight>
-            <View style={{marginTop:10,flexDirection:'row',justifyContent:'flex-start'}}>
+            <View style={{marginTop:10,flexDirection:'row',justifyContent:'flex-start', flexWrap: 'wrap'}}>
               {this.state.juegos.map((elem) => 
                 <Text key={elem.key} style={styles.juegoSeleccionado}>{elem.nombre}</Text>
               )}
@@ -311,7 +312,7 @@ class CrearPartidaPage extends React.Component {
           <ScrollView horizontal="true" style={{marginBottom:5}}>
             <TouchableHighlight onPress={this.openCalendar}>
               <View style={this.state.fecha==this.state.fechaCalendar?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
-                <Image source={require('../assets/abrir-calendario.png')} />
+                <IconButton icon="calendar-multiselect" size={20} color={this.state.fecha==this.state.fechaCalendar?'white':'#7C7C7C'} style={{padding:0, margin:0}}/>
                 <Text style={[this.state.fecha==this.state.fechaCalendar?{color:'white'}:{color:'#7C7C7C'},{fontSize:12}]}>Abrir Calendario</Text> 
                 <Text style={[this.state.fecha==this.state.fechaCalendar?{color:'white'}:{color:'#7C7C7C'},{fontSize:12}]}>{this.state.fechaCalendar}</Text>
                 <DatePicker
@@ -326,15 +327,15 @@ class CrearPartidaPage extends React.Component {
               </View>
             </TouchableHighlight>
             <TouchableHighlight onPress={this.selectFechaHoy}>
-              <View style={this.state.fecha==this.state.today?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
-                <Text style={[this.state.fecha==this.state.today?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>¡HOY!</Text>  
+              <View style={(this.state.fechaCalendar=='-' && this.state.fecha==this.state.today)?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
+                <Text style={[(this.state.fechaCalendar=='-' && this.state.fecha==this.state.today)?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>¡HOY!</Text>  
               </View>
             </TouchableHighlight>
             {this.state.proximasFechas.map((elem) => 
               <TouchableHighlight key={elem.fecha} onPress={() => this.selectFechaProx(elem.fechaFormat)}>
-                <View style={this.state.fecha==elem.fechaFormat?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
-                  <Text style={[this.state.fecha==elem.fechaFormat?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>{elem.diaSemana}</Text>  
-                  <Text style={[this.state.fecha==elem.fechaFormat?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>{elem.fecha}</Text>  
+                <View style={(this.state.fechaCalendar=='-' && this.state.fecha==elem.fechaFormat)?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
+                  <Text style={[(this.state.fechaCalendar=='-' && this.state.fecha==elem.fechaFormat)?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>{elem.diaSemana}</Text>  
+                  <Text style={[(this.state.fechaCalendar=='-' && this.state.fecha==elem.fechaFormat)?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>{elem.fecha}</Text>  
                 </View>
               </TouchableHighlight>
             )}
@@ -435,6 +436,7 @@ class CrearPartidaPage extends React.Component {
           </Dialog>
         </Portal>
       </View>
+      </KeyboardAvoidingView>
     );
   }
   _pickImage = async () => {
@@ -532,7 +534,6 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: 'white',
-    padding:10,
   },
   fondoOscuro: {
     backgroundColor:'#dcdcdc',
@@ -625,13 +626,15 @@ const styles = StyleSheet.create({
     color:'white',
     padding:5,
     borderRadius:5,
+    marginTop:5,
   },
   botonCarruselDiaPartida: {
     backgroundColor:'white',
     height:75,
     justifyContent:'center',
     alignItems:'center',
-    paddingHorizontal:30,
+    // paddingHorizontal:30,
+    width:100,
   }
 });
 
