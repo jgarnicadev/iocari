@@ -133,8 +133,8 @@ class RegisterPage2 extends React.Component {
                   underlineColor="#4db6ac"
                   dense={true}
                   value={this.state.fecha_nacimiento}
-                  onTouchStart={this.openCalendar.bind(this)}
-                  editable={false}
+                  onTouchStart={this.openCalendar}
+                  // editable={false}
                   />
             <DatePicker
               style={{width: 0, height: 0}}
@@ -178,8 +178,9 @@ class RegisterPage2 extends React.Component {
     )
   }
 
-  openCalendar() {
-    this.refs.datepicker.onPressDate()
+  openCalendar = () => {
+    console.log('openCalendar');
+    this.refs.datepicker.onPressDate();
   }
   fechaSelect(fecha) {
     this.setState({fecha_nacimiento: fecha});

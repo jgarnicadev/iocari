@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { TextInput as TextInputPaper, Dialog, Portal, Searchbar, IconButton } from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 import TimePicker from "react-native-24h-timepicker";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 import Header from './Header';
 
@@ -247,6 +248,38 @@ class CrearPartidaPage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
+        /*
+        //subir imagen
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/uploadBattleImage',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            token: this.state.accessToken.token, 
+            user: {
+              email: this.state.accessToken.email
+            },
+            image: {
+                mime:"image/jpeg",
+                data: this.state.imageBase64
+            },
+            battle: {
+              id: 0
+            }
+          })
+        })
+        .then((response) => response.json())
+        .then((response) => {
+          //   console.log(response);
+          if (response.result == 'OK') {
+            Alert.alert('Partida Creada');
+            this.props.navigation.navigate('home');  
+          } else if (response.result == 'NOK') { 
+            Alert.alert('Error en creación partida, problema en subida imagen');
+          }
+        })
+        */
         Alert.alert('Partida Creada');
         this.props.navigation.navigate('home');  
       } else if (response.result == 'NOK') { 
@@ -440,17 +473,20 @@ class CrearPartidaPage extends React.Component {
     );
   }
   _pickImage = async () => {
-    const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status === 'granted') {
       let result = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
-        aspect: [4, 3],
-        base64: true
+        aspect: [4, 3]
       });
-
-
       if (!result.cancelled) {
-        this.setState({ image: result.uri, imageBase64: result.base64 });
+        let resizedImage = await ImageManipulator.manipulateAsync(
+          result.uri,
+          [{resize : {width: 400, height: 300}}],
+          {compress: 0.8, format: ImageManipulator.SaveFormat.JPEG, base64: true}
+        );
+        let resizedUri = 'data:image/jpg'+ ';base64,' + resizedImage.base64;
+        this.setState({ image: result.uri, imageBase64: resizedUri });
       }
     } else {
       Alert.alert('Se necesita permiso para acceder a tu camera roll');

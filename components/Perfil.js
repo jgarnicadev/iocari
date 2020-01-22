@@ -3,6 +3,10 @@ import { View, StyleSheet, ScrollView, AsyncStorage, Alert, Image } from 'react-
 import { Text, TouchableRipple, Title } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { IconButton } from 'react-native-paper';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+import * as Permissions from 'expo-permissions';
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -13,6 +17,8 @@ class Perfil extends React.Component {
             token: '',
             email: ''
         },
+        avatar: null,
+        avatarBase64: '',
     }
 
     async getAccessToken() {
@@ -57,7 +63,9 @@ class Perfil extends React.Component {
                         </TouchableRipple>
                     </View>
                     <Image source={require('../assets/bannerPerfil.jpg')} style={styles.banner} resizeMode="cover"/>
-                    <Image source={require('../assets/avatarPerfil.png')} style={styles.avatar} resizeMode="cover" />
+                    <TouchableHighlight onPress={this.changeAvatar} style={styles.avatarWrapper}>
+                        <Image source={ this.state.avatar ? { uri: this.state.avatar } : require('../assets/avatarPerfil.png') } style={styles.avatar} resizeMode="cover" />
+                    </TouchableHighlight>
                     <Title style={styles.nombreUsuario}>Sideshow Bob</Title>
                     <Text style={styles.sloganUsuario}>App Pioneer</Text>
                     <View style={styles.ubicacion}>
@@ -104,6 +112,70 @@ class Perfil extends React.Component {
         );
       }
 
+    changeAvatar = async () => {
+        const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        if (status === 'granted') {
+          let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [1, 1]
+          });
+          if (!result.cancelled) {
+            // let resizedUri = await new Promise((resolve, reject) => {
+            //     ImageEditor.cropImage(result.uri,
+            //       {
+            //         offset: { x: 0, y: 0 },
+            //         size: { width: result.width, height: result.height },
+            //         displaySize: { width: 180, height: 180 },
+            //         resizeMode: 'contain',
+            //       },
+            //       async (uri) => {
+            //         console.log(uri);
+            //         let base64Data = await FileSystem.readAsStringAsync(uri, {
+            //             encoding: FileSystem.EncodingType.Base64
+            //         });
+            //         resolve('data:image/jpg'+ ';base64,' + base64Data);
+            //       },
+            //       () => reject(),
+            //     );
+            // });
+            let resizedImage = await ImageManipulator.manipulateAsync(
+                result.uri,
+                [{resize : {width: 180, height: 180}}],
+                {compress: 0.8, format: ImageManipulator.SaveFormat.JPEG, base64: true}
+            );
+            let resizedUri = 'data:image/jpg'+ ';base64,' + resizedImage.base64;
+            this.setState({ avatar: result.uri, avatarBase64: resizedUri });
+            //llamada a endpoint
+            fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/uploadUserImage',{
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  token: this.state.accessToken.token, 
+                  user: {
+                    email: this.state.accessToken.email
+                  },
+                  image: {
+                      mime:"image/jpeg",
+                      data: resizedUri
+                  }
+                })
+              })
+              .then((response) => response.json())
+              .then((response) => {
+                  if (response.result == 'OK') {
+                  }
+              })
+              .catch((error) => {
+                console.log(error);
+            });
+          }
+        } else {
+          Alert.alert('Se necesita permiso para acceder a tu camera roll');
+        }
+    }
+
 }
 
 const styles = StyleSheet.create({
@@ -131,12 +203,17 @@ const styles = StyleSheet.create({
     banner: {
         height:170,
     },
-    avatar: {
+    avatarWrapper: {
         alignSelf:'center',
-        width:200,
-        height:200,
+        width:150,
+        height:150,
         marginTop:-100,
-        marginBottom:-30,
+        marginBottom:0,
+        padding:0,
+    },
+    avatar: {
+        width:150,
+        height:150,
         padding:0,
     },
     nombreUsuario: {
