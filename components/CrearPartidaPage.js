@@ -248,7 +248,6 @@ class CrearPartidaPage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
-        /*
         //subir imagen
         fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/uploadBattleImage',{
           method: 'POST',
@@ -265,13 +264,13 @@ class CrearPartidaPage extends React.Component {
                 data: this.state.imageBase64
             },
             battle: {
-              id: 0
+              id: response.battle.id
             }
           })
         })
         .then((response) => response.json())
         .then((response) => {
-          //   console.log(response);
+          //console.log(response);
           if (response.result == 'OK') {
             Alert.alert('Partida Creada');
             this.props.navigation.navigate('home');  
@@ -279,7 +278,6 @@ class CrearPartidaPage extends React.Component {
             Alert.alert('Error en creación partida, problema en subida imagen');
           }
         })
-        */
         Alert.alert('Partida Creada');
         this.props.navigation.navigate('home');  
       } else if (response.result == 'NOK') { 
