@@ -52,17 +52,40 @@ class CrearPartidaPage extends React.Component {
   }
 
   componentDidMount() {
+    this.loadToday();
+    this.loadProximasFechas();
     this.props.navigation.addListener(
       'didFocus',
       payload => {
         this.getAccessToken().then( value => {
           this.setState({'accessToken':JSON.parse(value)});
+          this.clearDataForm();
           this.loadJuegos();
         });
       }
     );
-    this.loadToday();
-    this.loadProximasFechas();
+  }
+
+  clearDataForm = () => {
+    this.setState({
+      'image': null,
+      'imageBase64': '',
+      'nombre': '',
+      'juegos': [],
+      'fecha': this.state.today,
+      'hora': '',
+      'duracion': '',
+      'tope_apuntarse': '',
+      'lugar': '',
+      'players': '',
+      'descripcion': '',
+      'privada': true,
+      'controlar_solicitudes': false,
+      'selectorJuegosVisible': false,
+      'todosJuegos': [],
+      'filterJuegos': [],
+      'fechaCalendar': '-'
+    });
   }
 
   loadToday() {
@@ -76,7 +99,7 @@ class CrearPartidaPage extends React.Component {
     if (month < 10) str+= '0';
     str += month + '/';
     str += year;
-    this.setState({'today': str,'fecha': str});
+    this.setState({'today': str});
   }
 
   loadProximasFechas() {
