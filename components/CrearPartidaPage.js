@@ -531,13 +531,53 @@ class CrearPartidaPage extends React.Component {
   }
 
   filterJuego = text => {   
-    let arrayHolder = this.state.todosJuegos; 
+
+    /*let arrayHolder = this.state.todosJuegos; 
     const newData = arrayHolder.filter(item => {      
       const itemData = `${item.nombre.toUpperCase()}`;
       const textData = text.toUpperCase();
       return itemData.indexOf(textData) > -1;    
-    });
-    this.setState({ filterJuegos: newData });  
+    });*/
+
+    if (text.length < 3 ) {
+      // si la busqueda es de menos de tres caracteres cargamos todos los juegos
+      const newData = this.state.todosJuegos; 
+      this.setState({ filterJuegos: newData });  
+    } else {
+      // si la busqueda es de más de tres caracteres, llamamos a endpoint busqueda
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGames',{
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+            email: this.state.accessToken.email
+          },
+          filters: {
+            keywords: text
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.result == 'OK') {
+          var j = [];
+          response.games.forEach(juego => {
+            var t = {
+              key: String(juego.id),
+              nombre: juego.name
+            }
+            j.push(t);
+          });
+          this.setState({'filterJuegos':j});
+        }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
   };
 
   showTimePickerHora = () => {
