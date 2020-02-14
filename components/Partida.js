@@ -127,7 +127,7 @@ class Partida extends React.Component {
     }
 
     apuntarse() {
-
+      //TODO
     }
 
 }

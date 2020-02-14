@@ -110,6 +110,7 @@ class Perfil extends React.Component {
         Alert.alert(
         'En desarrollo...'
         );
+        //TODO
       }
 
     changeAvatar = async () => {
