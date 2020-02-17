@@ -175,6 +175,16 @@ class CrearPartidaPage extends React.Component {
     this.setState({'juegos':temp});
   }
 
+  quitarJuego = (keyJuego) => {
+    var temp = this.state.juegos;
+    this.state.juegos.forEach((el,i) => {
+      if (el.key == keyJuego) {
+        temp.splice(i, 1);
+      }
+    })
+    this.setState({'juegos':temp});
+  }
+
   openCalendar() {
     this.refs.datepicker.onPressDate()
   }
@@ -313,6 +323,7 @@ class CrearPartidaPage extends React.Component {
     this.props.navigation.navigate('home');  
   }
 
+  
   render() {
     let { image } = this.state;
     return (
@@ -355,7 +366,12 @@ class CrearPartidaPage extends React.Component {
             </TouchableHighlight>
             <View style={{marginTop:10,flexDirection:'row',justifyContent:'flex-start', flexWrap: 'wrap'}}>
               {this.state.juegos.map((elem) => 
-                <Text key={elem.key} style={styles.juegoSeleccionado}>{elem.nombre}</Text>
+                <View key={elem.key} style={[styles.juegoSeleccionado,{flexDirection:'row',justifyContent:'flex-start', flexWrap: 'wrap', alignItems:'center'}]}>
+                  <Text style={{color:'white'}}>{elem.nombre}</Text>
+                  <TouchableHighlight onPress={() => this.quitarJuego(elem.key)}>
+                    <Text style={[styles.quitarJuego,{color:'white'}]}>X</Text>
+                  </TouchableHighlight>
+                </View>
               )}
             </View>
           </View>
@@ -732,6 +748,10 @@ const styles = StyleSheet.create({
     alignItems:'center',
     // paddingHorizontal:30,
     width:100,
+  },
+  quitarJuego: {
+    fontSize:23,
+    marginLeft:10,
   }
 });
 
