@@ -69,10 +69,40 @@ class Partida extends React.Component {
       });
     }
     
+    getParteFecha = (strDate) => {
+      let result = strDate.substring(0,10);
+      let partes_fecha = result.split('-');
+      return partes_fecha[2]+'/'+partes_fecha[1]+'/'+partes_fecha[0];
+    }
+
+    getParteHora = (strDate) => {
+      let result = strDate.substring(11,16);
+      return result;
+    }
+    getParteDuracion = (strDateIni, strDateEnd) => {
+      console.log(strDateIni+' - '+strDateEnd);
+      let init_date = new Date(strDateIni);
+      let end_date = new Date(strDateEnd);
+
+      let date1_ms = init_date.getTime();
+      let date2_ms = end_date.getTime();
+
+      let difference_ms = date2_ms - date1_ms;
+      difference_ms = difference_ms/1000;
+      var seconds = Math.floor(difference_ms % 60);
+      difference_ms = difference_ms/60; 
+      var minutes = Math.floor(difference_ms % 60);
+      difference_ms = difference_ms/60; 
+      var hours = Math.floor(difference_ms % 24);  
+      var days = Math.floor(difference_ms/24);      
+
+      return hours+'h';
+    }
+
     render() {
         if (this.state.loading) {
           return (
-            <View><ActivityIndicator /></View>
+            <View style={[styles.container,{justifyContent:'center'}]}><ActivityIndicator size="large" /></View>
           );
         }
         return (
@@ -81,15 +111,15 @@ class Partida extends React.Component {
               <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-fecha.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
-                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.init_date}</Text>
+                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.getParteFecha(this.state.partida.init_date)}</Text>
                 </View>
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-hora.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
-                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.init_date}</Text>
+                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.getParteHora(this.state.partida.init_date)}</Text>
                 </View>
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-duracion.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
-                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.end_date}</Text>
+                  <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.getParteDuracion(this.state.partida.init_date,this.state.partida.end_date)}</Text>
                 </View>
                 <View style={styles.txtJugadores}>
                   <IconButton icon="human-male-male" color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
