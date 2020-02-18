@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBackground } from 'react-native';
-import { Button, IconButton } from 'react-native-paper';
+import { Button, IconButton, Avatar } from 'react-native-paper';
 
 import Header from './Header';
+import CarruselJuegos from './CarruselJuegos';
 
 class Partida extends React.Component {
     state = {
@@ -55,10 +56,11 @@ class Partida extends React.Component {
       .then((response) => {
         if (response.result == 'OK') {
           let juegos = [];
-          response.games.forEach(juego => {
-            juegos.push(juego.name);
-          });
-          response.battle.juegos = juegos.join(', ');
+          // response.games.forEach(juego => {
+          //   juegos.push(juego.name);
+          // });
+          // response.battle.juegos = juegos.join(', ');
+          response.battle.juegos = response.games;
           response.battle.jugadores = response.users;
           this.setState({'partida':response.battle});
           this.setState({'loading':false});
@@ -80,7 +82,6 @@ class Partida extends React.Component {
       return result;
     }
     getParteDuracion = (strDateIni, strDateEnd) => {
-      console.log(strDateIni+' - '+strDateEnd);
       let init_date = new Date(strDateIni);
       let end_date = new Date(strDateEnd);
 
@@ -109,6 +110,7 @@ class Partida extends React.Component {
             <View style={styles.container}>
               <Header title={this.state.partida.name} />
               <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
+                <Avatar.Image style={styles.avatarCreador} size={48} source={{ uri: this.state.partida.jugadores[0].photo_url }} />
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-fecha.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
                   <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.getParteFecha(this.state.partida.init_date)}</Text>
@@ -131,7 +133,8 @@ class Partida extends React.Component {
                   <IconButton icon="view-list" color="#7C7C7C" size={20} style={{ margin:0, padding: 0 }}></IconButton>
                   <Text style={[styles.txtGris, styles.txtTitulo]}>Juegos para la sesión</Text>
                 </View>
-                <Text style={styles.txtGris}>{this.state.partida.juegos}</Text>
+                {/* <Text style={styles.txtGris}>{this.state.partida.juegos}</Text> */}
+                <CarruselJuegos title="" msgEmpty="" juegos={this.state.partida.juegos} />
               </View>
               <View style={[styles.contenedor, styles.bordeContenedor]}>
                 <Text style={styles.txtGris}>{this.state.partida.description}</Text>
@@ -224,6 +227,13 @@ const styles = StyleSheet.create({
       position:'absolute',
       top:10,
       right:20,
+    },
+    avatarCreador: {
+      borderWidth:4,
+      borderColor:'white',
+      position:"absolute",
+      right:20,
+      bottom:60,
     },
   });
 

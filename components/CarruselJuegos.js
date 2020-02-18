@@ -7,7 +7,9 @@ class CarruselJuegos extends React.Component {
     render() {
       return (
         <View style={styles.container}>
-            <Text style={styles.title}>{this.props.title}</Text>
+            {this.props.title != '' ? (
+              <Text style={styles.title}>{this.props.title}</Text>
+            ) : null }
             <ScrollView horizontal="true">
             {this.props.juegos.length == 0 ? (
               <Text>{this.props.msgEmpty}</Text>
