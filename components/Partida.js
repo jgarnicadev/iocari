@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBackground } from 'react-native';
+import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBackground, Alert, ScrollView } from 'react-native';
 import { Button, IconButton, Avatar } from 'react-native-paper';
+import openMap from 'react-native-open-maps';
 
 import Header from './Header';
 import CarruselJuegos from './CarruselJuegos';
@@ -109,6 +110,7 @@ class Partida extends React.Component {
         return (
             <View style={styles.container}>
               <Header title={this.state.partida.name} />
+              <ScrollView>
               <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                 <Avatar.Image style={styles.avatarCreador} size={48} source={{ uri: this.state.partida.jugadores[0].photo_url }} />
                 <View style={styles.cabeceraWarpTxt}>
@@ -149,6 +151,9 @@ class Partida extends React.Component {
               <ImageBackground style={styles.contenedorLugar} source={require('../assets/mapa.jpg')} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                   <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.address}</Text>
                   <IconButton icon="map-marker" color="white" size={20} style={styles.markerLugar}></IconButton>
+                  <View style={{marginTop:15}}>
+                    <Button onPress={this.abrirMapa} color="white" uppercase={true} style={{marginLeft:'auto' }} >Abrir mapa</Button>
+                  </View>
               </ImageBackground>
               <View style={styles.contenedor}>
                   <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Comentarios</Text>
@@ -156,12 +161,16 @@ class Partida extends React.Component {
               <View style={[styles.contenedor, { display:'none'}]}>
                 <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse.bind(this)}>Apuntarse</Button>
               </View>
+              </ScrollView>
             </View>
         );
     }
 
     apuntarse() {
       //TODO
+    }
+    abrirMapa = () => {
+      openMap({query: this.state.partida.address});
     }
 
 }
