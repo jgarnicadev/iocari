@@ -142,7 +142,8 @@ class Partida extends React.Component {
               <View style={styles.contenedor}>
                 <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Personas apuntadas</Text>
                 {this.state.partida.jugadores.map((elem) => 
-                  <Text style={styles.txtGris} key={elem.username}>{elem.username}</Text>
+                  // <Text style={styles.txtGris} key={elem.username}>{elem.username}</Text>
+                  <Avatar.Image key={elem.username} style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url }} />
                 )}
               </View>
               <ImageBackground style={styles.contenedorLugar} source={require('../assets/mapa.jpg')} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
@@ -234,6 +235,10 @@ const styles = StyleSheet.create({
       position:"absolute",
       right:20,
       bottom:60,
+    },
+    avatarJugador: {
+      borderWidth:4,
+      borderColor:'white',
     },
   });
 
