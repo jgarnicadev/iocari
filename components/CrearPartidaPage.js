@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList, Platform, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
-import { TextInput as TextInputPaper, Dialog, Portal, Searchbar, IconButton } from 'react-native-paper';
+import { TextInput as TextInputPaper, Dialog, Portal, Searchbar, IconButton, Snackbar } from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 import TimePicker from "react-native-24h-timepicker";
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -11,6 +11,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import Header from './Header';
 
 class CrearPartidaPage extends React.Component {
+  searchWaiting = null;
   state = {
     accessToken: '',
     image: null,
@@ -30,7 +31,10 @@ class CrearPartidaPage extends React.Component {
     todosJuegos: [],
     filterJuegos: [],
     proximasFechas: [],
-    fechaCalendar: '-'
+    fechaCalendar: '-',
+    loadingBusquedaJuegos: false,
+    snackbarVisible: false,
+    snackbarText: '',
   };
 
   constructor(props) {
@@ -269,7 +273,6 @@ class CrearPartidaPage extends React.Component {
         request_join: this.state.controlar_solicitudes ? 1:0
       }
     }
-    console.log(data2);
     var dataStr2 = JSON.stringify(data2);
     fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/newBattle',{
       method: 'POST',
@@ -505,6 +508,7 @@ class CrearPartidaPage extends React.Component {
               </Dialog.Content>
           </Dialog>
         </Portal>
+        <Snackbar visible={this.state.snackbarVisible} onDismiss={() => this.setState({ snackbarVisible: false })}>{this.state.snackbarText}</Snackbar>
       </View>
       </KeyboardAvoidingView>
     );
@@ -538,11 +542,24 @@ class CrearPartidaPage extends React.Component {
   }
 
   headerListJuegos = () => {
-    return (      
-      <Searchbar        
-        placeholder="Buscar juego..."        
-        onChangeText={text => this.filterJuego(text)}
-      />    
+    return ( 
+      <View style={{flex:1}}>
+        <Searchbar        
+          placeholder="Buscar juego..."        
+          onChangeText={text => {
+            if (this.searchWaiting) {
+              clearTimeout(this.searchWaiting);
+            }
+            this.searchWaiting = setTimeout(() => {
+              this.searchWaiting = null;
+              this.filterJuego(text);
+            }, 500);
+          }}
+        />    
+        {this.state.loadingBusquedaJuegos ? (
+          <View style={{flex:1,justifyContent:'center', marginTop:5}}><ActivityIndicator size="large" /></View>
+        ) : null}
+      </View>
     ); 
   }
 
@@ -560,7 +577,13 @@ class CrearPartidaPage extends React.Component {
       const newData = this.state.todosJuegos; 
       this.setState({ filterJuegos: newData });  
     } else {
-      // si la busqueda es de más de tres caracteres, llamamos a endpoint busqueda
+      // si la busqueda es de minimo tres caracteres, llamamos a endpoint busqueda
+      //loading
+      this.setState({ 
+        loadingBusquedaJuegos: true,
+        filterJuegos: [] ,
+        snackbarVisible: false
+      });  
       fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGames',{
         method: 'POST',
         headers: {
@@ -588,7 +611,17 @@ class CrearPartidaPage extends React.Component {
             j.push(t);
           });
           this.setState({'filterJuegos':j});
+        } else {
+          //si endpoint nos devuelve error mostrar todo el listado de juegos
+          const newData = this.state.todosJuegos; 
+          this.setState({ filterJuegos: newData });      
+          //notificacion visual del error
+          this.setState({
+            'snackbarText': response.message,
+            'snackbarVisible': true,
+          });
         }
+        this.setState({ loadingBusquedaJuegos: false});
       })
       .catch((error) => {
           console.log(error);
