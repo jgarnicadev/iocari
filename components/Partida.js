@@ -158,17 +158,43 @@ class Partida extends React.Component {
               <View style={styles.contenedor}>
                   <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Comentarios</Text>
               </View>
-              <View style={[styles.contenedor, { display:'none'}]}>
-                <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse.bind(this)}>Apuntarse</Button>
+              <View style={styles.contenedor}>
+                <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
               </View>
               </ScrollView>
             </View>
         );
     }
 
-    apuntarse() {
-      //TODO
+    apuntarse = () => {
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/joinBattle',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.result == 'OK') {
+         Alert.alert('Solicitud enviada!');
+        } else {
+          Alert.alert('Error: Solicitud no procesada!');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
+
     abrirMapa = () => {
       openMap({query: this.state.partida.address});
     }
