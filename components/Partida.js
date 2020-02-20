@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBackground, Alert, ScrollView } from 'react-native';
-import { Button, IconButton, Avatar } from 'react-native-paper';
+import { Button, IconButton, Avatar, FAB, Dialog, Portal, TextInput  } from 'react-native-paper';
 import openMap from 'react-native-open-maps';
 
 import Header from './Header';
@@ -15,6 +15,8 @@ class Partida extends React.Component {
       id_partida: 0,
       partida: null,
       loading: true,
+      comentarios: [],
+      apuntadoPartida: false,
     }
 
     async getAccessToken() {
@@ -26,12 +28,14 @@ class Partida extends React.Component {
         this.props.navigation.addListener(
           'didFocus',
           payload => {
+            this.setState({'apuntadoPartida': false});
             this.setState({'loading':true});
             const { navigation } = this.props;
             this.getAccessToken().then( value => {
               this.setState({'accessToken':JSON.parse(value)});
               this.setState({'id_partida': navigation.getParam('id_partida', '')});
               this.loadPartida();
+              this.loadCommentsPartida();
             });
           }
         );
@@ -63,6 +67,11 @@ class Partida extends React.Component {
           // response.battle.juegos = juegos.join(', ');
           response.battle.juegos = response.games;
           response.battle.jugadores = response.users;
+          response.users.forEach(elem => {
+            if (elem.email == this.state.accessToken.email) {
+              this.setState({'apuntadoPartida': true});
+            }
+          });
           this.setState({'partida':response.battle});
           this.setState({'loading':false});
         }
@@ -72,6 +81,34 @@ class Partida extends React.Component {
       });
     }
     
+    loadCommentsPartida() {
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getBattleComments',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        if (response.result == 'OK') {
+          this.setState({'comentarios':response.comments});
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
     getParteFecha = (strDate) => {
       let result = strDate.substring(0,10);
       let partes_fecha = result.split('-');
@@ -157,13 +194,122 @@ class Partida extends React.Component {
               </ImageBackground>
               <View style={styles.contenedor}>
                   <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Comentarios</Text>
+                  {this.state.comentarios.map((elem) => (
+                    <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
+                      <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
+                      <View style={styles.contenidoComentario}>
+                        <Text style={styles.usernameComentario}>{elem.username}</Text>
+                        <Text style={styles.fechaComentario}>{elem.timestamp}</Text>
+                        <Text style={styles.textoComentario}>{elem.comment}</Text>
+                        <Button style={styles.btnResponderComentario} color="#7C7C7C" onPress={() => this.responderComentario(elem.id)}>Responder</Button>
+                      </View>
+                    </View>
+                  ))}
               </View>
-              <View style={styles.contenedor}>
-                <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
-              </View>
+              {(this.state.apuntadoPartida == false) ? (
+                <View style={styles.contenedor}>
+                  <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
+                </View>
+              ) : null} 
               </ScrollView>
+              <FAB
+                style={styles.fab}
+                icon="plus"
+                onPress={() => this.anadirComentario()}
+                color="white"
+              />
+              <Portal>
+                <Dialog visible={this.state.newCommentVisible} onDismiss={()=> this.setState({'newCommentVisible': false})}>
+                  <Dialog.Content>
+                    <TextInput
+                      label="Escribe un comentario" style={{backgroundColor:"#FBFBFB"}}
+                      underlineColor="#7C7C7C"
+                      selectionColor="#7C7C7C"
+                      onChangeText={(text) => this.setState({'comentario_nuevo':text})}
+                      theme={{ colors: {primary: '#7C7C7C', placeholder: '#7C7C7C'} }}
+                      maxLength={144}
+                      onSubmitEditing={this.newComment}
+                    />
+                  </Dialog.Content>
+                </Dialog>
+              </Portal>
             </View>
         );
+    }
+    
+    anadirComentario = () => {
+      if (this.state.apuntadoPartida == false)  {
+        Alert.alert('Debes unirte a la partida para poder comentar!');
+        return;
+      }
+      this.setState({
+        'idComentarioRespuesta':null,
+        'newCommentVisible': true
+      })
+    }
+
+    responderComentario = (idComment) => {
+      if (this.state.apuntadoPartida == false)  {
+        Alert.alert('Debes unirte a la partida para poder comentar!');
+        return;
+      }
+      this.setState({
+        'idComentarioRespuesta':idComment,
+        'newCommentVisible': true
+      })
+    }
+
+    newComment = () => {
+      let dataComment = {
+        string: this.state.comentario_nuevo
+      };
+      if (this.state.idComentarioRespuesta != null) {
+        dataComment.in_response_to = this.state.idComentarioRespuesta;
+      }
+      let test = JSON.stringify({
+        token: this.state.accessToken.token, 
+        user: {
+            email: this.state.accessToken.email
+        },
+        battle: {
+          id: this.state.id_partida, 
+        },
+        comment: dataComment
+      });
+      console.log(test);
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/newBattleComment',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+          },
+          comment: dataComment
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        if (response.result == 'OK') {
+         this.loadCommentsPartida();
+         this.setState({'newCommentVisible': false});
+         Alert.alert('Comentario enviado!');
+        } else if (response.result == 'NOT_ALLOWED') {
+          this.setState({'newCommentVisible': false});
+          Alert.alert('Debes unirte a la partida para poder comentar!');
+         } else {
+          Alert.alert('Error: Comentario no procesado!');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
 
     apuntarse = () => {
@@ -185,7 +331,8 @@ class Partida extends React.Component {
       .then((response) => response.json())
       .then((response) => {
         if (response.result == 'OK') {
-         Alert.alert('Solicitud enviada!');
+          this.setState({'apuntadoPartida': true});
+          Alert.alert('Solicitud enviada!');
         } else {
           Alert.alert('Error: Solicitud no procesada!');
         }
@@ -274,6 +421,46 @@ const styles = StyleSheet.create({
     avatarJugador: {
       borderWidth:4,
       borderColor:'white',
+    },
+    fab: {
+      position: 'absolute',
+      margin: 16,
+      right: 0,
+      bottom: 0,
+      backgroundColor:'#f50057',
+    },
+    contenedorComentario: {
+      flexDirection:"row",
+      justifyContent:"flex-start"
+    },
+    avatarComentario: {
+      width:40
+    },
+    contenidoComentario: {
+      flex:1,
+      paddingLeft:10,
+    },
+    usernameComentario: {
+      fontSize:12,
+      fontWeight:'500',
+      color:'#474747',
+      marginBottom:6,
+    },
+    fechaComentario: {
+      fontSize:10,
+      color:'#CCCCCC',
+      marginBottom:3,
+    },
+    textoComentario: {
+      padding:10,
+      backgroundColor:'#C6E8F7',
+      borderRadius:4,
+    },
+    btnResponderComentario: {
+      fontWeight:'500',
+      alignSelf:'flex-start',
+      textTransform:'none',
+      padding:0,
     },
   });
 
