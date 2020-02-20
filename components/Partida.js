@@ -16,6 +16,7 @@ class Partida extends React.Component {
       partida: null,
       loading: true,
       comentarios: [],
+      respuestas: [],
       apuntadoPartida: false,
     }
 
@@ -99,9 +100,23 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.result == 'OK') {
-          this.setState({'comentarios':response.comments});
+          let comentarios = [];
+          let respuestas = [];
+
+          response.comments.forEach(comment => {
+            if (comment.id_response_to == null) {
+              comentarios.push(comment);
+              respuestas[comment.id] = [];
+            } else {
+              respuestas[comment.id_response_to].push(comment);
+            }
+          });
+          this.setState({
+            'comentarios':comentarios,
+            'respuestas':respuestas
+          });
         }
       })
       .catch((error) => {
@@ -202,6 +217,17 @@ class Partida extends React.Component {
                         <Text style={styles.fechaComentario}>{elem.timestamp}</Text>
                         <Text style={styles.textoComentario}>{elem.comment}</Text>
                         <Button style={styles.btnResponderComentario} color="#7C7C7C" onPress={() => this.responderComentario(elem.id)}>Responder</Button>
+                        
+                        {this.state.respuestas[elem.id].map((elem) => (
+                          <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
+                            <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
+                            <View style={styles.contenidoComentario}>
+                              <Text style={styles.usernameComentario}>{elem.username}</Text>
+                              <Text style={styles.fechaComentario}>{elem.timestamp}</Text>
+                              <Text style={styles.textoComentario}>{elem.comment}</Text>
+                            </View>
+                          </View>
+                        ))}
                       </View>
                     </View>
                   ))}
@@ -264,19 +290,19 @@ class Partida extends React.Component {
         string: this.state.comentario_nuevo
       };
       if (this.state.idComentarioRespuesta != null) {
-        dataComment.in_response_to = this.state.idComentarioRespuesta;
+        dataComment.id_response_to = this.state.idComentarioRespuesta;
       }
-      let test = JSON.stringify({
-        token: this.state.accessToken.token, 
-        user: {
-            email: this.state.accessToken.email
-        },
-        battle: {
-          id: this.state.id_partida, 
-        },
-        comment: dataComment
-      });
-      console.log(test);
+      // let test = JSON.stringify({
+      //   token: this.state.accessToken.token, 
+      //   user: {
+      //       email: this.state.accessToken.email
+      //   },
+      //   battle: {
+      //     id: this.state.id_partida, 
+      //   },
+      //   comment: dataComment
+      // });
+      // console.log(test);
       fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/newBattleComment',{
         method: 'POST',
         headers: {
@@ -295,7 +321,7 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.result == 'OK') {
          this.loadCommentsPartida();
          this.setState({'newCommentVisible': false});
