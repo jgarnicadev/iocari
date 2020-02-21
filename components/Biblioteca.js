@@ -2,6 +2,8 @@ import React from 'react';
 import { View, StyleSheet, Image, ScrollView, AsyncStorage, TouchableHighlight, Text, FlatList, ActivityIndicator } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { Dialog, Portal, Searchbar } from 'react-native-paper';
+import RNPickerSelect from 'react-native-picker-select';
+import { Chevron } from 'react-native-shapes'
 
 import Header from './Header';
 import Footer from './Footer';
@@ -15,11 +17,13 @@ class Biblioteca extends React.Component {
             token: '',
             email: ''
           },
+          categorias: [],
           recomendaciones: [],
           selectorJuegosVisible: false,
           todosJuegos: [],
           filterJuegos: [],
           loadingBusquedaJuegos: false,
+          filterCategoria : null,
     };
 
     async getAccessToken() {
@@ -37,11 +41,46 @@ class Biblioteca extends React.Component {
                         'selectorJuegosVisible': false,
                         'todosJuegos': [],
                         'filterJuegos': [],
+                        'filterCategoria':null
                     })
+                    this.loadCategorias();
                     this.cargarRecomendaciones();
                 });
             }
         );
+    }
+
+    loadCategorias = () => {
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGameCategories',{
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token: this.state.accessToken.token, 
+            user: {
+                email: this.state.accessToken.email
+            }
+        })
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            console.log(response);
+            if (response.result == 'OK') {
+                let categorias = [];
+                response.categories.forEach(elem => {
+                    let t = {
+                        label: elem.name,
+                        value: elem.id
+                    }
+                    categorias.push(t);
+                });
+                this.setState({'categorias':categorias});
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     }
 
     cargarRecomendaciones() {
@@ -88,6 +127,51 @@ class Biblioteca extends React.Component {
                 </View>
                 <View style={styles.main}>
                   <ScrollView style={styles.mainWrap}>
+                    <View style={{
+                      marginBottom:10,
+                    }}>
+                      <RNPickerSelect
+                        useNativeAndroidPickerStyle={false}
+                        style={{
+                          inputAndroid: {
+                            paddingHorizontal:10,
+                            paddingVertical:2,
+                            fontSize:14,
+                            color:'white',
+                            fontWeight:'300',
+                            borderRadius: 4,
+                            backgroundColor: '#004C8B',
+                          },
+                          inputIOS: {
+                            paddingHorizontal:10,
+                            paddingVertical:2,
+                            fontSize:14,
+                            color:'white',
+                            fontWeight:'300',
+                            borderRadius: 4,
+                            backgroundColor: '#004C8B',
+                          },
+                          placeholder: {
+                            color:'white',
+                            fontSize:14,
+                            fontWeight:'300',
+                          },
+                          iconContainer: {
+                            top: 12,
+                            right: 15,
+                          },
+                        }}
+                        placeholder={{
+                          label: 'Categorías',
+                          value: null,
+                        }}
+                        Icon={() => {
+                          return <Chevron size={1.5} color="white" />;
+                        }}
+                        onValueChange={(value) => this.setState({filterCategoria:value})}
+                        items={this.state.categorias}
+                      />
+                    </View>
                     <CarruselJuegos title="Tus Recomendaciones" msgEmpty="" juegos={this.state.recomendaciones} />
                   </ScrollView>
                 </View>
@@ -173,7 +257,6 @@ class Biblioteca extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
-            console.log(response);
             if (response.result == 'OK') {
               var j = [];
               response.games.forEach(juego => {
@@ -262,8 +345,7 @@ const styles = StyleSheet.create({
     listJuegosSeparator: {
         height:1,
         backgroundColor:'#7C7C7C',
-      },
-    
+    },
 });
   
 export default withNavigation(Biblioteca);
