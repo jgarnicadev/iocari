@@ -18,12 +18,14 @@ class Biblioteca extends React.Component {
             email: ''
           },
           categorias: [],
+          mecanicas: [],
           recomendaciones: [],
           selectorJuegosVisible: false,
           todosJuegos: [],
           filterJuegos: [],
           loadingBusquedaJuegos: false,
           filterCategoria : null,
+          filterMecanica : null,
     };
 
     async getAccessToken() {
@@ -41,9 +43,11 @@ class Biblioteca extends React.Component {
                         'selectorJuegosVisible': false,
                         'todosJuegos': [],
                         'filterJuegos': [],
-                        'filterCategoria':null
+                        'filterCategoria':null,
+                        'filterMecanica':null,
                     })
                     this.loadCategorias();
+                    this.loadMecanicas();
                     this.cargarRecomendaciones();
                 });
             }
@@ -65,7 +69,6 @@ class Biblioteca extends React.Component {
         })
         .then((response) => response.json())
         .then((response) => {
-            console.log(response);
             if (response.result == 'OK') {
                 let categorias = [];
                 response.categories.forEach(elem => {
@@ -76,6 +79,38 @@ class Biblioteca extends React.Component {
                     categorias.push(t);
                 });
                 this.setState({'categorias':categorias});
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    loadMecanicas = () => {
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGameMechanics',{
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token: this.state.accessToken.token, 
+            user: {
+                email: this.state.accessToken.email
+            }
+        })
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            if (response.result == 'OK') {
+                let mecanicas = [];
+                response.mechanics.forEach(elem => {
+                    let t = {
+                        label: elem.name,
+                        value: elem.id
+                    }
+                    mecanicas.push(t);
+                });
+                this.setState({'mecanicas':mecanicas});
             }
         })
         .catch((error) => {
@@ -114,6 +149,35 @@ class Biblioteca extends React.Component {
     
           
     render() {
+      let stylePicker = {
+        inputAndroid: {
+          paddingHorizontal:10,
+          paddingVertical:2,
+          fontSize:14,
+          color:'white',
+          fontWeight:'300',
+          borderRadius: 4,
+          backgroundColor: '#004C8B',
+        },
+        inputIOS: {
+          paddingHorizontal:10,
+          paddingVertical:2,
+          fontSize:14,
+          color:'white',
+          fontWeight:'300',
+          borderRadius: 4,
+          backgroundColor: '#004C8B',
+        },
+        placeholder: {
+          color:'white',
+          fontSize:14,
+          fontWeight:'300',
+        },
+        iconContainer: {
+          top: 12,
+          right: 15,
+        },
+      };
         return (
             <View style={styles.container}>
                 <Header title="Biblioteca" hideBack={true} />
@@ -127,40 +191,11 @@ class Biblioteca extends React.Component {
                 </View>
                 <View style={styles.main}>
                   <ScrollView style={styles.mainWrap}>
-                    <View style={{
-                      marginBottom:10,
-                    }}>
+                    <View style={styles.filtrosWrapper}>
+                      <View style={{flex:1,paddingRight:5}}>
                       <RNPickerSelect
                         useNativeAndroidPickerStyle={false}
-                        style={{
-                          inputAndroid: {
-                            paddingHorizontal:10,
-                            paddingVertical:2,
-                            fontSize:14,
-                            color:'white',
-                            fontWeight:'300',
-                            borderRadius: 4,
-                            backgroundColor: '#004C8B',
-                          },
-                          inputIOS: {
-                            paddingHorizontal:10,
-                            paddingVertical:2,
-                            fontSize:14,
-                            color:'white',
-                            fontWeight:'300',
-                            borderRadius: 4,
-                            backgroundColor: '#004C8B',
-                          },
-                          placeholder: {
-                            color:'white',
-                            fontSize:14,
-                            fontWeight:'300',
-                          },
-                          iconContainer: {
-                            top: 12,
-                            right: 15,
-                          },
-                        }}
+                        style={stylePicker}
                         placeholder={{
                           label: 'Categorías',
                           value: null,
@@ -171,6 +206,22 @@ class Biblioteca extends React.Component {
                         onValueChange={(value) => this.setState({filterCategoria:value})}
                         items={this.state.categorias}
                       />
+                      </View>
+                      <View style={{flex:1,paddingLeft:5}}>
+                      <RNPickerSelect
+                        useNativeAndroidPickerStyle={false}
+                        style={stylePicker}
+                        placeholder={{
+                          label: 'Mecánicas',
+                          value: null,
+                        }}
+                        Icon={() => {
+                          return <Chevron size={1.5} color="white" />;
+                        }}
+                        onValueChange={(value) => this.setState({filterMecanicas:value})}
+                        items={this.state.mecanicas}
+                      />
+                      </View>
                     </View>
                     <CarruselJuegos title="Tus Recomendaciones" msgEmpty="" juegos={this.state.recomendaciones} />
                   </ScrollView>
@@ -345,6 +396,11 @@ const styles = StyleSheet.create({
     listJuegosSeparator: {
         height:1,
         backgroundColor:'#7C7C7C',
+    },
+    filtrosWrapper: {
+      marginBottom:10,
+      flexDirection:'row',
+      justifyContent:'space-between'
     },
 });
   
