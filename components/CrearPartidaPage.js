@@ -64,6 +64,14 @@ class CrearPartidaPage extends React.Component {
         this.getAccessToken().then( value => {
           this.setState({'accessToken':JSON.parse(value)});
           this.clearDataForm();
+          let creandoDesdeJuego = this.props.navigation.getParam('desde_juego', '');
+          this.props.navigation.setParams({'desde_juego': ''});
+          if (creandoDesdeJuego != '') {
+            console.log(creandoDesdeJuego);
+            let temp = [];
+            temp.push(creandoDesdeJuego);
+            this.setState({'juegos':temp});
+          }
           this.loadJuegos();
         });
       }
@@ -159,8 +167,14 @@ class CrearPartidaPage extends React.Component {
           }
           j.push(t);
         });
-        this.setState({'todosJuegos':j});
-        this.setState({'filterJuegos':j});
+        this.setState({
+          'todosJuegos':j,
+          'filterJuegos':j
+        });
+        if (this.state.creandoDesdeJuego != '') {
+          this.seleccionJuego(this.state.creandoDesdeJuego);
+          this.setState({'creandoDesdeJuego':''});
+        }
       }
     })
     .catch((error) => {

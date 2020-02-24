@@ -81,7 +81,7 @@ class Juego extends React.Component {
   render() {
     if (this.state.loading) {
       return (
-        <View><ActivityIndicator /></View>
+        <View style={[styles.container,{justifyContent:'center'}]}><ActivityIndicator size="large" /></View>
       );
     }
 
@@ -175,7 +175,9 @@ class Juego extends React.Component {
   }
 
   crearPartida = () => {
-    this.props.navigation.navigate('crearPartida')
+    this.props.navigation.navigate('crearPartida', {
+      desde_juego: {key: this.state.id_juego, nombre: this.state.juego.name}
+    })
   }
 
   enDesarrollo = () => {
