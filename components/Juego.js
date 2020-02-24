@@ -4,6 +4,7 @@ import { IconButton } from 'react-native-paper';
 
 import Header from './Header';
 import CarruselJuegos from './CarruselJuegos';
+import CarruselPartidas from './CarruselPartidas';
 
 class Juego extends React.Component {
   state = {
@@ -58,11 +59,14 @@ class Juego extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
-        response.game.creditos = [];
-        response.game.mecanicas = [];
-        response.game.categorias = [];
-        response.game.expansiones = [];
-        response.game.premios = '';
+        response.game.mecanicas = response.mechanics ? response.mechanics : [];
+        response.game.categorias = response.categories ? response.categories : [];
+        response.game.designers = response.designers ? response.designers : [];
+        response.game.publishers = response.publishers ? response.publishers : [];
+        response.game.artists = response.artists ? response.artists : [];
+        response.game.expansiones = response.expansions ? response.expansions : [];
+        response.game.partidas = response.battles ? response.battles : [];
+        response.game.premios = response.awards ? response.awards : [];
         this.setState({'juego':response.game});
         let quieroJugar = (response.game.owned == 1);
         let loQuiero = (response.game.owned == 2);
@@ -125,26 +129,44 @@ class Juego extends React.Component {
               </View>
               <Text style={styles.descripcion}>{this.state.juego.description}</Text>
               <View style={styles.creditos}>
-              {this.state.juego.creditos.map((credito, index) => 
-                  (<View key={index} style={styles.credito}>
-                    <Text style={styles.creditoTitle}>{credito.title}</Text>
-                    <Text style={styles.creditoValue}>{credito.value}</Text>
-                  </View>)
-                )}
+                  {this.state.juego.designers.length > 0 &&
+                  <View style={styles.credito}>
+                    <Text style={styles.creditoTitle}>Diseñador/es</Text>
+                    {this.state.juego.designers.map((elem) => 
+                      <Text key={elem.id} style={styles.creditoValue}>{elem.name}</Text>
+                    )}
+                    </View>
+                  }
+                  {this.state.juego.artists.length > 0 &&
+                  <View style={styles.credito}>
+                    <Text style={styles.creditoTitle}>Arte</Text>
+                    {this.state.juego.artists.map((elem) => 
+                      <Text key={elem.id} style={styles.creditoValue}>{elem.name}</Text>
+                    )}
+                    </View>
+                  }
+                  {this.state.juego.publishers.length > 0 &&
+                  <View style={styles.credito}>
+                    <Text style={styles.creditoTitle}>Editor/es</Text>
+                    {this.state.juego.publishers.map((elem) => 
+                      <Text key={elem.id} style={styles.creditoValue}>{elem.name}</Text>
+                    )}
+                    </View>
+                  }
               </View>
               <View style={styles.seccion}>
                 <Text style={styles.seccionTitle}>Mecánicas</Text>
                 <View style={styles.seccionDataContainer}>
-                {this.state.juego.mecanicas.map((mecanica, index) => 
-                  <Text key={index} style={styles.seccionData}>{mecanica}</Text>
+                {this.state.juego.mecanicas.map((mecanica) => 
+                  <Text key={mecanica.id} style={styles.seccionData}>{mecanica.name}</Text>
                 )}
                 </View>
               </View>
               <View style={styles.seccion}>
                 <Text style={styles.seccionTitle}>Categorías</Text>
                 <View style={styles.seccionDataContainer}>
-                {this.state.juego.categorias.map((categoria, index) => 
-                  <Text key={index} style={styles.seccionData}>{categoria}</Text>
+                {this.state.juego.categorias.map((categoria) => 
+                  <Text key={categoria.id} style={styles.seccionData}>{categoria.name}</Text>
                 )}
                 </View>
               </View>
@@ -152,9 +174,12 @@ class Juego extends React.Component {
               <View style={styles.seccion}>
                 <Text style={styles.seccionTitle}>Premios</Text>
                 <View style={styles.seccionDataContainer}>
-                  <Text style={styles.seccionData}>{this.state.juego.premios}</Text>
+                {this.state.juego.premios.map((premio) => 
+                  <Text key={premio.id} style={styles.seccionData}>{premio.year} - {premio.title}</Text>
+                )}
                 </View>
               </View>
+              <CarruselPartidas title="Partidas abiertas" msgEmpty="No hay partidas actualmente para este juego" partidas={this.state.juego.partidas} />
             </ScrollView>
           </View>
           <Image style={styles.imageJuego}  source={{ uri: this.state.juego.image_url }} />
