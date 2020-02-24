@@ -27,6 +27,7 @@ class Biblioteca extends React.Component {
           loadingBusquedaJuegos: false,
           filterCategoria : null,
           filterMecanica : null,
+          busquedaJuegos: [],
     };
 
     async getAccessToken() {
@@ -46,6 +47,7 @@ class Biblioteca extends React.Component {
                         'filterJuegos': [],
                         'filterCategoria':null,
                         'filterMecanica':null,
+                        'busquedaJuegos':[],
                     })
                     this.loadCategorias();
                     this.loadMecanicas();
@@ -227,7 +229,7 @@ class Biblioteca extends React.Component {
                         Icon={() => {
                           return <Chevron size={1.5} color="white" />;
                         }}
-                        onValueChange={(value) => this.setState({filterCategoria:value})}
+                        onValueChange={(value) => this.setState({filterCategoria:value}, this.filtrarJuegos)}
                         items={this.state.categorias}
                       />
                       </View>
@@ -242,11 +244,14 @@ class Biblioteca extends React.Component {
                         Icon={() => {
                           return <Chevron size={1.5} color="white" />;
                         }}
-                        onValueChange={(value) => this.setState({filterMecanicas:value})}
+                        onValueChange={(value) => this.setState({filterMecanica:value}, this.filtrarJuegos)}
                         items={this.state.mecanicas}
                       />
                       </View>
                     </View>
+                    {this.state.busquedaJuegos.length > 0 &&
+                    <CarruselJuegos title="Listado juegos encontrados" msgEmpty="" juegos={this.state.busquedaJuegos} />
+                    }
                     <CarruselJuegos title="Tus Recomendaciones" msgEmpty="" juegos={this.state.recomendaciones} />
                     <CarruselJuegos title="Populares en tu zona" msgEmpty="" juegos={this.state.populares} />
                   </ScrollView>
@@ -269,6 +274,44 @@ class Biblioteca extends React.Component {
             </View>
         );
     }
+
+    filtrarJuegos = () => {
+      if (this.state.filterCategoria == null && this.state.filterMecanica == null) {
+        this.setState({'busquedaJuegos':[]});
+        return;
+      }
+      let filters = {};
+      if (this.state.filterCategoria != null) {
+        filters['categories'] = [this.state.filterCategoria];
+      }
+      if (this.state.filterMecanica != null) {
+        filters['mechanics'] = [this.state.filterMecanica];
+      }
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGames',{
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token: this.state.accessToken.token, 
+            user: {
+                email: this.state.accessToken.email
+            },
+            filters: filters
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+          if (response.result == 'OK') {
+              this.setState({'busquedaJuegos':response.games});
+          }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+    }
+
 
     mostrarJuegosSelect = () => {
         this.setState({selectorJuegosVisible:true})
