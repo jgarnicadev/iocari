@@ -20,6 +20,7 @@ class Biblioteca extends React.Component {
           categorias: [],
           mecanicas: [],
           recomendaciones: [],
+          populares: [],
           selectorJuegosVisible: false,
           todosJuegos: [],
           filterJuegos: [],
@@ -49,6 +50,7 @@ class Biblioteca extends React.Component {
                     this.loadCategorias();
                     this.loadMecanicas();
                     this.cargarRecomendaciones();
+                    this.cargarPopulares();
                 });
             }
         );
@@ -133,7 +135,6 @@ class Biblioteca extends React.Component {
         })
         .then((response) => response.json())
         .then((response) => {
-            console.log(response);
             if (response.result == 'OK') {
                 this.setState({'recomendaciones':response.games});
                 this.setState({
@@ -147,7 +148,30 @@ class Biblioteca extends React.Component {
         });
     }
     
-          
+    cargarPopulares = () => {
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getTrendyGames',{
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              token: this.state.accessToken.token, 
+              user: {
+                  email: this.state.accessToken.email
+              }
+          })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+          if (response.result == 'OK') {
+              this.setState({'populares':response.games});
+          }
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+  }
+        
     render() {
       let stylePicker = {
         inputAndroid: {
@@ -224,6 +248,7 @@ class Biblioteca extends React.Component {
                       </View>
                     </View>
                     <CarruselJuegos title="Tus Recomendaciones" msgEmpty="" juegos={this.state.recomendaciones} />
+                    <CarruselJuegos title="Populares en tu zona" msgEmpty="" juegos={this.state.populares} />
                   </ScrollView>
                 </View>
                 <Footer activo="biblioteca" />
