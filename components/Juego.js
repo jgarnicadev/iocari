@@ -333,9 +333,12 @@ const styles = StyleSheet.create({
     borderColor:'#0277bd',
     borderRadius:5,
     flexDirection:'row',
-    padding:15,
+    paddingVertical:15,
+    paddingHorizontal:0,
     alignItems:'center',
-    width:150
+    justifyContent:'center',
+    width:125,
+    // flex:1,
   },
   btnInactive: {
     backgroundColor:'transparent',
@@ -344,9 +347,11 @@ const styles = StyleSheet.create({
     backgroundColor:'#0277bd',
   },
   txtBtnActive: {
+    fontSize:12,
     color:'white',
   },
   txtBtnInactive: {
+    fontSize:12,
     color:'#0277bd',
   },
   descripcion: {
