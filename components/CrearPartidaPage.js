@@ -284,38 +284,41 @@ class CrearPartidaPage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
-        //subir imagen
-        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/uploadBattleImage',{
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            token: this.state.accessToken.token, 
-            user: {
-              email: this.state.accessToken.email
+        if (this.state.imageBase64 != '') {
+          //subir imagen
+          fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/uploadBattleImage',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
             },
-            image: {
-                mime:"image/jpeg",
-                data: this.state.imageBase64
-            },
-            battle: {
-              id: response.battle.id
+            body: JSON.stringify({
+              token: this.state.accessToken.token, 
+              user: {
+                email: this.state.accessToken.email
+              },
+              image: {
+                  mime:"image/jpeg",
+                  data: this.state.imageBase64
+              },
+              battle: {
+                id: response.battle.id
+              }
+            })
+          })
+          .then((response) => response.json())
+          .then((response) => {
+            //console.log(response);
+            if (response.result == 'OK') {
+              Alert.alert('Partida Creada');
+              this.props.navigation.navigate('home');  
+            } else if (response.result == 'NOK') { 
+              Alert.alert('Error en creación partida, problema en subida imagen');
             }
           })
-        })
-        .then((response) => response.json())
-        .then((response) => {
-          //console.log(response);
-          if (response.result == 'OK') {
-            Alert.alert('Partida Creada');
-            this.props.navigation.navigate('home');  
-          } else if (response.result == 'NOK') { 
-            Alert.alert('Error en creación partida, problema en subida imagen');
-          }
-        })
-        Alert.alert('Partida Creada');
-        this.props.navigation.navigate('home');  
+        } else {
+          Alert.alert('Partida Creada');
+          this.props.navigation.navigate('home');  
+        }
       } else if (response.result == 'NOK') { 
         Alert.alert('Error en creación partida, datos incorrectos');
       }
