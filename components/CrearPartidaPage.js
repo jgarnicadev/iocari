@@ -12,6 +12,7 @@ import Header from './Header';
 
 class CrearPartidaPage extends React.Component {
   searchWaiting = null;
+  publicando = false;
   state = {
     accessToken: '',
     image: null,
@@ -217,6 +218,8 @@ class CrearPartidaPage extends React.Component {
   }
 
   publicar() {
+    if (this.publicando) return;
+    this.publicando = true;
     if (
       !this.state.nombre ||
       this.state.juegos.length == 0 ||
@@ -231,26 +234,9 @@ class CrearPartidaPage extends React.Component {
       Alert.alert(
         'Debes rellenar todos los campos'
       );
+      this.publicando = false;
       return;
     }
-    /*let data = {
-      op: 'crearPartida',
-      accessToken: this.state.accessToken,
-      image: this.state.image,
-      imageBase64: this.state.imageBase64,
-      nombre: this.state.nombre,
-      juegos: this.state.juegos,
-      fecha: this.state.fecha,
-      hora: this.state.hora,
-      duracion: this.state.duracion,
-      tope_apuntarse: this.state.tope_apuntarse,
-      lugar: this.state.lugar,
-      players: this.state.players,
-      descripcion: this.state.descripcion,
-      privada: this.state.privada,
-      controlar_solicitudes: this.state.controlar_solicitudes,
-    };
-    var dataStr = JSON.stringify(data);*/
     var pattern_fecha = /(\d{2})\/(\d{2})\/(\d{4})/;
     var str_date = this.state.fecha.replace(pattern_fecha,'$3-$2-$1') + 'T' + this.state.hora;
     var init_date = new Date(str_date);
@@ -323,17 +309,21 @@ class CrearPartidaPage extends React.Component {
           .then((response) => {
             //console.log(response);
             if (response.result == 'OK') {
+              this.publicando = false;
               Alert.alert('Partida Creada');
               this.props.navigation.navigate('home');  
             } else if (response.result == 'NOK') { 
+              this.publicando = false;
               Alert.alert('Error en creación partida, problema en subida imagen');
             }
           })
         } else {
+          this.publicando = false;
           Alert.alert('Partida Creada');
           this.props.navigation.navigate('home');  
         }
       } else if (response.result == 'NOK') { 
+        this.publicando = false;
         Alert.alert('Error en creación partida, datos incorrectos');
       }
     });
