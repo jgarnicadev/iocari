@@ -5,9 +5,10 @@ import { withNavigation } from 'react-navigation';
 
 class Menu extends React.Component {
 
-    closeSession() {
+    closeSession = () => {
         AsyncStorage.removeItem('accessToken');
-        BackHandler.exitApp();
+        // BackHandler.exitApp();
+        this.props.navigation.navigate('login');
     }
 
     enDesarrollo  = () => {

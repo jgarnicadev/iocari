@@ -24,7 +24,7 @@ class HeaderMenu extends React.Component {
         try {
           let data = JSON.parse(value);
           //validate accessToken is valid
-          fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
+          fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getProfile',{
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ class HeaderMenu extends React.Component {
           .then((response) => response.json())
           .then((response) => {
             if (response.result == 'OK') {
-              this.setState({'user': response.user});
+              this.setState({'user': response.profile_user});
             }
           });
         } catch(e) {
@@ -53,8 +53,8 @@ class HeaderMenu extends React.Component {
         return (
             <View style={styles.header}>
                 <Avatar.Image size={50} source={{ uri: this.state.user.photo_url }} />
-                <Text style={[styles.textWhite,styles.nombreUsuario]}>{this.state.user.name} {this.state.user.last_name}</Text>
-                {/* <Caption style={[styles.textWhite,styles.sloganUsuario]}>App Pioneer</Caption> */}
+                <Text style={[styles.textWhite,styles.nombreUsuario]}>{this.state.user.username}</Text>
+                <Caption style={[styles.textWhite,styles.sloganUsuario]}>{this.state.user.title}</Caption>
             </View>
         );
     }
