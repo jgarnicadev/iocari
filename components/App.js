@@ -11,6 +11,7 @@ import Partida from './Partida';
 import Biblioteca from './Biblioteca';
 import Juego from './Juego';
 import Perfil from './Perfil';
+import Mapa from './Mapa';
 import Menu from './Menu';
 import HeaderMenu from './HeaderMenu';
 
@@ -25,6 +26,7 @@ const AppNavigator = createDrawerNavigator(
     biblioteca: Biblioteca,
     juego: Juego,
     perfil: Perfil,
+    mapa: Mapa,
   },
   {
     initialRouteName: "login",
