@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBackground, Alert, ScrollView } from 'react-native';
-import { Button, IconButton, Avatar, FAB, Dialog, Portal, TextInput  } from 'react-native-paper';
+import { Button, IconButton, Avatar, Dialog, Portal, TextInput  } from 'react-native-paper';
 import openMap from 'react-native-open-maps';
 
 import Header from './Header';
@@ -208,7 +208,21 @@ class Partida extends React.Component {
                   </View>
               </ImageBackground>
               <View style={styles.contenedor}>
-                  <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Comentarios</Text>
+                  <View style={{
+                    marginBottom:10,
+                    flexDirection:'row',
+                    justifyContent:'space-between',
+                  }}>
+                    <Text style={[styles.txtGris, styles.txtTitulo]}>Comentarios</Text>
+                    {this.state.apuntadoPartida == true && (
+                    <IconButton
+                      icon="comment-processing"
+                      color="#f50057"
+                      size={20}
+                      onPress={() => this.anadirComentario()}
+                    />
+                    )}
+                  </View>
                   {this.state.comentarios.map((elem) => (
                     <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
                       <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
@@ -238,12 +252,6 @@ class Partida extends React.Component {
                 </View>
               ) : null} 
               </ScrollView>
-              <FAB
-                style={styles.fab}
-                icon="plus"
-                onPress={() => this.anadirComentario()}
-                color="white"
-              />
               <Portal>
                 <Dialog visible={this.state.newCommentVisible} onDismiss={()=> this.setState({'newCommentVisible': false})}>
                   <Dialog.Content>
