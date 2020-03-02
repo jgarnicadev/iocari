@@ -251,6 +251,11 @@ class Partida extends React.Component {
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
                 </View>
               ) : null} 
+              {this.state.partida.jugadores[0].email == this.state.accessToken.email && (
+                <View style={styles.contenedor}>
+                  <Button style={[styles.button,{borderColor:'#f50057'}]} mode="outlined" dark="true" color="#f50057" onPress={this.cancelarPartida}>Cancelar partida</Button>
+                </View>
+              )}
               </ScrollView>
               <Portal>
                 <Dialog visible={this.state.newCommentVisible} onDismiss={()=> this.setState({'newCommentVisible': false})}>
@@ -264,6 +269,27 @@ class Partida extends React.Component {
                       maxLength={144}
                       onSubmitEditing={this.newComment}
                     />
+                  </Dialog.Content>
+                </Dialog>
+                <Dialog visible={this.state.cancelarPartidaVisible} onDismiss={()=> this.setState({'cancelarPartidaVisible': false})}>
+                  <Dialog.Content>
+                    <Text style={[styles.txtGris,{
+                      textAlign:'center',
+                      fontSize:20
+                    }]}>¿Seguro que deseas cancelar la partida?</Text>
+                    <View style={[styles.contenedor,{flexDirection:'row',justifyContent:'space-between'}]}>
+                      <Button style={[styles.button,{
+                        flex:1,
+                        marginRight:3,
+                        borderColor:'#f50057',
+                        fontSize:20
+                      }]} mode="outlined" dark="true" color="#f50057" onPress={this.cancelarPartidaConfirm}>SÍ</Button>
+                      <Button style={[styles.button,{
+                        flex:1,
+                        marginLeft:3,
+                        fontSize:20
+                      }]} mode="contained" dark="true" color="#f50057" onPress={()=> this.setState({'cancelarPartidaVisible': false})}>NO</Button>
+                    </View>
                   </Dialog.Content>
                 </Dialog>
               </Portal>
@@ -378,6 +404,45 @@ class Partida extends React.Component {
 
     abrirMapa = () => {
       openMap({query: this.state.partida.address});
+    }
+
+    cancelarPartida = () => {
+      this.setState({
+        'cancelarPartidaVisible': true
+      })
+    }
+
+    cancelarPartidaConfirm = () => {
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/cancelBattle',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        if (response.result == 'OK') {
+          Alert.alert('Partida cancelada!');
+        } else {
+          Alert.alert('Error: Solicitud no procesada!');
+        }
+        this.setState({
+          'cancelarPartidaVisible': false
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
 
 }
