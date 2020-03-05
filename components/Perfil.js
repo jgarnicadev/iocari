@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, AsyncStorage, Alert, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, AsyncStorage, Alert, Image, ActivityIndicator } from 'react-native';
 import { Text, TouchableRipple, Title } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { IconButton } from 'react-native-paper';
@@ -19,6 +19,10 @@ class Perfil extends React.Component {
         },
         avatar: null,
         avatarBase64: '',
+        uid: '',
+        user:null,
+        medallas: [],
+        loading: true,
     }
 
     async getAccessToken() {
@@ -30,17 +34,73 @@ class Perfil extends React.Component {
         this.props.navigation.addListener(
             'didFocus',
             payload => {
+                this.setState({'loading':true});
                 this.getAccessToken().then( value => {
                     this.setState({'accessToken':JSON.parse(value)});
+                    const uid = this.props.navigation.getParam('id_usuario', '');
+                    this.props.navigation.setParams({'id_usuario': ''});
+                    // console.log('usuario: '+uid);
+                    this.setState({'uid':uid}, this.loadProfile);
                 });
             }
         );
     }
 
+    loadProfile = () => {
+        if (this.state.uid == '') {
+            data = {
+                token: this.state.accessToken.token, 
+                user: {
+                  email: this.state.accessToken.email
+                }
+              };
+        } else {
+            data = {
+                token: this.state.accessToken.token, 
+                user: {
+                  email: this.state.accessToken.email
+                },
+                profile_user: {
+                    id: this.state.uid
+                }
+              };
+
+        }
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getProfile',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+          .then((response) => response.json())
+          .then((response) => {
+            // console.log(response);
+            if (response.result == 'OK') {
+              this.setState({
+                    'user': response.profile_user,
+                    'avatar': response.profile_user.photo_url,
+                    'medallas': response.achivements,
+                    'loading':false,
+                });
+            }
+          });
+    }
+
     render() {
-        return (
+        if (this.state.loading) {
+            return (
+              <View style={[styles.container,{justifyContent:'center'}]}><ActivityIndicator size="large" /></View>
+            );
+          }
+        //   console.log(this.state.medallas);
+          return (
             <View style={styles.container}>
-                <Header title="Perfil" hideBack={true} />
+                {this.state.uid == '' ?
+                    (<Header title="Perfil" hideBack={true} onEditarMiPerfil={this.editarMiPerfil} />)
+                    :
+                    (<Header title="Perfil" hideBack={true} onAddAmigo={this.addAmigo}/>)
+                }
                 <ScrollView style={styles.main}>
                     <View style={styles.botoneraSuperior}>
                         <TouchableRipple onPress={this.enDesarrollo} style={{flex:1}}>
@@ -62,42 +122,43 @@ class Perfil extends React.Component {
                             </View>
                         </TouchableRipple>
                     </View>
-                    <Image source={require('../assets/bannerPerfil.jpg')} style={styles.banner} resizeMode="cover"/>
-                    <TouchableHighlight onPress={this.changeAvatar} style={styles.avatarWrapper}>
-                        <Image source={ this.state.avatar ? { uri: this.state.avatar } : require('../assets/avatarPerfil.png') } style={styles.avatar} resizeMode="cover" />
-                    </TouchableHighlight>
-                    <Title style={styles.nombreUsuario}>Sideshow Bob</Title>
-                    <Text style={styles.sloganUsuario}>App Pioneer</Text>
+                    <View style={styles.container}>
+                        <Image source={ (this.state.user.bg_image_url != '') ? { uri: this.state.user.bg_image_url } : require('../assets/bannerPerfil.jpg')} style={styles.banner} resizeMode="cover"/>
+                        <TouchableHighlight onPress={this.changeAvatar} style={styles.avatarWrapper}>
+                            <Image source={ this.state.avatar ? { uri: this.state.avatar } : require('../assets/avatarPerfil.png') } style={styles.avatar} resizeMode="cover" />
+                        </TouchableHighlight>
+                    </View>
+                    <Title style={styles.nombreUsuario}>{this.state.user.username}</Title>
+                    <Text style={styles.sloganUsuario}>{this.state.user.title}</Text>
                     <View style={styles.ubicacion}>
                         <IconButton icon="map-marker" color="black" size={20} style={styles.ubicacionIcon}></IconButton>
-                        <Text style={styles.ubicacionText}>Madrid, España</Text>
+                        <Text style={styles.ubicacionText}>{this.state.user.city}, {this.state.user.id_country}</Text>
                     </View>
                     <View style={styles.estadisticas}>
                         <View style={styles.estadisticasData}>
-                            <Text style={styles.estadisticasValue}>80</Text>
+                            <Text style={styles.estadisticasValue}>{this.state.user.num_battles}</Text>
                             <Text style={styles.estadisticasLabel}>Partidas jugadas</Text>
                         </View>
                         <View style={styles.estadisticasData}>
-                            <Text style={styles.estadisticasValue}>9</Text>
+                            <Text style={styles.estadisticasValue}>{this.state.user.num_games}</Text>
                             <Text style={styles.estadisticasLabel}>Juegos</Text>
                         </View>
                         <View style={styles.estadisticasData}>
-                            <Text style={styles.estadisticasValue}>40</Text>
+                            <Text style={styles.estadisticasValue}>{this.state.user.num_friends}</Text>
                             <Text style={styles.estadisticasLabel}>Amigos</Text>
                         </View>
                     </View>
                     <View style={styles.dobleColumna}>
                         <View style={styles.columna80}>
                             <Text style={styles.tituloApartado}>Acerca de mí</Text>
-                            <Text style={styles.textoApartado}>Ut porttitor non ante at lacinia. Morbi sed volutpat risus, id mollis tortor. Donec congue urna et ipsum aliquet tempus. Proin finibus ante mi, eget vestibulum nunc dapibus ut. Sed imperdiet dolor nec tempor fermentum. Praesent at ultrices augue, sit amet mollis quam. Cras hendrerit vestibulum dignissim. Cras ac sapien sapien. Ut quis urna eros. Quisque nisl enim, semper et porta non, ultricies vitae turpis. Nullam tempus vitae magna a venenatis. Maecenas magna est, sodales at dui at, sollicitudin placerat velit.
-
-                            Praesent convallis semper sagittis. Fusce id vestibulum lorem. Nullam nec augue velit.</Text>
+                            <Text style={styles.textoApartado}>{this.state.user.about_me}</Text>
                         </View>
                         <View style={styles.columna20}>
                             <Text style={styles.tituloApartado}>Medallas</Text>
-                            <Image source={require('../assets/medallaPerfil.png')} style={styles.medalla}/>
-                            <Image source={require('../assets/medallaPerfil.png')} style={styles.medalla}/>
-                            <Image source={require('../assets/medallaPerfil.png')} style={styles.medalla}/>
+                            {this.state.medallas.map((medalla) => 
+                                <Image key={medalla.id} source={{ uri: medalla.image_url }} style={styles.medalla}/>                            
+                            )}
+                            {/* <Image source={require('../assets/medallaPerfil.png')} style={styles.medalla}/> */}
                         </View>
                     </View>
                 </ScrollView>
@@ -113,7 +174,48 @@ class Perfil extends React.Component {
         //TODO
       }
 
+    editarMiPerfil = () => {
+        Alert.alert(
+            'A desarrollar...'
+        );
+        //TODO
+    }
+
+    addAmigo = () => {
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/followUser',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              token: this.state.accessToken.token, 
+              user: {
+                  email: this.state.accessToken.email
+              },
+              follow_user: {
+                id: this.state.uid, 
+              }
+            })
+          })
+          .then((response) => response.json())
+          .then((response) => {
+            // console.log(response);
+            if (response.result == 'OK') {
+              Alert.alert('Solicitud enviada!');
+            } else {
+              Alert.alert('Error: Solicitud no procesada!');
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    }
+
     changeAvatar = async () => {
+        if (this.state.uid != '') {
+            // console.log('no permiso');
+            return; //solo perfil propio
+        }
         const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
         if (status === 'granted') {
           let result = await ImagePicker.launchImageLibraryAsync({
@@ -203,12 +305,15 @@ const styles = StyleSheet.create({
     },
     banner: {
         height:170,
+        position:'absolute',
+        top:0,
+        width:'100%',
     },
     avatarWrapper: {
         alignSelf:'center',
         width:150,
         height:150,
-        marginTop:-100,
+        marginTop:70,
         marginBottom:0,
         padding:0,
     },
@@ -280,6 +385,8 @@ const styles = StyleSheet.create({
     },
     medalla: {
         alignSelf:'center',
+        width:44,
+        height:44
     }
 });
   

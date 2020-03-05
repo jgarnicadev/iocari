@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableHighlight, Image } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { Appbar, IconButton } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { DrawerActions } from 'react-navigation-drawer';
 
@@ -46,6 +46,26 @@ class Header extends React.Component {
             </View>
           </TouchableHighlight>
         }
+        {!this.props.onEditarMiPerfil || 
+          <IconButton
+            icon="border-color"
+            color="white"
+            size={20}
+            onPress={this.props.onEditarMiPerfil}
+          />
+        }
+        {!this.props.onAddAmigo || (
+          <TouchableHighlight onPress={this.props.onAddAmigo} >
+            <View style={styles.btnPublicarWrp}>
+            <Text style={styles.btnPublicarTxt}>Agregar</Text>
+            <IconButton
+              icon="plus-circle-outline"
+              color="white"
+              size={20}
+            />
+            </View>
+          </TouchableHighlight>
+        )}
       </Appbar.Header>
     );
   }

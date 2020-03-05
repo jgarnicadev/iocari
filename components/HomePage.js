@@ -38,7 +38,7 @@ class HomePage extends React.Component {
           this.setState({'accessToken':JSON.parse(value)});
           this.cargarMisPartidas();
           this.cargarPartidasHoy();
-          // this.cargarPartidasCerca();
+          this.cargarPartidasCerca();
         });
       }
     );

@@ -5,12 +5,14 @@ import openMap from 'react-native-open-maps';
 
 import Header from './Header';
 import CarruselJuegos from './CarruselJuegos';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 
 class Partida extends React.Component {
     state = {
       accessToken: {
         token: '',
-        email: ''
+        email: '',
+        username: '',
       },
       id_partida: 0,
       partida: null,
@@ -69,7 +71,7 @@ class Partida extends React.Component {
           response.battle.juegos = response.games;
           response.battle.jugadores = response.users;
           response.users.forEach(elem => {
-            if (elem.email == this.state.accessToken.email) {
+            if (elem.username == this.state.accessToken.username) {
               this.setState({'apuntadoPartida': true});
             }
           });
@@ -153,6 +155,12 @@ class Partida extends React.Component {
       return hours+'h';
     }
 
+    verPerfil = (uid) => {
+      this.props.navigation.navigate('perfil', {
+        id_usuario: uid
+      });
+    }
+
     render() {
         if (this.state.loading) {
           return (
@@ -164,7 +172,11 @@ class Partida extends React.Component {
               <Header title={this.state.partida.name} />
               <ScrollView>
               <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
-                <Avatar.Image style={styles.avatarCreador} size={48} source={{ uri: this.state.partida.jugadores[0].photo_url }} />
+                <View  style={styles.avatarCreador}>
+                <TouchableHighlight onPress={() => this.verPerfil(this.state.partida.jugadores[0].id)}>
+                  <Avatar.Image size={48} source={{ uri: this.state.partida.jugadores[0].photo_url }} style={{borderWidth:4,borderColor:'white'}} />
+                </TouchableHighlight>
+                </View>
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-fecha.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
                   <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.getParteFecha(this.state.partida.init_date)}</Text>
@@ -196,8 +208,9 @@ class Partida extends React.Component {
               <View style={styles.contenedor}>
                 <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Personas apuntadas</Text>
                 {this.state.partida.jugadores.map((elem) => 
-                  // <Text style={styles.txtGris} key={elem.username}>{elem.username}</Text>
-                  <Avatar.Image key={elem.username} style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url }} />
+                  <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
+                    <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url }} />
+                  </TouchableHighlight>
                 )}
               </View>
               <ImageBackground style={styles.contenedorLugar} source={require('../assets/mapa.jpg')} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
@@ -225,7 +238,9 @@ class Partida extends React.Component {
                   </View>
                   {this.state.comentarios.map((elem) => (
                     <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
-                      <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
+                      <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
+                        <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
+                      </TouchableHighlight>
                       <View style={styles.contenidoComentario}>
                         <Text style={styles.usernameComentario}>{elem.username}</Text>
                         <Text style={styles.fechaComentario}>{elem.timestamp}</Text>
@@ -234,7 +249,9 @@ class Partida extends React.Component {
                         
                         {this.state.respuestas[elem.id].map((elem) => (
                           <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
-                            <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
+                            <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
+                              <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
+                            </TouchableHighlight>
                             <View style={styles.contenidoComentario}>
                               <Text style={styles.usernameComentario}>{elem.username}</Text>
                               <Text style={styles.fechaComentario}>{elem.timestamp}</Text>
@@ -251,7 +268,7 @@ class Partida extends React.Component {
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
                 </View>
               ) : null} 
-              {this.state.partida.jugadores[0].email == this.state.accessToken.email && (
+              {this.state.partida.jugadores[0].username == this.state.accessToken.username && (
                 <View style={styles.contenedor}>
                   <Button style={[styles.button,{borderColor:'#f50057'}]} mode="outlined" dark="true" color="#f50057" onPress={this.cancelarPartida}>Cancelar partida</Button>
                 </View>
@@ -511,11 +528,11 @@ const styles = StyleSheet.create({
       right:20,
     },
     avatarCreador: {
-      borderWidth:4,
-      borderColor:'white',
       position:"absolute",
       right:20,
       bottom:60,
+      width:56,
+      height:56,
     },
     avatarJugador: {
       borderWidth:4,

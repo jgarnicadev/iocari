@@ -90,7 +90,8 @@ class RegisterPage2 extends React.Component {
           if (response.result == 'OK') {
             let data = {
               token: response.token,
-              email: response.user.email
+              email: response.user.email,
+              username: response.user.username,
             }
             this.guardarAccessToken(data);
             this.props.navigation.navigate('home');  
