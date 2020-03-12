@@ -342,13 +342,15 @@ class CrearPartidaPage extends React.Component {
         <Header title="Crear Partida" onBack={this.handleBack} onCrearPartida={this.publicar} />
         <ScrollView>
           <View  style={styles.fondoNormal}>
-            {image ?
-              <Image source={{ uri: image }} style={styles.image} />
-              :
-              <Image source={require('../assets/image-partida-default.png')} style={styles.imageDefault} />
-            }
-            <TouchableHighlight onPress={this._pickImage} style={styles.btnSelectImage}>
-              <Text style={styles.btnSelectImageTxt}>Elige una imagen</Text>
+            <TouchableHighlight onPress={this._pickImage}>
+              <View>
+              {image ?
+                <Image source={{ uri: image }} style={styles.image} />
+                :
+                <Image source={require('../assets/image-partida-default.png')} style={styles.imageDefault} />
+              }
+              <Text style={[styles.btnSelectImage,styles.btnSelectImageTxt]}>Elige una imagen</Text>
+              </View>
             </TouchableHighlight>
           </View>
           <View  style={styles.fondoNormal}>
