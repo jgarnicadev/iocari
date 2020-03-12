@@ -8,9 +8,13 @@ class CarruselPartidas extends React.Component {
     render() {
       return (
         <View>
-            <Title>{this.props.title}</Title>
+            <Title style={{
+              paddingHorizontal:15,
+            }}>{this.props.title}</Title>
             {this.props.partidas.length == 0 ? (
-              <Text>{this.props.msgEmpty}</Text>
+              <Text style={{
+                paddingHorizontal:15,
+              }}>{this.props.msgEmpty}</Text>
             ) : (
               <ScrollView horizontal="true">
               {this.props.partidas.map((elem) => 

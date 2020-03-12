@@ -234,18 +234,19 @@ class HomePage extends React.Component {
           </View>
         </View>
         <View style={styles.main}>
-          <ScrollView style={styles.mainWrap}>
+          <ScrollView>
             {this.state.busquedaText != '' &&
-              this.state.realizandoBusqueda == true && <View style={[styles.container,{justifyContent:'center'}]}><ActivityIndicator  /></View>
+              this.state.realizandoBusqueda == true && <View style={[styles.container,styles.mainWrap,{justifyContent:'center', marginTop:20}]}><ActivityIndicator  /></View>
             }
             {this.state.busquedaText != '' &&
-              this.state.realizandoBusqueda == false && <View style={{marginBottom:20}}><CarruselPartidas title="Resultado de búsqueda" msgEmpty="Nos se han encontrado partidas" partidas={this.state.busquedaResultados} /></View>
+              this.state.realizandoBusqueda == false && <View style={{marginVertical:20}}><CarruselPartidas title="Resultado de búsqueda" msgEmpty="Nos se han encontrado partidas" partidas={this.state.busquedaResultados} /></View>
             }
-            <View style={{
+            <View style={[styles.mainWrap,{
+              marginTop:20,
               marginBottom:10,
               flexDirection:'row',
               justifyContent:'space-between'
-            }}>
+            }]}>
               <Title style={{
                 flex:9
               }}>Partidas Disponibles</Title>
@@ -269,6 +270,7 @@ class HomePage extends React.Component {
               paddingVertical:2,
               borderRadius: 4,
               backgroundColor: '#0277bd',
+              marginLeft:15,
             }}
             onPress={
               () => this.refs.datepicker.onPressDate()
@@ -334,7 +336,7 @@ const styles = StyleSheet.create({
   main: {
     flex:1,
     backgroundColor:'#f3f1f1',
-    paddingVertical:20,
+    // paddingVertical:20,
   },
   mainWrap: {
     paddingHorizontal:15,
