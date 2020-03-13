@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, AsyncStorage, Alert, Image, ActivityIndicator } from 'react-native';
-import { Text, TouchableRipple, Title } from 'react-native-paper';
+import { Text, TouchableRipple, Title, Avatar } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { IconButton } from 'react-native-paper';
 import { TouchableHighlight } from 'react-native-gesture-handler';
@@ -75,7 +75,7 @@ class Perfil extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
-            // console.log(response);
+            console.log(response);
             if (response.result == 'OK') {
               this.setState({
                     'user': response.profile_user,
@@ -125,7 +125,7 @@ class Perfil extends React.Component {
                     <View style={styles.container}>
                         <Image source={ (this.state.user.bg_image_url != '') ? { uri: this.state.user.bg_image_url } : require('../assets/bannerPerfil.jpg')} style={styles.banner} resizeMode="cover"/>
                         <TouchableHighlight onPress={this.changeAvatar} style={styles.avatarWrapper}>
-                            <Image source={ this.state.avatar ? { uri: this.state.avatar } : require('../assets/avatarPerfil.png') } style={styles.avatar} resizeMode="cover" />
+                            <Avatar.Image size={150} source={ this.state.avatar ? { uri: this.state.avatar + '?' + new Date() } : require('../assets/avatarPerfil.png') } />
                         </TouchableHighlight>
                     </View>
                     <Title style={styles.nombreUsuario}>{this.state.user.username}</Title>
@@ -267,6 +267,7 @@ class Perfil extends React.Component {
               })
               .then((response) => response.json())
               .then((response) => {
+                  console.log(response);
                   if (response.result == 'OK') {
                   }
               })
