@@ -174,7 +174,7 @@ class Partida extends React.Component {
               <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                 <View  style={styles.avatarCreador}>
                 <TouchableHighlight onPress={() => this.verPerfil(this.state.partida.jugadores[0].id)}>
-                  <Avatar.Image size={48} source={{ uri: this.state.partida.jugadores[0].photo_url }} style={{borderWidth:4,borderColor:'white'}} />
+                  <Avatar.Image size={48} source={{ uri: this.state.partida.jugadores[0].photo_url  + '?' + new Date() }} style={{borderWidth:4,borderColor:'white'}} />
                 </TouchableHighlight>
                 </View>
                 <View style={styles.cabeceraWarpTxt}>
@@ -209,7 +209,7 @@ class Partida extends React.Component {
                 <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Personas apuntadas</Text>
                 {this.state.partida.jugadores.map((elem) => 
                   <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
-                    <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url }} />
+                    <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
                   </TouchableHighlight>
                 )}
               </View>
@@ -239,7 +239,7 @@ class Partida extends React.Component {
                   {this.state.comentarios.map((elem) => (
                     <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
                       <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
-                        <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
+                        <Avatar.Image size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} style={styles.avatarComentario} />
                       </TouchableHighlight>
                       <View style={styles.contenidoComentario}>
                         <Text style={styles.usernameComentario}>{elem.username}</Text>
@@ -250,7 +250,7 @@ class Partida extends React.Component {
                         {this.state.respuestas[elem.id].map((elem) => (
                           <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
                             <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
-                              <Avatar.Image size={40} source={{ uri: elem.photo_url }} style={styles.avatarComentario} />
+                              <Avatar.Image size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} style={styles.avatarComentario} />
                             </TouchableHighlight>
                             <View style={styles.contenidoComentario}>
                               <Text style={styles.usernameComentario}>{elem.username}</Text>

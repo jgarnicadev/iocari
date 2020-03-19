@@ -54,7 +54,7 @@ class HeaderMenu extends React.Component {
         return (
             <View style={styles.header}>
                 <TouchableHighlight onPress={() => this.props.navigation.navigate('perfil')}>
-                  <Avatar.Image size={50} source={{ uri: this.state.user.photo_url }} />
+                  <Avatar.Image size={50} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} />
                 </TouchableHighlight>
                 <Text style={[styles.textWhite,styles.nombreUsuario]}>{this.state.user.username}</Text>
                 <Caption style={[styles.textWhite,styles.sloganUsuario]}>{this.state.user.title}</Caption>

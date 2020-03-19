@@ -80,7 +80,7 @@ class Mapa extends React.Component {
                     <IconButton icon="human-male-female" color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
                     <Text style={{ color: 'white' }}>{partida.current_players} / {partida.num_players}</Text>
                   </View>
-                  {/* {this.state.datosUser != null && <Avatar.Image size={35} source={{ uri: this.state.datosUser.photo_url }} style={styles.avatarUser} />} */}
+                  {/* {this.state.datosUser != null && <Avatar.Image size={35} source={{ uri: this.state.datosUser.photo_url  + '?' + new Date() }} style={styles.avatarUser} />} */}
                 </View>
               </Callout>
             </Marker>
