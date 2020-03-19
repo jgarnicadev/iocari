@@ -4,6 +4,8 @@ import { Title, IconButton, Text} from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { Chevron } from 'react-native-shapes'
 import DatePicker from 'react-native-datepicker';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -18,6 +20,7 @@ class HomePage extends React.Component {
     },
     mis_partidas: [],
     partidas_hoy: [],
+    location: null,
     partidas_cerca: [],
     busquedaText: '',
     busquedaResultados: [],
@@ -38,7 +41,8 @@ class HomePage extends React.Component {
           this.setState({'accessToken':JSON.parse(value)});
           this.cargarMisPartidas();
           this.cargarPartidasHoy();
-          this.cargarPartidasCerca();
+          // this.cargarPartidasCerca();
+          this.getLocationAsync();
         });
       }
     );
@@ -54,6 +58,18 @@ class HomePage extends React.Component {
     BackHandler.exitApp();
   }  
 
+  getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status === 'granted') {
+      let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
+      // location = {
+      //   latitude:40.4161629,
+      //   longitude:-3.6822606
+      // }
+      this.setState({ location }, this.cargarPartidasCerca);
+    }
+  }
+
   cargarMisPartidas() {
     fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyBattles',{
       method: 'POST',
@@ -63,14 +79,14 @@ class HomePage extends React.Component {
       body: JSON.stringify({
         token: this.state.accessToken.token, 
         user: {
-          email: this.state.accessToken.email
+          email: this.state.accessToken.email,
         }
       })
     })
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
-        //console.log(response);
+        // console.log(response);
         this.setState({'mis_partidas':response.battles});
       }
     })
@@ -104,6 +120,7 @@ class HomePage extends React.Component {
   }
 
   cargarPartidasCerca = () => {
+    // console.log(this.state.location);
     fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getCloseBattles',{
       method: 'POST',
       headers: {
@@ -112,12 +129,17 @@ class HomePage extends React.Component {
       body: JSON.stringify({
         token: this.state.accessToken.token, 
         user: {
-          email: this.state.accessToken.email
+          email: this.state.accessToken.email,
+          location: {
+            lat: this.state.location.coords.latitude,
+            lng: this.state.location.coords.longitude,
+          }
         }
       })
     })
     .then((response) => response.json())
     .then((response) => {
+      // console.log(response);
       if (response.result == 'OK') {
         this.setState({'partidas_cerca':response.battles});
       }
