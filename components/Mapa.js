@@ -1,6 +1,6 @@
 import React from 'react';
 import { withNavigation } from 'react-navigation';
-import { StyleSheet, View, AsyncStorage , Image, Text, WebView} from 'react-native';
+import { StyleSheet, View, AsyncStorage , Image, Text, WebView } from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
@@ -60,7 +60,9 @@ class Mapa extends React.Component {
                 padding:0,
                 flexDirection: 'column',
                 alignItems: 'center',
-              }}>
+              }}
+              onPress={() => this.showPartida(partida.id)}
+              >
                 <View style={{width:190}}>
                   <WebView
                     source={{
@@ -138,6 +140,12 @@ class Mapa extends React.Component {
     this.map.fitToElements(true);
   }
 
+  showPartida = (idPartida) => {
+    console.log('test' + idPartida);
+    this.props.navigation.navigate('partida', {
+      id_partida: idPartida
+    });
+  }
 
 }
 
