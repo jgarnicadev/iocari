@@ -75,7 +75,6 @@ class Perfil extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
-            console.log(response);
             if (response.result == 'OK') {
               this.setState({
                     'user': response.profile_user,
@@ -109,7 +108,7 @@ class Perfil extends React.Component {
                             <Text style={styles.botonSuperiorText}>Mis Partidas</Text>
                             </View>
                         </TouchableRipple>
-                        <TouchableRipple onPress={this.enDesarrollo} style={{flex:1}}>
+                        <TouchableRipple onPress={() => this.props.navigation.navigate('estanteria')} style={{flex:1}}>
                             <View style={styles.botonSuperior}>
                             <Image source={require('../assets/miEstanteria.png')} style={styles.botonSuperiorIcon} />
                             <Text style={styles.botonSuperiorText}>Mi estantería</Text>
