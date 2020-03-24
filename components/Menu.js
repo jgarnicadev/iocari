@@ -24,7 +24,7 @@ class Menu extends React.Component {
                 <TouchableHighlight onPress={() => this.props.navigation.navigate('biblioteca')}>
                     <Drawer.Item label="Biblioteca" icon="view-list" style={styles.elementMenu} theme={{ colors: { text: 'white' } }} />
                 </TouchableHighlight>
-                <TouchableHighlight onPress={this.enDesarrollo}>
+                <TouchableHighlight onPress={() => this.props.navigation.navigate('misPartidas')}>
                     <Drawer.Item label="Mis Partidas" icon={require('../assets/misPartidas.png')} style={styles.elementMenu} theme={{ colors: { text: 'white' } }} />
                 </TouchableHighlight>
                 <TouchableHighlight onPress={this.enDesarrollo}>

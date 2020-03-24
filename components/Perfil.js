@@ -102,7 +102,7 @@ class Perfil extends React.Component {
                 }
                 <ScrollView style={styles.main}>
                     <View style={styles.botoneraSuperior}>
-                        <TouchableRipple onPress={this.enDesarrollo} style={{flex:1}}>
+                        <TouchableRipple onPress={() => this.props.navigation.navigate('misPartidas')} style={{flex:1}}>
                             <View style={styles.botonSuperior}>
                             <Image source={require('../assets/misPartidas.png')} style={styles.botonSuperiorIcon} />
                             <Text style={styles.botonSuperiorText}>Mis Partidas</Text>

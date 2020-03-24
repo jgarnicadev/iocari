@@ -15,6 +15,7 @@ import Mapa from './Mapa';
 import Menu from './Menu';
 import HeaderMenu from './HeaderMenu';
 import Estanteria from './Estanteria';
+import MisPartidas from './MisPartidas';
 
 const AppNavigator = createDrawerNavigator(
   {
@@ -29,6 +30,7 @@ const AppNavigator = createDrawerNavigator(
     perfil: Perfil,
     mapa: Mapa,
     estanteria: Estanteria,
+    misPartidas: MisPartidas,
   },
   {
     initialRouteName: "login",
