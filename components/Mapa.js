@@ -42,6 +42,7 @@ class Mapa extends React.Component {
             longitudeDelta: 0.0421,
           }}
           onPress={this.setZoomMapa}
+          showsUserLocation={true}
         >
           {this.state.partidas_cerca.map(partida => {
             // console.log(partida);
