@@ -20,6 +20,19 @@ class HeaderMenu extends React.Component {
         this.obtenerDatosUser();
     }
 
+    componentDidUpdate(prevProps, prevState) {
+      this.getAccessToken().then( value => {
+        try {
+          let data = JSON.parse(value);
+          if ( prevState.user == null || prevState.user.username != data.username ) {
+            this.obtenerDatosUser();
+          }
+        } catch(e) {
+          //accesstoken guardado no es json
+        }
+      });
+    }
+
     obtenerDatosUser = () => {
       this.getAccessToken().then( value => {
         try {
