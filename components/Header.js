@@ -121,7 +121,7 @@ class Header extends React.Component {
               fontSize:22,
               fontWeight:"400",
             }}>{this.state.user.username}</Text>
-            <Avatar.Image size={45} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} />
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('perfil')} ><Avatar.Image size={45} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} /></TouchableHighlight>
           </View>
         )}
       </Appbar.Header>

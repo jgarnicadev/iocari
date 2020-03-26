@@ -7,7 +7,7 @@ import { Chevron } from 'react-native-shapes'
 
 import Header from './Header';
 import Footer from './Footer';
-import CarruselJuegos from './CarruselJuegos';
+import ListadoJuegos from './ListadoJuegos';
 
 class Estanteria extends React.Component {
     searchWaiting = null;
@@ -245,7 +245,7 @@ class Estanteria extends React.Component {
                       </View>
                     </View> */}
 
-                    <CarruselJuegos title={titleJuegos} msgEmpty="Aún no tienes ningun juego añadido!" juegos={this.state.juegos} />
+                    <ListadoJuegos title={titleJuegos} msgEmpty="Aún no tienes ningun juego añadido!" juegos={this.state.juegos} />
                     </View>
                 </ScrollView>
                 <Footer activo="perfil" />
