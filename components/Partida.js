@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBackground, Alert, ScrollView } from 'react-native';
 import { Button, IconButton, Avatar, Dialog, Portal, TextInput  } from 'react-native-paper';
 import openMap from 'react-native-open-maps';
+import { AirbnbRating } from 'react-native-ratings';
 
 import Header from './Header';
 import CarruselJuegos from './CarruselJuegos';
@@ -20,6 +21,9 @@ class Partida extends React.Component {
       comentarios: [],
       respuestas: [],
       apuntadoPartida: false,
+      partidaTerminada: false,
+      valoracionPartida: 0,
+      valorarPartidaVisible: false,
     }
 
     async getAccessToken() {
@@ -63,20 +67,31 @@ class Partida extends React.Component {
       .then((response) => response.json())
       .then((response) => {
         if (response.result == 'OK') {
-          let juegos = [];
-          // response.games.forEach(juego => {
-          //   juegos.push(juego.name);
-          // });
-          // response.battle.juegos = juegos.join(', ');
+          console.log(response.battle);
           response.battle.juegos = response.games;
           response.battle.jugadores = response.users;
+          let apuntado = false;
+          let terminada = false;
+          let end_date = new Date(response.battle.end_date);
+          if (end_date.getTime() < Date.now()) {
+            terminada = true;
+          }
           response.users.forEach(elem => {
             if (elem.username == this.state.accessToken.username) {
-              this.setState({'apuntadoPartida': true});
+              apuntado = true;
             }
           });
-          this.setState({'partida':response.battle});
-          this.setState({'loading':false});
+          let mostrarValoracion = false;
+          if (apuntado && terminada && (response.battle.my_rating == null || response.battle.my_rating == 0)) {
+            mostrarValoracion = true;
+          }
+          this.setState({
+            'apuntadoPartida': apuntado,
+            'partidaTerminada': terminada,
+            'partida': response.battle,
+            'loading': false,
+            'valorarPartidaVisible': mostrarValoracion,
+          });
         }
       })
       .catch((error) => {
@@ -273,6 +288,11 @@ class Partida extends React.Component {
                   <Button style={[styles.button,{borderColor:'#f50057'}]} mode="outlined" dark="true" color="#f50057" onPress={this.cancelarPartida}>Cancelar partida</Button>
                 </View>
               )}
+              {(this.state.partidaTerminada && this.state.apuntadoPartida && (this.state.partida.my_rating == null || this.state.partida.my_rating == 0)) ? (
+                <View style={styles.contenedor}>
+                  <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={()=> this.setState({'valorarPartidaVisible': true})}>Valorar</Button>
+                </View>
+              ) : null} 
               </ScrollView>
               <Portal>
                 <Dialog visible={this.state.newCommentVisible} onDismiss={()=> this.setState({'newCommentVisible': false})}>
@@ -309,9 +329,74 @@ class Partida extends React.Component {
                     </View>
                   </Dialog.Content>
                 </Dialog>
+                <Dialog visible={this.state.valorarPartidaVisible} onDismiss={()=> this.setState({'valorarPartidaVisible': false})}>
+                  <Dialog.Content>
+                    <Text style={[styles.txtGris,{
+                      textAlign:'center',
+                      fontSize:24,
+                      fontWeight:'bold',
+                      marginBottom:25,
+                      color:'black',
+                    }]}>Valora tu partida</Text>
+                    <Text style={[styles.txtGris,{
+                      textAlign:'center',
+                      fontSize:16,
+                      paddingHorizontal:20,
+                    }]}>¿Como ha ido todo? ¿Ha sido divertido? ¿Te has sentido cómoda/o con tu anfitrión? Ayuda a crear una cominidad sana.</Text>
+                    <AirbnbRating
+                      showRating={false}
+                      selectedColor="#f50057"
+                      defaultRating={this.state.partida.my_rating}
+                      onFinishRating={(rating) => this.setState({'valoracionPartida':rating})}
+                    />
+                    <View style={[styles.contenedor,{flexDirection:'row',justifyContent:'space-between'}]}>
+                      <Button style={[styles.button,{
+                        flex:1,
+                        marginRight:3,
+                        borderColor:'#f50057',
+                        fontSize:20
+                      }]} mode="outlined" dark="true" color="#f50057" onPress={() => this.setState({'valorarPartidaVisible': false})}>Ahora no</Button>
+                      <Button style={[styles.button,{
+                        flex:1,
+                        marginLeft:3,
+                        fontSize:20
+                      }]} mode="contained" dark="true" color="#f50057" onPress={this.valorarPartida}>Valora</Button>
+                    </View>
+                  </Dialog.Content>
+                </Dialog>
               </Portal>
             </View>
         );
+    }
+
+    valorarPartida = () => {
+      console.log(this.state);
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/rateBattle',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+            my_rating: this.state.valoracionPartida
+          },
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        if (response.result == 'OK') {
+        }
+        this.setState({'valorarPartidaVisible': false});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
     
     anadirComentario = () => {
@@ -447,7 +532,7 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.result == 'OK') {
           Alert.alert('Partida cancelada!');
         } else {
