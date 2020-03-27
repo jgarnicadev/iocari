@@ -10,7 +10,6 @@ import Footer from './Footer';
 import ListadoJuegos from './ListadoJuegos';
 
 class Estanteria extends React.Component {
-    searchWaiting = null;
     state = {
         accessToken: {
             token: '',
@@ -20,7 +19,6 @@ class Estanteria extends React.Component {
         juegos: [],
         categorias: [],
         mecanicas: [],
-        loadingBusquedaJuegos: false,
         filterCategoria : null,
         filterMecanica : null,
     }
@@ -38,10 +36,8 @@ class Estanteria extends React.Component {
                 this.getAccessToken().then( value => {
                     this.setState({
                         'accessToken':JSON.parse(value),
-                        'selectorJuegosVisible': false,
                         'filterCategoria':null,
                         'filterMecanica':null,
-                        'busquedaJuegos':[],
                     }, this.cargarDatos);
                 });
             }
@@ -50,8 +46,8 @@ class Estanteria extends React.Component {
 
     cargarDatos = () => {
         this.getMyGames();
-        // this.loadCategorias();
-        // this.loadMecanicas();
+        this.loadCategorias();
+        this.loadMecanicas();
     }
 
     getMyGames = () => {
@@ -69,7 +65,6 @@ class Estanteria extends React.Component {
         })
         .then((response) => response.json())
         .then((response) => {
-            console.log(response);
             if (response.result == 'OK') {
                 this.setState({
                     'juegos':response.games,
@@ -83,7 +78,7 @@ class Estanteria extends React.Component {
     }
 
     loadCategorias = () => {
-        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGameCategories',{
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyCategories',{
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
@@ -115,7 +110,7 @@ class Estanteria extends React.Component {
     }
 
     loadMecanicas = () => {
-        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getGameMechanics',{
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyMechanics',{
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
@@ -212,13 +207,13 @@ class Estanteria extends React.Component {
                     <View style={{
                         padding:20,
                     }}>
-                    {/* <View style={styles.filtrosWrapper}>
+                    <View style={styles.filtrosWrapper}>
                       <View style={{flex:1,paddingRight:5}}>
                       <RNPickerSelect
                         useNativeAndroidPickerStyle={false}
                         style={stylePicker}
                         placeholder={{
-                          label: 'Categorías',
+                          label: 'Todas las Categorías',
                           value: null,
                         }}
                         Icon={() => {
@@ -233,7 +228,7 @@ class Estanteria extends React.Component {
                         useNativeAndroidPickerStyle={false}
                         style={stylePicker}
                         placeholder={{
-                          label: 'Mecánicas',
+                          label: 'Todas las Mecánicas',
                           value: null,
                         }}
                         Icon={() => {
@@ -243,7 +238,7 @@ class Estanteria extends React.Component {
                         items={this.state.mecanicas}
                       />
                       </View>
-                    </View> */}
+                    </View>
 
                     <ListadoJuegos title={titleJuegos} msgEmpty="Aún no tienes ningun juego añadido!" juegos={this.state.juegos} />
                     </View>
