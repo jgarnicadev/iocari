@@ -67,7 +67,6 @@ class Partida extends React.Component {
       .then((response) => response.json())
       .then((response) => {
         if (response.result == 'OK') {
-          console.log(response.battle);
           response.battle.juegos = response.games;
           response.battle.jugadores = response.users;
           let apuntado = false;
@@ -117,7 +116,6 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        // console.log(response);
         if (response.result == 'OK') {
           let comentarios = [];
           let respuestas = [];
@@ -370,7 +368,6 @@ class Partida extends React.Component {
     }
 
     valorarPartida = () => {
-      console.log(this.state);
       fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/rateBattle',{
         method: 'POST',
         headers: {
@@ -389,7 +386,6 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
         if (response.result == 'OK') {
         }
         this.setState({'valorarPartidaVisible': false});
@@ -438,7 +434,6 @@ class Partida extends React.Component {
       //   },
       //   comment: dataComment
       // });
-      // console.log(test);
       fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/newBattleComment',{
         method: 'POST',
         headers: {
@@ -457,7 +452,6 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        // console.log(response);
         if (response.result == 'OK') {
          this.loadCommentsPartida();
          this.setState({'newCommentVisible': false});
@@ -532,7 +526,6 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        // console.log(response);
         if (response.result == 'OK') {
           Alert.alert('Partida cancelada!');
         } else {
