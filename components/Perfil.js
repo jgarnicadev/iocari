@@ -114,7 +114,7 @@ class Perfil extends React.Component {
                             <Text style={styles.botonSuperiorText}>Mi estantería</Text>
                             </View>
                         </TouchableRipple>
-                        <TouchableRipple onPress={this.enDesarrollo} style={{flex:1}}>
+                        <TouchableRipple onPress={() => this.props.navigation.navigate('amigos')} style={{flex:1}}>
                             <View style={styles.botonSuperior}>
                             <Image source={require('../assets/amigos.png')} style={styles.botonSuperiorIcon} />
                             <Text style={styles.botonSuperiorText}>Amigos</Text>

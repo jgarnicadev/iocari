@@ -1,23 +1,20 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, AsyncStorage, ActivityIndicator, Image, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, AsyncStorage, ActivityIndicator, Image } from 'react-native';
 import { Text, TouchableRipple } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
-import RNPickerSelect from 'react-native-picker-select';
-import { Chevron } from 'react-native-shapes'
 
 import Header from './Header';
 import Footer from './Footer';
-import CarruselPartidas from './CarruselPartidas';
+import ListadoUsuarios from './ListadoUsuarios';
 
-class MisPartidas extends React.Component {
+class Amigos extends React.Component {
     state = {
         accessToken: {
             token: '',
             email: ''
         },
         loading: true,
-        proximasPartidas: [],
-        partidasTerminadas: [],
+        amigos: [],
     }
 
     async getAccessToken() {
@@ -40,12 +37,11 @@ class MisPartidas extends React.Component {
     }
 
     cargarDatos = () => {
-        this.cargarProximasPartidas();
-        this.cargarPartidasTerminadas();
+        this.getMyFriends();
     }
 
-    cargarProximasPartidas = () => {
-        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyBattles',{
+    getMyFriends = () => {
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyFriends',{
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
@@ -59,9 +55,10 @@ class MisPartidas extends React.Component {
         })
         .then((response) => response.json())
         .then((response) => {
+            console.log(response);
             if (response.result == 'OK') {
                 this.setState({
-                    'proximasPartidas':response.battles,
+                    'amigos':response.users,
                     'loading':false,
                 });
             }
@@ -71,34 +68,6 @@ class MisPartidas extends React.Component {
         });
     }
 
-    cargarPartidasTerminadas = () => {
-        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyFormerBattles',{
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                token: this.state.accessToken.token, 
-                user: {
-                    email: this.state.accessToken.email
-                }
-            })
-        })
-        .then((response) => response.json())
-        .then((response) => {
-            if (response.result == 'OK') {
-                this.setState({
-                    'partidasTerminadas':response.battles,
-                    'loading':false,
-                });
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    }
-
-  
     render() {
         if (this.state.loading) {
             return (
@@ -107,13 +76,13 @@ class MisPartidas extends React.Component {
           }
           return (
             <View style={styles.container}>
-                <Header title="Mis Partidas" hideBack={true} headerPerfil={true} hideTitle={true}/>
+                <Header title="Amigos" hideBack={true} headerPerfil={true} hideTitle={true}/>
                 <ScrollView style={styles.main}>
                     <View style={styles.botoneraSuperior}>
-                        <TouchableRipple onPress={this.nada} style={{flex:1}}>
-                            <View style={styles.botonSuperiorActive}>
+                        <TouchableRipple onPress={() => this.props.navigation.navigate('misPartidas')} style={{flex:1}}>
+                            <View style={styles.botonSuperior}>
                             <Image source={require('../assets/misPartidas.png')} style={styles.botonSuperiorIcon} />
-                            <Text style={styles.botonSuperiorActiveText}>Mis Partidas</Text>
+                            <Text style={styles.botonSuperiorText}>Mis Partidas</Text>
                             </View>
                         </TouchableRipple>
                         <TouchableRipple onPress={() => this.props.navigation.navigate('estanteria')} style={{flex:1}}>
@@ -122,18 +91,17 @@ class MisPartidas extends React.Component {
                             <Text style={styles.botonSuperiorText}>Mi estantería</Text>
                             </View>
                         </TouchableRipple>
-                        <TouchableRipple onPress={() => this.props.navigation.navigate('amigos')} style={{flex:1}}>
-                            <View style={styles.botonSuperior}>
+                        <TouchableRipple onPress={this.nada} style={{flex:1}}>
+                            <View style={styles.botonSuperiorActive}>
                             <Image source={require('../assets/amigos.png')} style={styles.botonSuperiorIcon} />
-                            <Text style={styles.botonSuperiorText}>Amigos</Text>
+                            <Text style={styles.botonSuperiorActiveText}>Amigos</Text>
                             </View>
                         </TouchableRipple>
                     </View>
                     <View style={{
                         padding:20,
                     }}>
-                        <CarruselPartidas title="Mis Próximas Partidas" msgEmpty="" partidas={this.state.proximasPartidas} />
-                        <CarruselPartidas title="Partidas Terminadas" msgEmpty="" partidas={this.state.partidasTerminadas} />
+                    <ListadoUsuarios title="Amigos" msgEmpty="Aún no tienes ningun amigo añadido!" usuarios={this.state.amigos} />
                     </View>
                 </ScrollView>
                 <Footer activo="perfil" />
@@ -141,16 +109,8 @@ class MisPartidas extends React.Component {
         );
     }
 
-  
-    enDesarrollo = () => {
-        Alert.alert(
-        'En desarrollo...'
-        );
-        //TODO
-      }
-    
-      nada = () => {
-      }
+    nada = () => {
+    }
 
 }
 
@@ -186,4 +146,4 @@ const styles = StyleSheet.create({
     },
   });
   
-export default withNavigation(MisPartidas);
+export default withNavigation(Amigos);
