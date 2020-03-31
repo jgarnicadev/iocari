@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage } from 'react-native';
-import { Card, Title, IconButton, Avatar } from 'react-native-paper';
+import { Card, Title, IconButton, Avatar, ThemeProvider } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 
 class CarruselPartida extends React.Component {
@@ -8,12 +8,91 @@ class CarruselPartida extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        datosUser: null
+        accessToken: {
+          token: '',
+          email: '',
+          username: '',
+        },
+        datosUser: null,
+        datosBattle: null,
+        partidaTerminada: false,
       }
     }
 
+    async getAccessToken() {
+      const data =  await AsyncStorage.getItem('accessToken');
+      return data;
+    }
+
     componentDidMount() {
+      this.getAccessToken().then( value => {
+        this.setState(
+          {'accessToken':JSON.parse(value)},
+          this.loadData
+        );
+      });
+    }
+
+    loadData = () => {
       this.getDataUser();
+      this.getDataPartida();
+    }
+
+    getDataUser = () => {
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getProfile',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token,  
+          user: {
+            email: this.state.accessToken.email,
+          },
+          profile_user: {
+            id: this.props.partida.id_user
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.result == 'OK') {
+          this.setState({'datosUser':response.profile_user});
+        }
+      });
+    }
+
+    getDataPartida = () => {
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getBattle',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token,  
+          user: {
+            email: this.state.accessToken.email,
+          },
+          battle: {
+            id: this.props.partida.id
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        if (response.result == 'OK') {
+          response.battle.jugadores = response.users;
+          let terminada = false;
+          let end_date = new Date(response.battle.end_date);
+          if (end_date.getTime() < Date.now()) {
+            terminada = true;
+          }
+          this.setState({
+            'datosBattle':response.battle,
+            'partidaTerminada': terminada,
+          });
+        }
+      });
     }
 
     showPartida() {
@@ -22,43 +101,6 @@ class CarruselPartida extends React.Component {
       });
     }
 
-    async getAccessToken() {
-      const data =  await AsyncStorage.getItem('accessToken');
-      return data;
-    }
-
-
-    getDataUser() {
-      this.getAccessToken().then( value => {
-        try {
-          let data = JSON.parse(value);
-          //validate accessToken is valid
-          fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getProfile',{
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              token: data.token, 
-              user: {
-                email: data.email
-              },
-              profile_user: {
-                id: this.props.partida.id_user
-              }
-            })
-          })
-          .then((response) => response.json())
-          .then((response) => {
-            if (response.result == 'OK') {
-              this.setState({'datosUser':response.profile_user});
-            }
-          });
-        } catch(e) {
-          //accesstoken guardado no es json
-        }
-      });
-    }
 
     render() {
       const init_date = new Date(this.props.partida.init_date.substr(0,19));
@@ -76,6 +118,28 @@ class CarruselPartida extends React.Component {
               <Text style={{ color: 'white' }}>{this.props.partida.current_players} / {this.props.partida.num_players}</Text>
             </View>
             {this.state.datosUser != null && <Avatar.Image size={35} source={{ uri: this.state.datosUser.photo_url + '?' + new Date() }} style={styles.avatarUser} />}
+            {this.state.partidaTerminada == true && this.state.datosBattle.jugadores[0].username == this.state.accessToken.username && (
+              <View style={styles.rating}>
+                <IconButton
+                  icon="star"
+                  color="#f50057"
+                  size={20}
+                  style={styles.ratingIcon}
+                />
+                <Text style={styles.ratingText}>{this.state.datosBattle.rating}</Text>
+              </View>
+            )}
+            {this.state.partidaTerminada == true && this.state.datosBattle.my_rating != null && this.state.datosBattle.my_rating != 0 && (
+              <View style={styles.rating}>
+                <IconButton
+                  icon="star"
+                  color="#f50057"
+                  size={20}
+                  style={styles.ratingIcon}
+                />
+                <Text style={styles.ratingText}>{this.state.datosBattle.my_rating}</Text>
+              </View>
+            )}
         </Card>
         </TouchableHighlight>
       );
@@ -106,6 +170,23 @@ const styles = StyleSheet.create({
       position:"absolute",
       left:10,
       top:10,
+    },
+    rating: {
+      position:"absolute",
+      right:10,
+      top:10,
+      backgroundColor:"white",
+      borderRadius:5,
+      flexDirection:'row'
+    },
+    ratingText: {
+      color:"#f50057",
+      marginRight:3,
+      marginTop:5,
+    },
+    ratingIcon: {
+      margin:0,
+      padding:0,
     }
 });
 
