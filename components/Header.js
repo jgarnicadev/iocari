@@ -62,8 +62,21 @@ class Header extends React.Component {
   }
 
   render() {
+    let bgColor = this.props.bgcolor ? this.props.bgcolor : '#0277bd';
     return (
-      <Appbar.Header style={styles.container}>
+      <Appbar.Header
+        dark={true}
+        style={{
+          backgroundColor: bgColor,
+        }}
+        theme={{
+          dark: true,
+          mode: 'exact',
+          colors: {
+            text: "white",
+          },
+        }}
+      >
         {this.props.hideBack || 
           <Appbar.BackAction onPress={this.back} />
           //<IconButton icon="chevron-left" color="white" size={30} style={styles.icoBtn} onPress={this.back}></IconButton> 
@@ -130,9 +143,6 @@ class Header extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor:'#0277bd',
-  },
   texto: {
     color:'white',
     fontSize:20,

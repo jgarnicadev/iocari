@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, AsyncStorage, ActivityIndicator, Image } from 'react-native';
-import { Text, TouchableRipple } from 'react-native-paper';
+import { Text, TouchableRipple, IconButton } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 
 import Header from './Header';
@@ -55,7 +55,6 @@ class Amigos extends React.Component {
         })
         .then((response) => response.json())
         .then((response) => {
-            console.log(response);
             if (response.result == 'OK') {
                 this.setState({
                     'amigos':response.users,
@@ -102,6 +101,17 @@ class Amigos extends React.Component {
                         padding:20,
                     }}>
                     <ListadoUsuarios title="Amigos" msgEmpty="Aún no tienes ningun amigo añadido!" usuarios={this.state.amigos} />
+                    <IconButton 
+                        onPress={() => this.props.navigation.navigate('invitarAmigos')}
+                        icon="account-card-details"
+                        size={20}
+                        color="#7c7c7c"
+                        style={{
+                            position:'absolute',
+                            right:10,
+                            top:10
+                        }}
+                    />
                     </View>
                 </ScrollView>
                 <Footer activo="perfil" />
