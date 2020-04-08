@@ -81,6 +81,7 @@ class CarruselPartida extends React.Component {
       .then((response) => response.json())
       .then((response) => {
         if (response.result == 'OK') {
+          if (response.battle.name == 'Mapeando') console.log(response.battle);
           response.battle.jugadores = response.users;
           let terminada = false;
           let end_date = new Date(response.battle.end_date);
@@ -118,7 +119,7 @@ class CarruselPartida extends React.Component {
               <Text style={{ color: 'white' }}>{this.props.partida.current_players} / {this.props.partida.num_players}</Text>
             </View>
             {this.state.datosUser != null && <Avatar.Image size={35} source={{ uri: this.state.datosUser.photo_url + '?' + new Date() }} style={styles.avatarUser} />}
-            {this.state.partidaTerminada == true && this.state.datosBattle.jugadores[0].username == this.state.accessToken.username && (
+            {this.state.partidaTerminada == true && this.state.datosBattle.jugadores[0].username == this.state.accessToken.username && this.state.datosBattle.rating != null && this.state.datosBattle.rating != 0 && (
               <View style={styles.rating}>
                 <IconButton
                   icon="star"
@@ -129,7 +130,7 @@ class CarruselPartida extends React.Component {
                 <Text style={styles.ratingText}>{this.state.datosBattle.rating}</Text>
               </View>
             )}
-            {this.state.partidaTerminada == true && this.state.datosBattle.my_rating != null && this.state.datosBattle.my_rating != 0 && (
+            {this.state.partidaTerminada == true && this.state.datosBattle.jugadores[0].username != this.state.accessToken.username && this.state.datosBattle.my_rating != null && this.state.datosBattle.my_rating != 0 && (
               <View style={styles.rating}>
                 <IconButton
                   icon="star"
