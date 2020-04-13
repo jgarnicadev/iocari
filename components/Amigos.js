@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, AsyncStorage, ActivityIndicator, Image } from 'react-native';
-import { Text, TouchableRipple, IconButton } from 'react-native-paper';
+import { Text, TouchableRipple, IconButton, Searchbar } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 
 import Header from './Header';
@@ -8,6 +8,7 @@ import Footer from './Footer';
 import ListadoUsuarios from './ListadoUsuarios';
 
 class Amigos extends React.Component {
+    searchWaiting = null;
     state = {
         accessToken: {
             token: '',
@@ -15,6 +16,8 @@ class Amigos extends React.Component {
         },
         loading: true,
         amigos: [],
+        filterAmigos: null,
+        loadingBusqueda: false,
     }
 
     async getAccessToken() {
@@ -30,6 +33,8 @@ class Amigos extends React.Component {
                 this.getAccessToken().then( value => {
                     this.setState({
                         'accessToken':JSON.parse(value),
+                        'filterAmigos': null,
+                        'loadingBusqueda': false,
                     }, this.cargarDatos);
                 });
             }
@@ -100,24 +105,89 @@ class Amigos extends React.Component {
                     <View style={{
                         padding:20,
                     }}>
-                    <ListadoUsuarios title="Amigos" msgEmpty="Aún no tienes ningun amigo añadido!" usuarios={this.state.amigos} />
-                    <IconButton 
-                        onPress={() => this.props.navigation.navigate('invitarAmigos')}
-                        icon="account-card-details"
-                        size={20}
-                        color="#7c7c7c"
-                        style={{
-                            position:'absolute',
-                            right:10,
-                            top:10
+                    <Searchbar        
+                        placeholder="Buscar amigos"        
+                        onChangeText={text => {
+                            if (this.searchWaiting) {
+                            clearTimeout(this.searchWaiting);
+                            }
+                            this.searchWaiting = setTimeout(() => {
+                                this.searchWaiting = null;
+                                this.searchUsers(text);
+                            }, 500);
                         }}
-                    />
+                    />    
+                    {this.state.filterAmigos != null ?
+                        this.state.loadingBusqueda ? 
+                            (<ActivityIndicator size="small" />)
+                            :
+                            (<ListadoUsuarios title="Resultados busqueda" msgEmpty="No se han encontrado usuarios" usuarios={this.state.filterAmigos} />)
+                        :
+                        null
+                    }
+                    <View style={{
+                        position:'relative',
+                        marginTop:20,
+                    }}>
+                        <ListadoUsuarios title="Amigos" msgEmpty="Aún no tienes ningun amigo añadido!" usuarios={this.state.amigos} />
+                        <IconButton 
+                            onPress={() => this.props.navigation.navigate('invitarAmigos')}
+                            icon="account-card-details"
+                            size={20}
+                            color="#7c7c7c"
+                            style={{
+                                position:'absolute',
+                                right:10,
+                                top:0
+                            }}
+                        />
+                    </View>
                     </View>
                 </ScrollView>
                 <Footer activo="perfil" />
             </View>
         );
     }
+
+    searchUsers = text => {   
+
+        if (text.length < 3 ) {
+          // si la busqueda es de menos de tres caracteres sin busqueda
+          this.setState({ filterAmigos: null });  
+        } else {
+          // si la busqueda es de minimo tres caracteres, llamamos a endpoint busqueda
+          //loading
+          this.setState({ 
+            loadingBusqueda: true,
+            filterAmigos: [] ,
+          });  
+          fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyFriends',{
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              token: this.state.accessToken.token, 
+              user: {
+                email: this.state.accessToken.email
+              },
+              filters: {
+                keywords: text
+              }
+            })
+          })
+          .then((response) => response.json())
+          .then((response) => {
+            if (response.result == 'OK') {
+              this.setState({'filterAmigos':response.users});
+            }
+            this.setState({ loadingBusqueda: false});
+          })
+          .catch((error) => {
+              console.log(error);
+          });
+        }
+    };
 
     nada = () => {
     }
