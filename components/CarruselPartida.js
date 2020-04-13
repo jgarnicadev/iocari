@@ -81,7 +81,6 @@ class CarruselPartida extends React.Component {
       .then((response) => response.json())
       .then((response) => {
         if (response.result == 'OK') {
-          if (response.battle.name == 'Mapeando') console.log(response.battle);
           response.battle.jugadores = response.users;
           let terminada = false;
           let end_date = new Date(response.battle.end_date);

@@ -75,6 +75,7 @@ class Perfil extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
+            console.log(response);
             if (response.result == 'OK') {
               this.setState({
                     'user': response.profile_user,
@@ -98,7 +99,10 @@ class Perfil extends React.Component {
                 {this.state.uid == '' ?
                     (<Header title="Perfil" hideBack={true} onEditarMiPerfil={this.editarMiPerfil} />)
                     :
+                    this.state.user.relationship == 0 ? 
                     (<Header title="Perfil" hideBack={true} onAddAmigo={this.addAmigo}/>)
+                    :
+                    (<Header title="Perfil" hideBack={true} />)
                 }
                 <ScrollView style={styles.main}>
                     <View style={styles.botoneraSuperior}>
