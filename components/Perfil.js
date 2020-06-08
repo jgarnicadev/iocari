@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, AsyncStorage, Alert, Image, ActivityIndicator } from 'react-native';
-import { Text, TouchableRipple, Title, Avatar } from 'react-native-paper';
+import { Text, TouchableRipple, Title, Avatar, Portal, Dialog } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { IconButton } from 'react-native-paper';
 import { TouchableHighlight } from 'react-native-gesture-handler';
@@ -23,6 +23,8 @@ class Perfil extends React.Component {
         user:null,
         medallas: [],
         loading: true,
+        pending_friends: [],
+        popupSolicitudesAmistad: false,
     }
 
     async getAccessToken() {
@@ -34,7 +36,10 @@ class Perfil extends React.Component {
         this.props.navigation.addListener(
             'didFocus',
             payload => {
-                this.setState({'loading':true});
+                this.setState({
+                    'loading':true,
+                    'popupSolicitudesAmistad': false
+                });
                 this.getAccessToken().then( value => {
                     this.setState({'accessToken':JSON.parse(value)});
                     const uid = this.props.navigation.getParam('id_usuario', '');
@@ -75,16 +80,24 @@ class Perfil extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             if (response.result == 'OK') {
+              let solicitudes_amistad = [];
+              if (this.state.uid == '') {
+                solicitudes_amistad = response.pending_friends;
+              }
               this.setState({
                     'user': response.profile_user,
                     'avatar': response.profile_user.photo_url,
                     'medallas': response.achivements,
                     'loading':false,
+                    'pending_friends': solicitudes_amistad
                 });
             }
           });
+    }
+    showPopupSolicitudesAmistad = () => {
+        this.setState({'popupSolicitudesAmistad':true});
     }
 
     render() {
@@ -93,11 +106,10 @@ class Perfil extends React.Component {
               <View style={[styles.container,{justifyContent:'center'}]}><ActivityIndicator size="large" /></View>
             );
           }
-        //   console.log(this.state.medallas);
           return (
             <View style={styles.container}>
                 {this.state.uid == '' ?
-                    (<Header title="Perfil" hideBack={true} onEditarMiPerfil={this.editarMiPerfil} />)
+                    (<Header title="Perfil" hideBack={true} onEditarMiPerfil={this.editarMiPerfil} pendingFriends={this.state.pending_friends.length} onPendingFriends={this.showPopupSolicitudesAmistad} />)
                     :
                     this.state.user.relationship == 0 ? 
                     (<Header title="Perfil" hideBack={true} onAddAmigo={this.addAmigo}/>)
@@ -166,6 +178,40 @@ class Perfil extends React.Component {
                     </View>
                 </ScrollView>
                 <Footer activo="perfil" />
+                <Portal>
+                    <Dialog visible={this.state.popupSolicitudesAmistad} onDismiss={()=> this.setState({'popupSolicitudesAmistad':false})}>
+                        <Dialog.Content>
+                        {this.state.pending_friends.map((solicitud) => 
+                            <View key={solicitud.id} style={{
+                                alignItems:'center'
+                            }}>
+                                <Text style={{
+                                    fontSize:16,
+                                    marginBottom:10
+                                }}>{solicitud.username}</Text>
+                                <Avatar.Image size={100} source={{ uri: solicitud.photo_url + '?' + new Date() }} />
+                                <View style={{
+                                    flexDirection:'row',
+                                    justifyContent:'space-evenly',
+                                    marginTop:30,
+                                    alignSelf:'stretch'
+                                }}>
+                                    <TouchableHighlight onPress={() => console.log('ahora no')}>
+                                        <View style={[styles.btn, styles.btnInactive]}>
+                                            <Text style={styles.txtBtnInactive}>Ahora no</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => console.log('añadir')}>
+                                        <View style={[styles.btn, styles.btnActive]}>
+                                            <Text style={styles.txtBtnActive}>Añadir</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                </View>
+                            </View>
+                        )}
+                        </Dialog.Content>
+                    </Dialog>
+                </Portal>
             </View>
         );
     }
@@ -391,7 +437,33 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         width:44,
         height:44
-    }
+    },
+    btn: {
+        borderWidth:2,
+        borderColor:'#ef5865',
+        borderRadius:5,
+        flexDirection:'row',
+        paddingVertical:15,
+        paddingHorizontal:0,
+        alignItems:'center',
+        justifyContent:'center',
+        width:125,
+        // flex:1,
+    },
+    btnInactive: {
+        backgroundColor:'transparent',
+    },
+    btnActive: {
+        backgroundColor:'#ef5865',
+    },
+    txtBtnActive: {
+        fontSize:12,
+        color:'white',
+    },
+    txtBtnInactive: {
+        fontSize:12,
+        color:'#ef5865',
+    },
 });
   
 export default withNavigation(Perfil);
