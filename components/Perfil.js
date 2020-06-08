@@ -201,7 +201,7 @@ class Perfil extends React.Component {
                                             <Text style={styles.txtBtnInactive}>Ahora no</Text>
                                         </View>
                                     </TouchableHighlight>
-                                    <TouchableHighlight onPress={() => console.log('añadir')}>
+                                    <TouchableHighlight onPress={() => this.aceptarSolicitudAmistad(solicitud.id)}>
                                         <View style={[styles.btn, styles.btnActive]}>
                                             <Text style={styles.txtBtnActive}>Añadir</Text>
                                         </View>
@@ -214,6 +214,47 @@ class Perfil extends React.Component {
                 </Portal>
             </View>
         );
+    }
+
+    aceptarSolicitudAmistad = (solicitud_id) => {
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/followUser',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              token: this.state.accessToken.token, 
+              user: {
+                  email: this.state.accessToken.email
+              },
+              follow_user: {
+                id: solicitud_id, 
+              }
+            })
+          })
+          .then((response) => response.json())
+          .then((response) => {
+            // console.log(response);
+            if (response.result == 'OK') {
+                //   Alert.alert('Solicitud enviada!');
+                let temp = this.state.pending_friends.filter(solicitud => {
+                    return solicitud.id != solicitud_id;
+                });
+                let showPopup = false;
+                if (temp.length > 0) {
+                    showPopup = true;
+                }
+                this.setState({
+                    'pending_friends': temp,
+                    'popupSolicitudesAmistad': showPopup
+                });
+            } else {
+              Alert.alert('Error: Solicitud no procesada!');
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
     }
 
     enDesarrollo = () => {
