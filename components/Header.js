@@ -65,7 +65,7 @@ class Header extends React.Component {
     let bgColor = this.props.bgcolor ? this.props.bgcolor : '#0277bd';
     let solicitud_amistad = null;
     if (this.props.pendingFriends && this.props.pendingFriends > 0) {
-      solicitud_amistad = <IconButton icon="email-outline" color="white" size={20} onPress={this.props.onPendingFriends} />
+      solicitud_amistad = <IconButton icon="email-outline" color="white" size={20} onPress={this.props.onPendingFriends} style={{marginRight:30}} />
     }
       
     return (
@@ -111,7 +111,7 @@ class Header extends React.Component {
             flex:1,
             flexDirection:'row',
             alignItems:'center',
-            justifyContent:'space-between',
+            justifyContent:'flex-end',
           }}>
             {solicitud_amistad}
             <IconButton

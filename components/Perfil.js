@@ -85,6 +85,23 @@ class Perfil extends React.Component {
               let solicitudes_amistad = [];
               if (this.state.uid == '') {
                 solicitudes_amistad = response.pending_friends;
+                // solicitudes_amistad = [
+                //     {
+                //         id: 28,
+                //         username: 'test',
+                //         photo_url: 'https://iocari.s3-eu-west-1.amazonaws.com/user/26/profile.jpg'
+                //     },
+                //     {
+                //         id: 29,
+                //         username: 'test2',
+                //         photo_url: 'https://iocari.s3-eu-west-1.amazonaws.com/user/26/profile.jpg'
+                //     },
+                //     {
+                //         id: 30,
+                //         username: 'test3',
+                //         photo_url: 'https://iocari.s3-eu-west-1.amazonaws.com/user/26/profile.jpg'
+                //     },
+                // ];
               }
               this.setState({
                     'user': response.profile_user,
@@ -179,24 +196,45 @@ class Perfil extends React.Component {
                 </ScrollView>
                 <Footer activo="perfil" />
                 <Portal>
-                    <Dialog visible={this.state.popupSolicitudesAmistad} onDismiss={()=> this.setState({'popupSolicitudesAmistad':false})}>
+                    <Dialog visible={this.state.popupSolicitudesAmistad} onDismiss={()=> this.setState({'popupSolicitudesAmistad':false})} style={{width:350, alignSelf:'center'}}>
                         <Dialog.Content>
+                        <View style={{
+                            marginTop:-10,
+                            marginBottom:-20,
+                            alignSelf:'stretch',
+                            alignItems:'flex-end'
+                        }}>
+                            <TouchableHighlight onPress={() => this.setState({'popupSolicitudesAmistad':false})} style={{
+                                backgroundColor:'#ef5865',
+                                borderRadius:30,
+                                width:40,
+                                height:40,
+                                justifyContent:'center',
+                                alignItems:'center',
+                            }}>
+                                <IconButton icon="close" color="white" size={30} />
+                            </TouchableHighlight>
+                        </View>
+                        <ScrollView horizontal="true">
                         {this.state.pending_friends.map((solicitud) => 
                             <View key={solicitud.id} style={{
-                                alignItems:'center'
+                                alignItems:'center',
+                                width:300
                             }}>
                                 <Text style={{
                                     fontSize:16,
                                     marginBottom:10
                                 }}>{solicitud.username}</Text>
-                                <Avatar.Image size={100} source={{ uri: solicitud.photo_url + '?' + new Date() }} />
+                                <TouchableHighlight onPress={() => this.showUsuario(solicitud.id)}>
+                                    <Avatar.Image size={100} source={{ uri: solicitud.photo_url + '?' + new Date() }} />
+                                </TouchableHighlight>
                                 <View style={{
                                     flexDirection:'row',
                                     justifyContent:'space-evenly',
                                     marginTop:30,
                                     alignSelf:'stretch'
                                 }}>
-                                    <TouchableHighlight onPress={() => console.log('ahora no')}>
+                                    <TouchableHighlight onPress={() => this.removeSolicitud(solicitud.id)}>
                                         <View style={[styles.btn, styles.btnInactive]}>
                                             <Text style={styles.txtBtnInactive}>Ahora no</Text>
                                         </View>
@@ -209,11 +247,34 @@ class Perfil extends React.Component {
                                 </View>
                             </View>
                         )}
+                        </ScrollView>
                         </Dialog.Content>
                     </Dialog>
                 </Portal>
             </View>
         );
+    }
+
+    showUsuario = (usuario_id) => {
+        this.setState({
+            'loading':true,
+            'popupSolicitudesAmistad': false
+        });
+        this.setState({'uid':usuario_id}, this.loadProfile);
+    }    
+
+    removeSolicitud = (solicitud_id) => {
+        let temp = this.state.pending_friends.filter(solicitud => {
+            return solicitud.id != solicitud_id;
+        });
+        let showPopup = false;
+        if (temp.length > 0) {
+            showPopup = true;
+        }
+        this.setState({
+            'pending_friends': temp,
+            'popupSolicitudesAmistad': showPopup
+        });
     }
 
     aceptarSolicitudAmistad = (solicitud_id) => {
@@ -237,17 +298,7 @@ class Perfil extends React.Component {
             // console.log(response);
             if (response.result == 'OK') {
                 //   Alert.alert('Solicitud enviada!');
-                let temp = this.state.pending_friends.filter(solicitud => {
-                    return solicitud.id != solicitud_id;
-                });
-                let showPopup = false;
-                if (temp.length > 0) {
-                    showPopup = true;
-                }
-                this.setState({
-                    'pending_friends': temp,
-                    'popupSolicitudesAmistad': showPopup
-                });
+                this.removeSolicitud(solicitud_id);
             } else {
               Alert.alert('Error: Solicitud no procesada!');
             }
