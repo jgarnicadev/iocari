@@ -18,6 +18,7 @@ import Estanteria from './Estanteria';
 import MisPartidas from './MisPartidas';
 import Amigos from './Amigos';
 import InvitarAmigos from './InvitarAmigos';
+import Onboarding from './Onboarding';
 
 const AppNavigator = createDrawerNavigator(
   {
@@ -35,6 +36,7 @@ const AppNavigator = createDrawerNavigator(
     misPartidas: MisPartidas,
     amigos: Amigos,
     invitarAmigos: InvitarAmigos,
+    onboarding: Onboarding,
   },
   {
     initialRouteName: "login",

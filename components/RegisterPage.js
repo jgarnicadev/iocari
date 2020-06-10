@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Image, Alert, ScrollView, KeyboardAvoidingView, AsyncStorage } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
@@ -15,6 +15,11 @@ class RegisterPage extends React.Component {
   validateEmail(email) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
+  }
+
+  async guardarAccessToken(token) {
+    token = JSON.stringify(token);
+    await AsyncStorage.setItem('accessToken', token);
   }
 
   async submit() {
@@ -89,11 +94,30 @@ class RegisterPage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
-        this.props.navigation.navigate('register2', {
-          nombre_player: this.state.nombre,
-          email: this.state.email,
-          password: this.state.password
-        });
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            user: {
+              email: this.state.email,
+              password: this.state.password
+            }
+          })
+        })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.result == 'OK') {
+            let data = {
+              token: response.token,
+              email: response.user.email,
+              username: response.user.username,
+            }
+            this.guardarAccessToken(data);
+            this.props.navigation.navigate('onboarding');  
+          }
+        })
       } else {
         Alert.alert(
           'Usuario ya existente, introduzca otros datos'
