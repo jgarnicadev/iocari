@@ -22,7 +22,6 @@ class CrearPartidaPage extends React.Component {
     fecha: '',
     hora: '',
     duracion: '',
-    tope_apuntarse: '',
     lugar: '',
     players: '',
     descripcion: '',
@@ -87,7 +86,6 @@ class CrearPartidaPage extends React.Component {
       'fecha': this.state.proximasFechas[0].fechaFormat,
       'hora': '18:00',
       'duracion': '2h',
-      'tope_apuntarse': '12:00',
       'lugar': '',
       'players': '4',
       'descripcion': '',
@@ -224,7 +222,6 @@ class CrearPartidaPage extends React.Component {
       !this.state.fecha ||
       !this.state.hora ||
       !this.state.duracion ||
-      !this.state.tope_apuntarse ||
       !this.state.lugar ||
       !this.state.players ||
       !this.state.descripcion
@@ -245,9 +242,6 @@ class CrearPartidaPage extends React.Component {
       end_date.setHours(end_date.getHours() + duracion);
     }
     end_date = end_date.toJSON().slice(0, 19).replace('T', ' ');
-    str_date = this.state.fecha.replace(pattern_fecha,'$3-$2-$1') + 'T' + this.state.tope_apuntarse;
-    var join_date = new Date(str_date);
-    join_date = join_date.toJSON().slice(0, 19).replace('T', ' ');
     var games = [];
     this.state.juegos.forEach(juego => {
       var id_game = parseInt(juego.key);
@@ -262,7 +256,6 @@ class CrearPartidaPage extends React.Component {
         name: this.state.nombre,
         init_date: init_date,
         end_date: end_date,
-        join_date: join_date,
         description: this.state.descripcion,
         num_players: this.state.players,
         address: this.state.lugar,
@@ -441,21 +434,6 @@ class CrearPartidaPage extends React.Component {
             value={this.state.duracion}
             />
           </View>
-          <View style={styles.fondoOscuro}>
-            <Text style={styles.textoOscuro}>Tope para apuntarse</Text>
-            <TextInput style={styles.inputTextOscuro} placeholder="hh:mm"
-            onChangeText={(text) => this.setState({tope_apuntarse: text})}
-            value={this.state.tope_apuntarse}
-            onFocus={this.showTimePickerTope}
-            />
-          </View>
-          <TimePicker
-            ref={ref => {
-              this.TimePickerTope = ref;
-            }}
-            onCancel={() => this.onCancelTimePickerTope()}
-            onConfirm={(hour, minute) => this.onConfirmTimePickerTope(hour, minute)}
-          />       
           <View style={styles.fondoOscuro}>
             <TextInput style={styles.inputTextOscuroLargo} placeholder="¿Dónde?"
             onChangeText={(text) => this.setState({lugar: text})}
@@ -639,22 +617,6 @@ class CrearPartidaPage extends React.Component {
     this.setState({ hora: `${hour}:${minute}` });
     this.TimePickerHora.close();
   }
-
-  showTimePickerTope = () => {
-    this.TimePickerTope.open();
-  }
-
-  onCancelTimePickerTope() {
-    this.TimePickerTope.close();
-  }
- 
-  onConfirmTimePickerTope(hour, minute) {
-    if (hour.length == 1) hour = '0'+hour;
-    this.setState({ tope_apuntarse: `${hour}:${minute}` });
-    this.TimePickerTope.close();
-  }
-
-
 
 }
 
