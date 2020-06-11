@@ -28,7 +28,9 @@
     "react-native-ratings": "^6.5.0",
     "react-native-reanimated": "~1.2.0",
     "react-native-shapes": "^0.1.0",
-    "react-navigation": "^3.13.0"
+    "react-navigation": "^3.13.0",
+    "expo-device": "~1.0.0",
+    "expo-constants": "~7.0.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.2.0"

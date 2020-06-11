@@ -37,7 +37,7 @@ class Mapa extends React.Component {
           ref={ref => { this.map = ref } }
           initialRegion={{
             latitude: (this.state.location == null ? 42.5927244 : this.state.location.coords.latitude),
-            longitude: (this.state.location == null ? -5.5640962 : this.state.location.coords.latitude),
+            longitude: (this.state.location == null ? -5.5640962 : this.state.location.coords.longitude),
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}

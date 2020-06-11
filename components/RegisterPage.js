@@ -3,6 +3,10 @@ import { StyleSheet, View, Image, Alert, ScrollView, KeyboardAvoidingView, Async
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 
 class RegisterPage extends React.Component {
   state = {
@@ -10,7 +14,20 @@ class RegisterPage extends React.Component {
     email: '',
     password: '',
     password_repeat: '',
+    location: null,
   };
+
+  getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status === 'granted') {
+      let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
+      this.setState({ location });
+    }
+  }
+
+  componentDidMount() {
+    this.getLocationAsync();
+  }
 
   validateEmail(email) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -94,17 +111,30 @@ class RegisterPage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
+        let body = {
+          user: {
+            email: this.state.email,
+            password: this.state.password
+          }
+        };
+        if (this.state.location != null) {
+          body.location = {
+            lat: this.state.location.coords.latitude,
+            lng: this.state.location.coords.longitude
+          };
+        }
+        let version = 'iOcari '+ Device.osName + ' app v' + Constants.nativeAppVersion;
+        let device = Device.deviceName + ' ' + Device.osName + ' ' + Device.osVersion;
+        body.origin = {
+          device: device,
+          version: version
+        };
         fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/logIn',{
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            user: {
-              email: this.state.email,
-              password: this.state.password
-            }
-          })
+          body: JSON.stringify(body)
         })
         .then((response) => response.json())
         .then((response) => {
