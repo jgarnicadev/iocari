@@ -21,9 +21,12 @@ class Partida extends React.Component {
       comentarios: [],
       respuestas: [],
       apuntadoPartida: false,
+      apuntadoPartidaRole: null,
       partidaTerminada: false,
       valoracionPartida: 0,
       valorarPartidaVisible: false,
+      showPopupConfirmar: false,
+      userPopupConfirmar: null
     }
 
     async getAccessToken() {
@@ -35,8 +38,13 @@ class Partida extends React.Component {
         this.props.navigation.addListener(
           'didFocus',
           payload => {
-            this.setState({'apuntadoPartida': false});
-            this.setState({'loading':true});
+            this.setState({
+              'loading':true,
+              'apuntadoPartida': false,
+              'apuntadoPartidaRole': null,
+              'showPopupConfirmar': false,
+              'userPopupConfirmar': null
+            });
             const { navigation } = this.props;
             this.getAccessToken().then( value => {
               this.setState({'accessToken':JSON.parse(value)});
@@ -70,6 +78,7 @@ class Partida extends React.Component {
           response.battle.juegos = response.games;
           response.battle.jugadores = response.users;
           let apuntado = false;
+          let apuntado_role = null;
           let terminada = false;
           let end_date = new Date(response.battle.end_date);
           if (end_date.getTime() < Date.now()) {
@@ -78,14 +87,16 @@ class Partida extends React.Component {
           response.users.forEach(elem => {
             if (elem.username == this.state.accessToken.username) {
               apuntado = true;
+              apuntado_role = elem.battle_role;
             }
           });
           let mostrarValoracion = false;
-          if (apuntado && terminada && (response.battle.my_rating == null || response.battle.my_rating == 0)) {
+          if (apuntado && (apuntado_role == 1 || apuntado_role == 2) && terminada && (response.battle.my_rating == null || response.battle.my_rating == 0)) {
             mostrarValoracion = true;
           }
           this.setState({
             'apuntadoPartida': apuntado,
+            'apuntadoPartidaRole': apuntado_role,
             'partidaTerminada': terminada,
             'partida': response.battle,
             'loading': false,
@@ -174,6 +185,47 @@ class Partida extends React.Component {
       });
     }
 
+    showPopupConfirmarUsuario = (user) => {
+      this.setState({
+        'showPopupConfirmar': true,
+        'userPopupConfirmar': user
+      });
+    }
+
+    confirmarUsuario = (uid) => {
+      this.setState({
+        'loading':true,
+        'showPopupConfirmar': false,
+        'userPopupConfirmar': null
+      });
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/joinBattle',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+          },
+          join_user: {
+            id: uid
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        // console.log(response);
+        this.loadPartida();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
     render() {
         if (this.state.loading) {
           return (
@@ -221,11 +273,25 @@ class Partida extends React.Component {
               <View style={styles.contenedor}>
                 <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Personas apuntadas</Text>
                 {this.state.partida.jugadores.map((elem) => 
-                  <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
-                    <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
-                  </TouchableHighlight>
+                  {elem.battle_role == 1 && 
+                    <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
+                      <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
+                    </TouchableHighlight>
+                  }
                 )}
               </View>
+              {this.state.partida.private == 1 && this.state.apuntadoPartidaRole == 2 &&
+                <View style={styles.contenedor}>
+                  <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Pendientes</Text>
+                  {this.state.partida.jugadores.map((elem) => 
+                    {elem.battle_role == 0 && 
+                      <TouchableHighlight key={elem.username}  onPress={() => this.showPopupConfirmarUsuario(elem)}>
+                        <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
+                      </TouchableHighlight>
+                    }
+                  )}
+                </View>
+              }
               <ImageBackground style={styles.contenedorLugar} source={require('../assets/mapa.jpg')} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                   <Text style={[styles.txtBlanco, styles.txtCabecera]}>{this.state.partida.address}</Text>
                   <IconButton icon="map-marker" color="white" size={20} style={styles.markerLugar}></IconButton>
@@ -240,7 +306,9 @@ class Partida extends React.Component {
                     justifyContent:'space-between',
                   }}>
                     <Text style={[styles.txtGris, styles.txtTitulo]}>Comentarios</Text>
-                    {this.state.apuntadoPartida == true && (
+                    {this.state.apuntadoPartida == true && 
+                    (this.state.apuntadoPartidaRole == 1 || this.state.apuntadoPartidaRole == 2) && 
+                    (
                     <IconButton
                       icon="comment-processing"
                       color="#f50057"
@@ -281,12 +349,15 @@ class Partida extends React.Component {
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
                 </View>
               ) : null} 
-              {this.state.partida.jugadores[0].username == this.state.accessToken.username && (
+              {this.state.apuntadoPartidaRole == 2 && (
                 <View style={styles.contenedor}>
                   <Button style={[styles.button,{borderColor:'#f50057'}]} mode="outlined" dark="true" color="#f50057" onPress={this.cancelarPartida}>Cancelar partida</Button>
                 </View>
               )}
-              {(this.state.partidaTerminada && this.state.apuntadoPartida && (this.state.partida.my_rating == null || this.state.partida.my_rating == 0)) ? (
+              {(this.state.partidaTerminada && 
+                this.state.apuntadoPartida && 
+                (this.state.apuntadoPartidaRole == 1 || this.state.apuntadoPartidaRole == 2) &&
+                (this.state.partida.my_rating == null || this.state.partida.my_rating == 0)) ? (
                 <View style={styles.contenedor}>
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={()=> this.setState({'valorarPartidaVisible': true})}>Valorar</Button>
                 </View>
@@ -360,6 +431,41 @@ class Partida extends React.Component {
                         fontSize:20
                       }]} mode="contained" dark="true" color="#f50057" onPress={this.valorarPartida}>Valora</Button>
                     </View>
+                  </Dialog.Content>
+                </Dialog>
+                <Dialog visible={this.state.showPopupConfirmar} onDismiss={()=> this.setState({'showPopupConfirmar':false})} style={{width:350, alignSelf:'center'}}>
+                  <Dialog.Content>
+                    {this.state.userPopupConfirmar != null &&
+                      <View style={{
+                          alignItems:'center',
+                          width:300
+                      }}>
+                          <Text style={{
+                              fontSize:16,
+                              marginBottom:10
+                          }}>{this.state.userPopupConfirmar.username}</Text>
+                          <TouchableHighlight onPress={() => this.showUsuario(this.state.userPopupConfirmar.id)}>
+                              <Avatar.Image size={100} source={{ uri: this.state.userPopupConfirmar.photo_url + '?' + new Date() }} />
+                          </TouchableHighlight>
+                          <View style={{
+                              flexDirection:'row',
+                              justifyContent:'space-evenly',
+                              marginTop:30,
+                              alignSelf:'stretch'
+                          }}>
+                              <TouchableHighlight onPress={() => this.setState({'showPopupConfirmar':false})}>
+                                  <View style={[styles.btn, styles.btnInactive]}>
+                                      <Text style={styles.txtBtnInactive}>Ahora no</Text>
+                                  </View>
+                              </TouchableHighlight>
+                              <TouchableHighlight onPress={() => this.confirmarUsuario(this.state.userPopupConfirmar.id)}>
+                                  <View style={[styles.btn, styles.btnActive]}>
+                                      <Text style={styles.txtBtnActive}>Añadir</Text>
+                                  </View>
+                              </TouchableHighlight>
+                          </View>
+                      </View>
+                    }
                   </Dialog.Content>
                 </Dialog>
               </Portal>
@@ -655,6 +761,32 @@ const styles = StyleSheet.create({
       alignSelf:'flex-start',
       textTransform:'none',
       padding:0,
+    },
+    btn: {
+      borderWidth:2,
+      borderColor:'#ef5865',
+      borderRadius:5,
+      flexDirection:'row',
+      paddingVertical:15,
+      paddingHorizontal:0,
+      alignItems:'center',
+      justifyContent:'center',
+      width:125,
+      // flex:1,
+    },
+    btnInactive: {
+        backgroundColor:'transparent',
+    },
+    btnActive: {
+        backgroundColor:'#ef5865',
+    },
+    txtBtnActive: {
+        fontSize:12,
+        color:'white',
+    },
+    txtBtnInactive: {
+        fontSize:12,
+        color:'#ef5865',
     },
   });
 
