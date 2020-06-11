@@ -27,7 +27,6 @@ class CrearPartidaPage extends React.Component {
     players: '',
     descripcion: '',
     privada: true,
-    controlar_solicitudes: false,
     selectorJuegosVisible: false,
     todosJuegos: [],
     filterJuegos: [],
@@ -93,7 +92,6 @@ class CrearPartidaPage extends React.Component {
       'players': '4',
       'descripcion': '',
       'privada': true,
-      'controlar_solicitudes': false,
       'selectorJuegosVisible': false,
       'todosJuegos': [],
       'filterJuegos': [],
@@ -269,8 +267,7 @@ class CrearPartidaPage extends React.Component {
         num_players: this.state.players,
         address: this.state.lugar,
         games: games,
-        private: this.state.privada ? 1:0,
-        request_join: this.state.controlar_solicitudes ? 1:0
+        private: this.state.privada ? 1:0
       }
     }
     var dataStr2 = JSON.stringify(data2);
@@ -486,15 +483,6 @@ class CrearPartidaPage extends React.Component {
             <Switch
 			onValueChange={(nuevo) => this.setState({privada: nuevo})}
 			value={this.state.privada}
-			trackColor={{false:'#999',true:'#f50057'}}
-			thumbColor='white'
-			/>
-          </View>
-          <View style={styles.fondoOscuro}>
-            <Text style={styles.textoOscuro}>Controlar las solicitudes</Text>
-            <Switch
-			onValueChange={(nuevo) => this.setState({controlar_solicitudes: nuevo})}
-			value={this.state.controlar_solicitudes}
 			trackColor={{false:'#999',true:'#f50057'}}
 			thumbColor='white'
 			/>
