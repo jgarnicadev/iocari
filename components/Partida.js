@@ -272,24 +272,32 @@ class Partida extends React.Component {
               </View>
               <View style={styles.contenedor}>
                 <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Personas apuntadas</Text>
-                {this.state.partida.jugadores.map((elem) => 
-                  {elem.battle_role == 1 && 
-                    <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
-                      <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
-                    </TouchableHighlight>
+                {this.state.partida.jugadores.map((elem) => {
+                  if (elem.battle_role == 1 || elem.battle_role == 2) {
+                    return (
+                      <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
+                        <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
+                      </TouchableHighlight>
+                    );
+                  } else {
+                    return null;
                   }
-                )}
+                })}
               </View>
               {this.state.partida.private == 1 && this.state.apuntadoPartidaRole == 2 &&
                 <View style={styles.contenedor}>
                   <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Pendientes</Text>
-                  {this.state.partida.jugadores.map((elem) => 
-                    {elem.battle_role == 0 && 
-                      <TouchableHighlight key={elem.username}  onPress={() => this.showPopupConfirmarUsuario(elem)}>
-                        <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
-                      </TouchableHighlight>
+                  {this.state.partida.jugadores.map((elem) => {
+                    if (elem.battle_role == 0) {
+                      return (
+                        <TouchableHighlight key={elem.username}  onPress={() => this.showPopupConfirmarUsuario(elem)}>
+                          <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
+                        </TouchableHighlight>
+                      );
+                    } else {
+                      return null;
                     }
-                  )}
+                  })}
                 </View>
               }
               <ImageBackground style={styles.contenedorLugar} source={require('../assets/mapa.jpg')} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
