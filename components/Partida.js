@@ -26,7 +26,8 @@ class Partida extends React.Component {
       valoracionPartida: 0,
       valorarPartidaVisible: false,
       showPopupConfirmar: false,
-      userPopupConfirmar: null
+      userPopupConfirmar: null,
+      showPopupAbondonar: false,
     }
 
     async getAccessToken() {
@@ -43,7 +44,8 @@ class Partida extends React.Component {
               'apuntadoPartida': false,
               'apuntadoPartidaRole': null,
               'showPopupConfirmar': false,
-              'userPopupConfirmar': null
+              'userPopupConfirmar': null,
+              'showPopupAbondonar': false
             });
             const { navigation } = this.props;
             this.getAccessToken().then( value => {
@@ -357,6 +359,11 @@ class Partida extends React.Component {
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
                 </View>
               ) : null} 
+              {(this.state.apuntadoPartida == true && this.state.apuntadoPartidaRole < 3 ) ? (
+                <View style={styles.contenedor}>
+                  <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.abandonar}>Abandonar</Button>
+                </View>
+              ) : null} 
               {this.state.apuntadoPartidaRole == 2 && (
                 <View style={styles.contenedor}>
                   <Button style={[styles.button,{borderColor:'#f50057'}]} mode="outlined" dark="true" color="#f50057" onPress={this.cancelarPartida}>Cancelar partida</Button>
@@ -474,6 +481,35 @@ class Partida extends React.Component {
                           </View>
                       </View>
                     }
+                  </Dialog.Content>
+                </Dialog>
+                <Dialog visible={this.state.showPopupAbondonar} onDismiss={()=> this.setState({'showPopupAbondonar':false})} style={{width:350, alignSelf:'center'}}>
+                  <Dialog.Content>
+                    <View style={{
+                        alignItems:'center',
+                        width:300
+                    }}>
+                        <Text style={{
+                            fontSize:16,
+                        }}>¿Realmente deseas abandonar la partida?</Text>
+                        <View style={{
+                            flexDirection:'row',
+                            justifyContent:'space-evenly',
+                            marginTop:30,
+                            alignSelf:'stretch'
+                        }}>
+                            <TouchableHighlight onPress={() => this.setState({'showPopupAbondonar':false})}>
+                                <View style={[styles.btn, styles.btnInactive]}>
+                                    <Text style={styles.txtBtnInactive}>Ahora no</Text>
+                                </View>
+                            </TouchableHighlight>
+                            <TouchableHighlight onPress={this.abandonarConfirm}>
+                                <View style={[styles.btn, styles.btnActive]}>
+                                    <Text style={styles.txtBtnActive}>Abandonar</Text>
+                                </View>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
                   </Dialog.Content>
                 </Dialog>
               </Portal>
@@ -606,6 +642,38 @@ class Partida extends React.Component {
         } else {
           Alert.alert('Error: Solicitud no procesada!');
         }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
+    abandonar = () => {
+      this.setState({'showPopupAbondonar':true})
+    }
+    abandonarConfirm = () => {
+      this.setState({
+        'loading':true,
+        'showPopupAbondonar': false
+      });
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/unjoinBattle',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        this.loadPartida();
       })
       .catch((error) => {
         console.log(error);
