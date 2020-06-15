@@ -347,7 +347,7 @@ class Partida extends React.Component {
                   }
                 })}
               </View>
-              {this.state.partida.private == 1 && this.state.apuntadoPartidaRole == 2 &&
+              {this.state.partidaTerminada == false && this.state.partida.private == 1 && this.state.apuntadoPartidaRole == 2 &&
                 <View style={styles.contenedor}>
                   <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Pendientes</Text>
                   {this.state.partida.jugadores.map((elem) => {
@@ -370,23 +370,22 @@ class Partida extends React.Component {
                     <Button onPress={this.abrirMapa} color="white" uppercase={true} style={{marginLeft:'auto' }} >Abrir mapa</Button>
                   </View>
               </ImageBackground>
-              <View style={styles.contenedor}>
+              {this.state.apuntadoPartida == true && 
+                    (this.state.apuntadoPartidaRole == 1 || this.state.apuntadoPartidaRole == 2) && 
+              (
+                <View style={styles.contenedor}>
                   <View style={{
                     marginBottom:10,
                     flexDirection:'row',
                     justifyContent:'space-between',
                   }}>
                     <Text style={[styles.txtGris, styles.txtTitulo]}>Comentarios</Text>
-                    {this.state.apuntadoPartida == true && 
-                    (this.state.apuntadoPartidaRole == 1 || this.state.apuntadoPartidaRole == 2) && 
-                    (
                     <IconButton
                       icon="comment-processing"
                       color="#f50057"
                       size={20}
                       onPress={() => this.anadirComentario()}
                     />
-                    )}
                   </View>
                   {this.state.comentarios.map((elem) => (
                     <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
@@ -414,18 +413,19 @@ class Partida extends React.Component {
                       </View>
                     </View>
                   ))}
-              </View>
-              {(this.state.apuntadoPartida == false) ? (
+                </View>
+              )}
+              {(this.state.partidaTerminada == false && this.state.apuntadoPartida == false) ? (
                 <View style={styles.contenedor}>
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
                 </View>
               ) : null} 
-              {(this.state.apuntadoPartida == true && this.state.apuntadoPartidaRole < 3 ) ? (
+              {(this.state.partidaTerminada == false && this.state.apuntadoPartida == true && this.state.apuntadoPartidaRole < 3 ) ? (
                 <View style={styles.contenedor}>
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.abandonar}>Abandonar</Button>
                 </View>
               ) : null} 
-              {this.state.apuntadoPartidaRole == 2 && (
+              {this.state.partidaTerminada == false && this.state.apuntadoPartidaRole == 2 && (
                 <View style={styles.contenedor}>
                   <Button style={[styles.button,{borderColor:'#f50057'}]} mode="outlined" dark="true" color="#f50057" onPress={this.cancelarPartida}>Cancelar partida</Button>
                 </View>
