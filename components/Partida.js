@@ -28,6 +28,9 @@ class Partida extends React.Component {
       showPopupConfirmar: false,
       userPopupConfirmar: null,
       showPopupAbondonar: false,
+      showPopupExpulsar: false,
+      userPopupExpulsar: null,
+      showPopupExpulsarConfirm: false,
     }
 
     async getAccessToken() {
@@ -45,7 +48,10 @@ class Partida extends React.Component {
               'apuntadoPartidaRole': null,
               'showPopupConfirmar': false,
               'userPopupConfirmar': null,
-              'showPopupAbondonar': false
+              'showPopupAbondonar': false,
+              'showPopupExpulsar': false,
+              'userPopupExpulsar': null,
+              'showPopupExpulsarConfirm': false,
             });
             const { navigation } = this.props;
             this.getAccessToken().then( value => {
@@ -187,6 +193,25 @@ class Partida extends React.Component {
       });
     }
 
+    handleTapJugador = (user) => {
+      //si no se es admin, mostrar simplemente perfil usuario
+      if (this.state.apuntadoPartidaRole != 2) {
+        this.verPerfil(user.id);
+        return;
+      }
+      //si se es admin, proceso expulsar de partida
+      //si jugador es admin no se le puede expulsar!
+      if (user.battle_role == 2) {
+        this.verPerfil(user.id);
+        return;
+      }
+      //mostrar popup de expulsar
+      this.setState({
+        'showPopupExpulsar': true,
+        'userPopupExpulsar': user
+      });
+    }
+
     showPopupConfirmarUsuario = (user) => {
       this.setState({
         'showPopupConfirmar': true,
@@ -214,6 +239,42 @@ class Partida extends React.Component {
             id: this.state.id_partida, 
           },
           join_user: {
+            id: uid
+          }
+        })
+      })
+      .then((response) => response.json())
+      .then((response) => {
+        // console.log(response);
+        this.loadPartida();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+
+    expulsarJugador = () => {
+      let uid = this.state.userPopupExpulsar.id;
+      this.setState({
+        'loading':true,
+        'showPopupExpulsar': false,
+        'userPopupExpulsar': null,
+        'showPopupExpulsarConfirm': false,
+      });
+      fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/unjoinBattle',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: this.state.accessToken.token, 
+          user: {
+              email: this.state.accessToken.email
+          },
+          battle: {
+            id: this.state.id_partida, 
+          },
+          unjoin_user: {
             id: uid
           }
         })
@@ -277,7 +338,7 @@ class Partida extends React.Component {
                 {this.state.partida.jugadores.map((elem) => {
                   if (elem.battle_role == 1 || elem.battle_role == 2) {
                     return (
-                      <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
+                      <TouchableHighlight key={elem.username}  onPress={() => this.handleTapJugador(elem)}>
                         <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
                       </TouchableHighlight>
                     );
@@ -459,7 +520,7 @@ class Partida extends React.Component {
                               fontSize:16,
                               marginBottom:10
                           }}>{this.state.userPopupConfirmar.username}</Text>
-                          <TouchableHighlight onPress={() => this.showUsuario(this.state.userPopupConfirmar.id)}>
+                          <TouchableHighlight onPress={() => this.verPerfil(this.state.userPopupConfirmar.id)}>
                               <Avatar.Image size={100} source={{ uri: this.state.userPopupConfirmar.photo_url + '?' + new Date() }} />
                           </TouchableHighlight>
                           <View style={{
@@ -510,6 +571,73 @@ class Partida extends React.Component {
                             </TouchableHighlight>
                         </View>
                     </View>
+                  </Dialog.Content>
+                </Dialog>
+                <Dialog visible={this.state.showPopupExpulsar} onDismiss={()=> this.setState({'showPopupExpulsar':false})} style={{width:350, alignSelf:'center'}}>
+                  <Dialog.Content>
+                    {this.state.userPopupExpulsar != null &&
+                      <View style={{
+                          alignItems:'center',
+                          width:300
+                      }}>
+                          <Text style={{
+                              fontSize:16,
+                              marginBottom:10
+                          }}>{this.state.userPopupExpulsar.username}</Text>
+                          <TouchableHighlight onPress={() => this.verPerfil(this.state.userPopupExpulsar.id)}>
+                              <Avatar.Image size={100} source={{ uri: this.state.userPopupExpulsar.photo_url + '?' + new Date() }} />
+                          </TouchableHighlight>
+                          <View style={{
+                              flexDirection:'row',
+                              justifyContent:'space-evenly',
+                              marginTop:30,
+                              alignSelf:'stretch'
+                          }}>
+                              <TouchableHighlight onPress={() => this.setState({'showPopupExpulsar':false})}>
+                                  <View style={[styles.btn, styles.btnInactive]}>
+                                      <Text style={styles.txtBtnInactive}>Ahora no</Text>
+                                  </View>
+                              </TouchableHighlight>
+                              <TouchableHighlight onPress={() => this.setState({'showPopupExpulsarConfirm':true})}>
+                                  <View style={[styles.btn, styles.btnActive]}>
+                                      <Text style={styles.txtBtnActive}>Expulsar</Text>
+                                  </View>
+                              </TouchableHighlight>
+                          </View>
+                      </View>
+                    }
+                  </Dialog.Content>
+                </Dialog>
+                <Dialog visible={this.state.showPopupExpulsarConfirm} onDismiss={()=> this.setState({'showPopupExpulsarConfirm':false})} style={{width:350, alignSelf:'center'}}>
+                  <Dialog.Content>
+                    {this.state.userPopupExpulsar != null &&
+                      <View style={{
+                          alignItems:'center',
+                          width:300
+                      }}>
+                          <Text style={{
+                              fontSize:16,
+                              marginBottom:10
+                          }}>¿Está seguro de expulsar al jugador?</Text>
+                          <View style={{
+                              flexDirection:'row',
+                              justifyContent:'space-evenly',
+                              marginTop:30,
+                              alignSelf:'stretch'
+                          }}>
+                              <TouchableHighlight onPress={() => this.setState({'showPopupExpulsarConfirm':false})}>
+                                  <View style={[styles.btn, styles.btnInactive]}>
+                                      <Text style={styles.txtBtnInactive}>Cancelar</Text>
+                                  </View>
+                              </TouchableHighlight>
+                              <TouchableHighlight onPress={() => this.expulsarJugador()}>
+                                  <View style={[styles.btn, styles.btnActive]}>
+                                      <Text style={styles.txtBtnActive}>Confirmar</Text>
+                                  </View>
+                              </TouchableHighlight>
+                          </View>
+                      </View>
+                    }
                   </Dialog.Content>
                 </Dialog>
               </Portal>
