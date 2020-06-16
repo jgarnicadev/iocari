@@ -117,6 +117,12 @@ class Perfil extends React.Component {
         this.setState({'popupSolicitudesAmistad':true});
     }
 
+    showEstanteria = () => {
+        this.props.navigation.navigate('estanteria', {
+            id_usuario: this.state.uid
+        });
+    }
+
     render() {
         if (this.state.loading) {
             return (
@@ -141,7 +147,7 @@ class Perfil extends React.Component {
                             <Text style={styles.botonSuperiorText}>Mis Partidas</Text>
                             </View>
                         </TouchableRipple>
-                        <TouchableRipple onPress={() => this.props.navigation.navigate('estanteria')} style={{flex:1}}>
+                        <TouchableRipple onPress={this.showEstanteria} style={{flex:1}}>
                             <View style={styles.botonSuperior}>
                             <Image source={require('../assets/miEstanteria.png')} style={styles.botonSuperiorIcon} />
                             <Text style={styles.botonSuperiorText}>Mi estantería</Text>

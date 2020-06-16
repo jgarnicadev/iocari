@@ -21,6 +21,7 @@ class Estanteria extends React.Component {
         mecanicas: [],
         filterCategoria : null,
         filterMecanica : null,
+        uid: '',
     }
 
     async getAccessToken() {
@@ -34,8 +35,11 @@ class Estanteria extends React.Component {
             payload => {
                 this.setState({'loading':true});
                 this.getAccessToken().then( value => {
+                    const uid = this.props.navigation.getParam('id_usuario', '');
+                    this.props.navigation.setParams({'id_usuario': ''});
                     this.setState({
                         'accessToken':JSON.parse(value),
+                        'uid':uid,
                         'filterCategoria':null,
                         'filterMecanica':null,
                     }, this.cargarDatos);
@@ -51,17 +55,23 @@ class Estanteria extends React.Component {
     }
 
     getMyGames = () => {
+        let body = {
+            token: this.state.accessToken.token, 
+            user: {
+                email: this.state.accessToken.email
+            }
+        };
+        if (this.state.uid != '') {
+            body.profile_user = {
+                id: this.state.uid
+            };
+        }
         fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyGames',{
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                token: this.state.accessToken.token, 
-                user: {
-                    email: this.state.accessToken.email
-                }
-            })
+            body: JSON.stringify(body)
         })
         .then((response) => response.json())
         .then((response) => {
@@ -182,28 +192,30 @@ class Estanteria extends React.Component {
           }
           return (
             <View style={styles.container}>
-                <Header title="Estantería" hideBack={true} headerPerfil={true} hideTitle={true}/>
+                <Header title="Estantería" hideBack={true} headerPerfil={true} hideTitle={true} idUsuario={this.state.uid}/>
                 <ScrollView style={styles.main}>
-                    <View style={styles.botoneraSuperior}>
-                        <TouchableRipple onPress={() => this.props.navigation.navigate('misPartidas')} style={{flex:1}}>
-                            <View style={styles.botonSuperior}>
-                            <Image source={require('../assets/misPartidas.png')} style={styles.botonSuperiorIcon} />
-                            <Text style={styles.botonSuperiorText}>Mis Partidas</Text>
-                            </View>
-                        </TouchableRipple>
-                        <TouchableRipple onPress={this.nada} style={{flex:1}}>
-                            <View style={styles.botonSuperiorActive}>
-                            <Image source={require('../assets/miEstanteria.png')} style={styles.botonSuperiorIcon} />
-                            <Text style={styles.botonSuperiorActiveText}>Mi estantería</Text>
-                            </View>
-                        </TouchableRipple>
-                        <TouchableRipple onPress={() => this.props.navigation.navigate('amigos')} style={{flex:1}}>
-                            <View style={styles.botonSuperior}>
-                            <Image source={require('../assets/amigos.png')} style={styles.botonSuperiorIcon} />
-                            <Text style={styles.botonSuperiorText}>Amigos</Text>
-                            </View>
-                        </TouchableRipple>
-                    </View>
+                    {this.state.uid == '' &&
+                        <View style={styles.botoneraSuperior}>
+                            <TouchableRipple onPress={() => this.props.navigation.navigate('misPartidas')} style={{flex:1}}>
+                                <View style={styles.botonSuperior}>
+                                <Image source={require('../assets/misPartidas.png')} style={styles.botonSuperiorIcon} />
+                                <Text style={styles.botonSuperiorText}>Mis Partidas</Text>
+                                </View>
+                            </TouchableRipple>
+                            <TouchableRipple onPress={this.nada} style={{flex:1}}>
+                                <View style={styles.botonSuperiorActive}>
+                                <Image source={require('../assets/miEstanteria.png')} style={styles.botonSuperiorIcon} />
+                                <Text style={styles.botonSuperiorActiveText}>Mi estantería</Text>
+                                </View>
+                            </TouchableRipple>
+                            <TouchableRipple onPress={() => this.props.navigation.navigate('amigos')} style={{flex:1}}>
+                                <View style={styles.botonSuperior}>
+                                <Image source={require('../assets/amigos.png')} style={styles.botonSuperiorIcon} />
+                                <Text style={styles.botonSuperiorText}>Amigos</Text>
+                                </View>
+                            </TouchableRipple>
+                        </View>
+                    }
                     <View style={{
                         padding:20,
                     }}>
@@ -261,18 +273,24 @@ class Estanteria extends React.Component {
         if (this.state.filterMecanica != null) {
           filters['mechanics'] = [this.state.filterMecanica];
         }
+        let body = {
+            token: this.state.accessToken.token, 
+            user: {
+                email: this.state.accessToken.email
+            },
+            filters: filters
+        };
+        if (this.state.uid != '') {
+            body.profile_user = {
+                id: this.state.uid
+            };
+        }
         fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getMyGames',{
           method: 'POST',
           headers: {
           'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-              token: this.state.accessToken.token, 
-              user: {
-                  email: this.state.accessToken.email
-              },
-              filters: filters
-          })
+          body: JSON.stringify(body)
         })
         .then((response) => response.json())
         .then((response) => {

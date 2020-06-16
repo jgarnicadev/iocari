@@ -19,18 +19,31 @@ class Header extends React.Component {
     this.getAccessToken().then( value => {
       try {
         let data = JSON.parse(value);
-        //validate accessToken is valid
+        let body = null;
+        if (this.props.idUsuario == '') {
+          body = {
+            token: data.token, 
+            user: {
+              email: data.email
+            }
+          };
+        } else {
+          body = {
+            token: data.token, 
+            user: {
+              email: data.email
+            },
+            profile_user: {
+              id: this.props.idUsuario
+            }
+          };
+        }
         fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getProfile',{
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            token: data.token, 
-            user: {
-              email: data.email
-            }
-          })
+          body: JSON.stringify(body)
         })
         .then((response) => response.json())
         .then((response) => {
@@ -147,7 +160,7 @@ class Header extends React.Component {
               fontSize:22,
               fontWeight:"400",
             }}>{this.state.user.username}</Text>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('perfil')} ><Avatar.Image size={45} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} /></TouchableHighlight>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('perfil',{id_usuario: this.props.idUsuario})} ><Avatar.Image size={45} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} /></TouchableHighlight>
           </View>
         )}
       </Appbar.Header>
