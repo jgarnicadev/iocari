@@ -161,7 +161,9 @@ class Perfil extends React.Component {
                         </TouchableRipple>
                     </View>
                     <View style={styles.container}>
-                        <Image source={ (this.state.user.bg_image_url != '') ? { uri: this.state.user.bg_image_url } : require('../assets/bannerPerfil.jpg')} style={styles.banner} resizeMode="cover"/>
+                        <TouchableHighlight onPress={this.changeBkgImage} style={styles.bannerWrapper}>
+                            <Image source={ (this.state.user.bg_image_url != '') ? { uri: this.state.user.bg_image_url  + '?' + new Date() } : require('../assets/bannerPerfil.jpg')} style={styles.banner} resizeMode="cover"/>
+                        </TouchableHighlight>
                         <TouchableHighlight onPress={this.changeAvatar} style={styles.avatarWrapper}>
                             <Avatar.Image size={150} source={ this.state.avatar ? { uri: this.state.avatar + '?' + new Date() } : require('../assets/avatarPerfil.png') } />
                         </TouchableHighlight>
@@ -427,6 +429,59 @@ class Perfil extends React.Component {
         }
     }
 
+    changeBkgImage = async () => {
+        if (this.state.uid != '') {
+            return; //solo perfil propio
+        }
+        const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        if (status === 'granted') {
+          let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [3, 1]
+          });
+          if (!result.cancelled) {
+            let resizedImage = await ImageManipulator.manipulateAsync(
+                result.uri,
+                [{resize : {width: 510, height: 170}}],
+                {compress: 0.8, format: ImageManipulator.SaveFormat.JPEG, base64: true}
+            );
+            let resizedUri = 'data:image/jpg'+ ';base64,' + resizedImage.base64;
+            let tu = this.state.user;
+            tu.bg_image_url = result.uri;
+            this.setState({ user: tu });
+            //llamada a endpoint
+            let body = {
+                token: this.state.accessToken.token, 
+                user: {
+                  email: this.state.accessToken.email
+                },
+                image: {
+                    destiny: "bg",
+                    mime:"image/jpeg",
+                    data: resizedImage.base64
+                }
+              };
+            fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/uploadUserImage',{
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+              })
+              .then((response) => response.json())
+              .then((response) => {
+                  if (response.result == 'OK') {
+                  }
+              })
+              .catch((error) => {
+                console.log(error);
+            });
+          }
+        } else {
+          Alert.alert('Se necesita permiso para acceder a tu camera roll');
+        }
+    }
+
 }
 
 const styles = StyleSheet.create({
@@ -449,19 +504,22 @@ const styles = StyleSheet.create({
         color:'white',
     },
     bannerWrapper: {
+        // position:'absolute',
+        // top:0,
+        // left:0,
         height:170,
+        width:'100%',
+        justifyContent:'flex-start',
+        alignItems:'stretch'
     },
     banner: {
         height:170,
-        position:'absolute',
-        top:0,
-        width:'100%',
     },
     avatarWrapper: {
         alignSelf:'center',
         width:150,
         height:150,
-        marginTop:70,
+        marginTop:-70,
         marginBottom:0,
         padding:0,
     },
