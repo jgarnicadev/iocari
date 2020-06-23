@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, Image } from 'react-native';
 import { Card, Title, IconButton, Avatar, ThemeProvider } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 
@@ -103,6 +103,7 @@ class CarruselPartida extends React.Component {
 
 
     render() {
+      console.log(this.state.datosBattle);
       const init_date = new Date(this.props.partida.init_date.substr(0,19));
       const strDate = init_date.getDate().toString().padStart(2, '0')+'/'+(init_date.getMonth()+1).toString().padStart(2, '0')+'/'+init_date.getFullYear()+' '+init_date.getHours().toString().padStart(2, '0')+':'+init_date.getMinutes().toString().padStart(2, '0');
       return (
@@ -140,6 +141,11 @@ class CarruselPartida extends React.Component {
                 <Text style={styles.ratingText}>{this.state.datosBattle.my_rating}</Text>
               </View>
             )}
+            {this.state.datosBattle != null && this.state.datosBattle.private == 1 && 
+              <View style={styles.private}>
+                <Image source={require('../assets/admin_panel_settings-24px.png')} />
+              </View>
+            }
         </Card>
         </TouchableHighlight>
       );
@@ -187,6 +193,11 @@ const styles = StyleSheet.create({
     ratingIcon: {
       margin:0,
       padding:0,
+    },
+    private: {
+      position:"absolute",
+      right:3,
+      bottom:0,
     }
 });
 
