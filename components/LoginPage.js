@@ -7,6 +7,7 @@ import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
+import { Linking } from 'expo';
 
 class LoginPage extends React.Component {
   state = {
@@ -30,6 +31,16 @@ class LoginPage extends React.Component {
 
   componentDidMount() {
     this.getLocationAsync();
+    Linking.addEventListener('url', data => {
+      let { path, queryParams } = Linking.parse(data.url);
+      switch(path) {
+        case 'estanteria':
+          this.props.navigation.navigate('estanteria', {
+            id_usuario: queryParams.uid
+          });  
+          break;
+      }
+    });
     this.props.navigation.addListener(
       'didFocus',
       payload => {
@@ -65,7 +76,20 @@ class LoginPage extends React.Component {
             .then((response) => response.json())
             .then((response) => {
               if (response.result == 'OK') {
-                this.props.navigation.navigate('home');  
+                Linking.getInitialURL().then(url => {
+                  let { path, queryParams } = Linking.parse(url);
+                  if (path == "") {
+                    this.props.navigation.navigate('home');  
+                  } else {
+                    switch(path) {
+                      case 'estanteria':
+                        this.props.navigation.navigate('estanteria', {
+                          id_usuario: queryParams.uid
+                        });  
+                        break;
+                    }
+                  }
+                })
               }
             });
           } catch(e) {

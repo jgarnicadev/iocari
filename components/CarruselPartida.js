@@ -103,7 +103,6 @@ class CarruselPartida extends React.Component {
 
 
     render() {
-      console.log(this.state.datosBattle);
       const init_date = new Date(this.props.partida.init_date.substr(0,19));
       const strDate = init_date.getDate().toString().padStart(2, '0')+'/'+(init_date.getMonth()+1).toString().padStart(2, '0')+'/'+init_date.getFullYear()+' '+init_date.getHours().toString().padStart(2, '0')+':'+init_date.getMinutes().toString().padStart(2, '0');
       return (

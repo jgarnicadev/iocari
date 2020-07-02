@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, AsyncStorage, ActivityIndicator, Image, Alert } from 'react-native';
-import { Text, TouchableRipple } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, AsyncStorage, ActivityIndicator, Image, Alert, Share } from 'react-native';
+import { Text, TouchableRipple, IconButton } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import RNPickerSelect from 'react-native-picker-select';
-import { Chevron } from 'react-native-shapes'
+import { Chevron } from 'react-native-shapes';
+import { Linking } from 'expo';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -22,6 +23,7 @@ class Estanteria extends React.Component {
         filterCategoria : null,
         filterMecanica : null,
         uid: '',
+        myuid: '',
     }
 
     async getAccessToken() {
@@ -52,6 +54,9 @@ class Estanteria extends React.Component {
         this.getMyGames();
         this.loadCategorias();
         this.loadMecanicas();
+        if (this.state.uid == '') {
+            this.loadMyUID();
+        }
     }
 
     getMyGames = () => {
@@ -252,12 +257,75 @@ class Estanteria extends React.Component {
                       </View>
                     </View>
 
-                    <ListadoJuegos title={titleJuegos} msgEmpty="Aún no tienes ningun juego añadido!" juegos={this.state.juegos} />
+                    <View style={{
+                        position:'relative',
+                    }}>
+                        <ListadoJuegos title={titleJuegos} msgEmpty="Aún no tienes ningun juego añadido!" juegos={this.state.juegos} />
+                        {this.state.uid == '' && (
+                        <IconButton 
+                            onPress={this.share}
+                            icon="share-variant"
+                            size={20}
+                            color="#7c7c7c"
+                            style={{
+                                position:'absolute',
+                                right:10,
+                                top:0
+                            }}
+                        />
+                        )}
+                    </View>
+
                     </View>
                 </ScrollView>
                 <Footer activo="perfil" />
             </View>
         );
+    }
+
+    loadMyUID = () => {
+        let data = {
+            token: this.state.accessToken.token, 
+            user: {
+                email: this.state.accessToken.email
+            }
+        };
+        fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getProfile',{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+          .then((response) => response.json())
+          .then((response) => {
+            if (response.result == 'OK') {
+              this.setState({
+                    'myuid': response.profile_user.id,
+                });
+            }
+          });
+    }
+
+    share = async () => {
+        const url = Linking.makeUrl('estanteria', {uid: this.state.myuid});
+        try {
+            const result = await Share.share({
+              message:
+                'iOcari | Te comparto enlace a mi estantería de juegos: ' + url,
+            });
+            if (result.action === Share.sharedAction) {
+              if (result.activityType) {
+                // shared with activity type of result.activityType
+              } else {
+                // shared
+              }
+            } else if (result.action === Share.dismissedAction) {
+              // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     filtrarJuegos = () => {

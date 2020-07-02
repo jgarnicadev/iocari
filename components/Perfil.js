@@ -80,7 +80,6 @@ class Perfil extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
-            console.log(response);
             if (response.result == 'OK') {
               let solicitudes_amistad = [];
               if (this.state.uid == '') {
