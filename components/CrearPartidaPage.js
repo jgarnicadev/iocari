@@ -66,7 +66,6 @@ class CrearPartidaPage extends React.Component {
           let creandoDesdeJuego = this.props.navigation.getParam('desde_juego', '');
           this.props.navigation.setParams({'desde_juego': ''});
           if (creandoDesdeJuego != '') {
-            console.log(creandoDesdeJuego);
             let temp = [];
             temp.push(creandoDesdeJuego);
             this.setState({'juegos':temp});

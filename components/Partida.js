@@ -420,7 +420,7 @@ class Partida extends React.Component {
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
                 </View>
               ) : null} 
-              {(this.state.partidaTerminada == false && this.state.apuntadoPartida == true && this.state.apuntadoPartidaRole < 3 ) ? (
+              {(this.state.partidaTerminada == false && this.state.apuntadoPartida == true && this.state.apuntadoPartidaRole < 2 ) ? (
                 <View style={styles.contenedor}>
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.abandonar}>Abandonar</Button>
                 </View>
