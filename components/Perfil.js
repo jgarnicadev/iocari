@@ -364,7 +364,7 @@ class Perfil extends React.Component {
             // console.log('no permiso');
             return; //solo perfil propio
         }
-        const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
         if (status === 'granted') {
           let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
@@ -432,7 +432,7 @@ class Perfil extends React.Component {
         if (this.state.uid != '') {
             return; //solo perfil propio
         }
-        const { status } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
         if (status === 'granted') {
           let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
