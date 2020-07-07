@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBackground, Alert, ScrollView } from 'react-native';
+import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBackground, Alert, ScrollView, Share } from 'react-native';
 import { Button, IconButton, Avatar, Dialog, Portal, TextInput  } from 'react-native-paper';
 import openMap from 'react-native-open-maps';
 import { AirbnbRating } from 'react-native-ratings';
+import { Linking } from 'expo';
 
 import Header from './Header';
 import CarruselJuegos from './CarruselJuegos';
@@ -297,7 +298,7 @@ class Partida extends React.Component {
         }
         return (
             <View style={styles.container}>
-              <Header title={this.state.partida.name} />
+              <Header title={this.state.partida.name} onSharePartida={this.share} />
               <ScrollView>
               <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                 <View  style={styles.avatarCreador}>
@@ -849,6 +850,28 @@ class Partida extends React.Component {
         console.log(error);
       });
     }
+
+    share = async () => {
+      const url = Linking.makeUrl('partida', {pid: this.state.id_partida});
+      console.log(url);
+      try {
+          const result = await Share.share({
+            message:
+              'iOcari | Te comparto una partida que creo te puede interesar: ' + url,
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+      } catch (error) {
+          alert(error.message);
+      }
+  }
 
 }
 

@@ -147,6 +147,17 @@ class Header extends React.Component {
             </View>
           </TouchableHighlight>
         )}
+        {!this.props.onSharePartida || (
+          <TouchableHighlight onPress={this.props.onSharePartida} >
+            <View style={styles.btnPublicarWrp}>
+            <IconButton
+              icon="share-variant"
+              color="white"
+              size={20}
+            />
+            </View>
+          </TouchableHighlight>
+        )}
         {this.props.headerPerfil && this.state.user != null && (
           <View style={{
             flex:1,

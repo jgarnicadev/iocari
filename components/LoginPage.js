@@ -39,7 +39,12 @@ class LoginPage extends React.Component {
             id_usuario: queryParams.uid
           });  
           break;
-      }
+        case 'partida':
+          this.props.navigation.navigate('partida', {
+            id_partida: queryParams.pid
+          });  
+          break;
+        }
     });
     this.props.navigation.addListener(
       'didFocus',
@@ -85,6 +90,11 @@ class LoginPage extends React.Component {
                       case 'estanteria':
                         this.props.navigation.navigate('estanteria', {
                           id_usuario: queryParams.uid
+                        });  
+                        break;
+                      case 'partida':
+                        this.props.navigation.navigate('partida', {
+                          id_partida: queryParams.pid
                         });  
                         break;
                     }
