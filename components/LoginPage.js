@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Alert, ScrollView, AsyncStorage, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Image, Alert, ScrollView, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput, Subheading } from 'react-native-paper';
@@ -176,14 +176,35 @@ class LoginPage extends React.Component {
                 dense={true}
                 onChangeText={(text) => this.setState({email: text})}
                 value={this.state.email}
+                style={{
+                  paddingLeft:35,
+                }}
                 />
-              <TextInput  label="Contraseña" style={styles.input}
+              <Image source={require('../assets/baseline_email_black_18dp.png')} style={{
+                marginTop:-35,
+                marginLeft:10,
+                marginBottom:35,
+                width:25,
+                height:25
+              }} />
+              <TextInput
+                label="Contraseña" style={styles.input}
                 underlineColor="#4db6ac"
                 dense={true}
                 secureTextEntry={true}
                 onChangeText={(text) => this.setState({password: text})}
                 value={this.state.password}
+                style={{
+                  paddingLeft:35,
+                }}
               />
+              <Image source={require('../assets/baseline_lock_black_18dp.png')} style={{
+                marginTop:-35,
+                marginLeft:10,
+                marginBottom:30,
+                width:25,
+                height:25
+              }} />
               <Button style={[styles.button, styles.btnAcceder]} mode="contained" dark="true" color="#f50057" onPress={this.login.bind(this)}>Acceder</Button>
             </ScrollView>
           </LinearGradient>
