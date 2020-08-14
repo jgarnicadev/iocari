@@ -416,7 +416,7 @@ class Partida extends React.Component {
                   ))}
                 </View>
               )}
-              {(this.state.partidaTerminada == false && this.state.apuntadoPartida == false) ? (
+              {(this.state.partidaTerminada == false && (this.state.apuntadoPartida == false || this.state.apuntadoPartidaRole == 3)) ? (
                 <View style={styles.contenedor}>
                   <Button style={styles.button} mode="contained" dark="true" color="#f50057" onPress={this.apuntarse}>Apuntarse</Button>
                 </View>
