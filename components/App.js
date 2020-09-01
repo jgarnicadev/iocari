@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import { createDrawerNavigator, createAppContainer } from "react-navigation";
+import { createAppContainer } from "react-navigation";
+import { createDrawerNavigator } from "react-navigation-drawer";
 
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
