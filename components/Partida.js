@@ -3,7 +3,7 @@ import { StyleSheet, View, AsyncStorage, ActivityIndicator, Image, Text, ImageBa
 import { Button, IconButton, Avatar, Dialog, Portal, TextInput  } from 'react-native-paper';
 import openMap from 'react-native-open-maps';
 import { AirbnbRating } from 'react-native-ratings';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 
 import Header from './Header';
 import CarruselJuegos from './CarruselJuegos';

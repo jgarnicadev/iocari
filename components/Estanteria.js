@@ -4,7 +4,7 @@ import { Text, TouchableRipple, IconButton } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import RNPickerSelect from 'react-native-picker-select';
 import { Chevron } from 'react-native-shapes';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 
 import Header from './Header';
 import Footer from './Footer';

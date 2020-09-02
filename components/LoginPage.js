@@ -7,7 +7,7 @@ import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 
 class LoginPage extends React.Component {
   state = {
