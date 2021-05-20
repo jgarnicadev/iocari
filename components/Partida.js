@@ -246,7 +246,6 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        // console.log(response);
         this.loadPartida();
       })
       .catch((error) => {
@@ -282,7 +281,6 @@ class Partida extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        // console.log(response);
         this.loadPartida();
       })
       .catch((error) => {
@@ -853,7 +851,6 @@ class Partida extends React.Component {
 
     share = async () => {
       const url = Linking.makeUrl('partida', {pid: this.state.id_partida});
-      console.log(url);
       try {
           const result = await Share.share({
             message:

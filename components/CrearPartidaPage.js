@@ -296,7 +296,6 @@ class CrearPartidaPage extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
-            //console.log(response);
             if (response.result == 'OK') {
               this.publicando = false;
               Alert.alert('Partida Creada');

@@ -180,7 +180,6 @@ class RegisterPage2 extends React.Component {
   }
 
   openCalendar = () => {
-    console.log('openCalendar');
     this.refs.datepicker.onPressDate();
   }
   fechaSelect(fecha) {

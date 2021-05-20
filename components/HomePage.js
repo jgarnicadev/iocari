@@ -86,7 +86,6 @@ class HomePage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
-        // console.log(response);
         this.setState({'mis_partidas':response.battles});
       }
     })
@@ -120,7 +119,6 @@ class HomePage extends React.Component {
   }
 
   cargarPartidasCerca = () => {
-    // console.log(this.state.location);
     fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getCloseBattles',{
       method: 'POST',
       headers: {
@@ -139,7 +137,6 @@ class HomePage extends React.Component {
     })
     .then((response) => response.json())
     .then((response) => {
-      // console.log(response);
       if (response.result == 'OK') {
         this.setState({'partidas_cerca':response.battles});
       }
@@ -183,7 +180,6 @@ class HomePage extends React.Component {
 
   fechaSelect = (fechasel) => {
     // this.setState({fecha: fechasel, fechaCalendar: fechasel});
-    // console.log(fechasel);
     const busqueda = fechasel;
     const partes_fecha = fechasel.split('/');
     this.setState({'busquedaText':busqueda});

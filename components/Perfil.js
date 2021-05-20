@@ -44,7 +44,6 @@ class Perfil extends React.Component {
                     this.setState({'accessToken':JSON.parse(value)});
                     const uid = this.props.navigation.getParam('id_usuario', '');
                     this.props.navigation.setParams({'id_usuario': ''});
-                    // console.log('usuario: '+uid);
                     this.setState({'uid':uid}, this.loadProfile);
                 });
             }
@@ -302,7 +301,6 @@ class Perfil extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
-            // console.log(response);
             if (response.result == 'OK') {
                 //   Alert.alert('Solicitud enviada!');
                 this.removeSolicitud(solicitud_id);
@@ -347,7 +345,6 @@ class Perfil extends React.Component {
           })
           .then((response) => response.json())
           .then((response) => {
-            // console.log(response);
             if (response.result == 'OK') {
               Alert.alert('Solicitud enviada!');
             } else {
@@ -361,7 +358,6 @@ class Perfil extends React.Component {
 
     changeAvatar = async () => {
         if (this.state.uid != '') {
-            // console.log('no permiso');
             return; //solo perfil propio
         }
         const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -380,7 +376,6 @@ class Perfil extends React.Component {
             //         resizeMode: 'contain',
             //       },
             //       async (uri) => {
-            //         console.log(uri);
             //         let base64Data = await FileSystem.readAsStringAsync(uri, {
             //             encoding: FileSystem.EncodingType.Base64
             //         });
@@ -415,7 +410,6 @@ class Perfil extends React.Component {
               })
               .then((response) => response.json())
               .then((response) => {
-                  console.log(response);
                   if (response.result == 'OK') {
                   }
               })
@@ -469,7 +463,6 @@ class Perfil extends React.Component {
               })
               .then((response) => response.json())
               .then((response) => {
-                  console.log(response);
                   if (response.result == 'OK') {
                   }
               })

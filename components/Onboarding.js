@@ -158,7 +158,6 @@ class Onboarding extends React.Component {
       })
       .then((response) => response.json())
       .then((response) => {
-        // console.log(response);
       })
       .catch((error) => {
           console.log(error);

@@ -45,7 +45,6 @@ class Mapa extends React.Component {
           showsUserLocation={true}
         >
           {this.state.partidas_cerca.map(partida => {
-            // console.log(partida);
             const init_date = new Date(partida.init_date.substr(0,19));
             const strDate = init_date.getDate().toString().padStart(2, '0')+'/'+(init_date.getMonth()+1).toString().padStart(2, '0')+'/'+init_date.getFullYear()+' '+init_date.getHours().toString().padStart(2, '0')+':'+init_date.getMinutes().toString().padStart(2, '0');
             return <Marker
@@ -107,7 +106,6 @@ class Mapa extends React.Component {
   }
 
   cargarPartidasCerca = () => {
-    // console.log(this.state.location);
     fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/getCloseBattles',{
       method: 'POST',
       headers: {
@@ -126,7 +124,6 @@ class Mapa extends React.Component {
     })
     .then((response) => response.json())
     .then((response) => {
-      // console.log(response);
       if (response.result == 'OK') {
         this.setState({'partidas_cerca':response.battles}, this.setZoomMapa);
       }
@@ -137,12 +134,10 @@ class Mapa extends React.Component {
   }
 
   setZoomMapa = () => {
-    // console.log('setZoomMapa');
     this.map.fitToElements(true);
   }
 
   showPartida = (idPartida) => {
-    console.log('test' + idPartida);
     this.props.navigation.navigate('partida', {
       id_partida: idPartida
     });
