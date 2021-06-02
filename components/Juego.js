@@ -18,6 +18,7 @@ class Juego extends React.Component {
     loQuiero: false,
     quieroJugar: false,
     enBiblioteca: false,
+    textShown: false,
   }
 
   async getAccessToken() {
@@ -38,6 +39,10 @@ class Juego extends React.Component {
           });
         }
       );
+  }
+
+  toggleNumberOfLines  = () => { //To toggle the show text or hide it
+    this.setState({'textShown':!this.state.textShown});
   }
 
   loadJuego() {
@@ -110,24 +115,26 @@ class Juego extends React.Component {
               <View style={{ flexDirection:'row', justifyContent: 'space-between', marginTop:30}}>
                 <TouchableHighlight onPress={this.loQuiero}>
                   <View style={this.state.loQuiero ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
-                    <Image source={require('../assets/ico-btn-loquiero.png')} style={{ width: 25, height: 25, margin:0,  marginRight:10 }}/>
+                    <Image source={require('../assets/ico-btn-loquiero.png')} style={{ width: 20, height: 20, margin:0,  marginRight:5 }}/>
                     <Text style={this.state.loQuiero ? styles.txtBtnActive : styles.txtBtnInactive}>¡Lo quiero!</Text>
                   </View>
                 </TouchableHighlight>
                 <TouchableHighlight onPress={this.quieroJugar}>
                   <View style={this.state.quieroJugar ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
-                    <Image source={require('../assets/ico-btn-quierojugar.png')} style={{ width: 25, height: 25, margin:0,  marginRight:10 }}/>
+                    <Image source={require('../assets/ico-btn-quierojugar.png')} style={{ width: 20, height: 20, margin:0,  marginRight:5 }}/>
                     <Text style={this.state.quieroJugar ? styles.txtBtnActive : styles.txtBtnInactive}>Quiero jugar</Text>
                   </View>
                 </TouchableHighlight>
                 <TouchableHighlight onPress={this.enBiblioteca}>
                   <View style={this.state.enBiblioteca ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
-                    <Image source={require('../assets/ico-btn-anadir.png')} style={{ width: 25, height: 25, margin:0,  marginRight:10 }}/>
+                    <Image source={require('../assets/ico-btn-anadir.png')} style={{ width: 20, height: 20, margin:0,  marginRight:5 }}/>
                     <Text style={this.state.enBiblioteca ? styles.txtBtnActive : styles.txtBtnInactive}>Añadir</Text>
                   </View>
                 </TouchableHighlight>
               </View>
-              <Text style={styles.descripcion}>{this.state.juego.description}</Text>
+              {/* <Text style={styles.descripcion}>{this.state.juego.description}</Text> */}
+              <Text style={styles.descripcion} numberOfLines={this.state.textShown ? undefined : 3}>{this.state.juego.description}</Text>
+              <Text onPress={this.toggleNumberOfLines} style={{ marginTop: 3 }}>{this.state.textShown ? 'Menos...' : 'Más...'}</Text>
               <View style={styles.creditos}>
                   {this.state.juego.designers.length > 0 &&
                   <View style={styles.credito}>
@@ -337,8 +344,7 @@ const styles = StyleSheet.create({
     paddingHorizontal:0,
     alignItems:'center',
     justifyContent:'center',
-    width:125,
-    // flex:1,
+    width:100,
   },
   btnInactive: {
     backgroundColor:'transparent',
@@ -347,11 +353,11 @@ const styles = StyleSheet.create({
     backgroundColor:'#0277bd',
   },
   txtBtnActive: {
-    fontSize:12,
+    fontSize:11,
     color:'white',
   },
   txtBtnInactive: {
-    fontSize:12,
+    fontSize:11,
     color:'#0277bd',
   },
   descripcion: {
