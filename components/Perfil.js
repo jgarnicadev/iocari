@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, AsyncStorage, Alert, Image, ActivityIndic
 import { Text, TouchableRipple, Title, Avatar, Portal, Dialog } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { IconButton } from 'react-native-paper';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -159,12 +159,12 @@ class Perfil extends React.Component {
                         </TouchableRipple>
                     </View>
                     <View style={styles.container}>
-                        <TouchableHighlight onPress={this.changeBkgImage} style={styles.bannerWrapper}>
+                        <TouchableOpacity onPress={this.changeBkgImage} style={styles.bannerWrapper}>
                             <Image source={ (this.state.user.bg_image_url != '') ? { uri: this.state.user.bg_image_url  + '?' + new Date() } : require('../assets/bannerPerfil.jpg')} style={styles.banner} resizeMode="cover"/>
-                        </TouchableHighlight>
-                        <TouchableHighlight onPress={this.changeAvatar} style={styles.avatarWrapper}>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={this.changeAvatar} style={styles.avatarWrapper}>
                             <Avatar.Image size={150} source={ this.state.avatar ? { uri: this.state.avatar + '?' + new Date() } : require('../assets/avatarPerfil.png') } />
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     </View>
                     <Title style={styles.nombreUsuario}>{this.state.user.username}</Title>
                     <Text style={styles.sloganUsuario}>{this.state.user.title}</Text>
@@ -194,7 +194,7 @@ class Perfil extends React.Component {
                         <View style={styles.columna20}>
                             <Text style={styles.tituloApartado}>Medallas</Text>
                             {this.state.medallas.map((medalla) => 
-                                <Image key={medalla.id} source={{ uri: medalla.image_url }} style={styles.medalla}/>                            
+                                <Image key={medalla.id} source={{ uri: medalla.image_url }} style={styles.medalla}/>
                             )}
                             {/* <Image source={require('../assets/medallaPerfil.png')} style={styles.medalla}/> */}
                         </View>
@@ -210,7 +210,7 @@ class Perfil extends React.Component {
                             alignSelf:'stretch',
                             alignItems:'flex-end'
                         }}>
-                            <TouchableHighlight onPress={() => this.setState({'popupSolicitudesAmistad':false})} style={{
+                            <TouchableOpacity onPress={() => this.setState({'popupSolicitudesAmistad':false})} style={{
                                 backgroundColor:'#ef5865',
                                 borderRadius:30,
                                 width:40,
@@ -219,9 +219,9 @@ class Perfil extends React.Component {
                                 alignItems:'center',
                             }}>
                                 <IconButton icon="close" color="white" size={30} />
-                            </TouchableHighlight>
+                            </TouchableOpacity>
                         </View>
-                        <ScrollView horizontal="true">
+                        <ScrollView horizontal>
                         {this.state.pending_friends.map((solicitud) => 
                             <View key={solicitud.id} style={{
                                 alignItems:'center',
@@ -231,25 +231,25 @@ class Perfil extends React.Component {
                                     fontSize:16,
                                     marginBottom:10
                                 }}>{solicitud.username}</Text>
-                                <TouchableHighlight onPress={() => this.showUsuario(solicitud.id)}>
+                                <TouchableOpacity onPress={() => this.showUsuario(solicitud.id)}>
                                     <Avatar.Image size={100} source={{ uri: solicitud.photo_url + '?' + new Date() }} />
-                                </TouchableHighlight>
+                                </TouchableOpacity>
                                 <View style={{
                                     flexDirection:'row',
                                     justifyContent:'space-evenly',
                                     marginTop:30,
                                     alignSelf:'stretch'
                                 }}>
-                                    <TouchableHighlight onPress={() => this.removeSolicitud(solicitud.id)}>
+                                    <TouchableOpacity onPress={() => this.removeSolicitud(solicitud.id)}>
                                         <View style={[styles.btn, styles.btnInactive]}>
                                             <Text style={styles.txtBtnInactive}>Ahora no</Text>
                                         </View>
-                                    </TouchableHighlight>
-                                    <TouchableHighlight onPress={() => this.aceptarSolicitudAmistad(solicitud.id)}>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.aceptarSolicitudAmistad(solicitud.id)}>
                                         <View style={[styles.btn, styles.btnActive]}>
                                             <Text style={styles.txtBtnActive}>Añadir</Text>
                                         </View>
-                                    </TouchableHighlight>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         )}

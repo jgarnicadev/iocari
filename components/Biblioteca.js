@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, ScrollView, AsyncStorage, TouchableHighlight, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, AsyncStorage, TouchableOpacity, Text, FlatList, ActivityIndicator } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { Dialog, Portal, Searchbar } from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
@@ -208,12 +208,12 @@ class Biblioteca extends React.Component {
             <View style={styles.container}>
                 <Header title="Biblioteca" hideBack={true} />
                 <View style={styles.buscador}>
-                    <TouchableHighlight onPress={this.mostrarJuegosSelect}>
+                    <TouchableOpacity onPress={this.mostrarJuegosSelect}>
                         <View style={styles.juegosSelect}>
                             <Image source={require('../assets/icon-search.png')} style={styles.juegosSelectIcon} />
                             <Text style={styles.juegosSelectText}>Buscar Juegos</Text>
                         </View>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.main}>
                   <ScrollView style={styles.mainWrap}>
@@ -264,7 +264,7 @@ class Biblioteca extends React.Component {
                             style={{height:200}}
                             data={this.state.filterJuegos}
                             extraData={this.state.filterJuegos}
-                            renderItem={({item}) => <TouchableHighlight onPress={() => this.seleccionJuego(item.key)}><Text style={styles.listJuegosText}>{item.nombre}</Text></TouchableHighlight>}
+                            renderItem={({item}) => <TouchableOpacity onPress={() => this.seleccionJuego(item.key)}><Text style={styles.listJuegosText}>{item.nombre}</Text></TouchableOpacity>}
                             ItemSeparatorComponent={() => <View style={styles.listJuegosSeparator}/>}
                             ListHeaderComponent={this.headerListJuegos}                             
                             />

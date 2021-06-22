@@ -1,6 +1,6 @@
 import React from 'react';
 import { withNavigation } from 'react-navigation';
-import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Alert, TouchableHighlight, AsyncStorage } from 'react-native';
+import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Alert, TouchableOpacity, AsyncStorage } from 'react-native';
 import { Headline, List, TextInput, Button, IconButton, Text  } from 'react-native-paper';
 
 import Header from './Header';
@@ -99,9 +99,9 @@ class InvitarAmigos extends React.Component {
                         {this.state.emails.map((elem) => 
                             <View key={elem} style={[styles.juegoSeleccionado,{flexDirection:'row',justifyContent:'flex-start', flexWrap: 'wrap', alignItems:'center'}]}>
                             <Text style={{color:'white'}}>{elem}</Text>
-                            <TouchableHighlight onPress={() => this.quitarEmail(elem)}>
+                            <TouchableOpacity onPress={() => this.quitarEmail(elem)}>
                                 <Text style={[styles.quitarJuego,{color:'white'}]}>X</Text>
-                            </TouchableHighlight>
+                            </TouchableOpacity>
                             </View>
                         )}
                         </View>                        

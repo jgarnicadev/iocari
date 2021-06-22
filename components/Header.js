@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, Image, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, AsyncStorage } from 'react-native';
 import { Appbar, IconButton, Avatar } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { DrawerActions } from 'react-navigation-drawer';
@@ -112,12 +112,12 @@ class Header extends React.Component {
           //<Text style={styles.texto}>{this.props.title}</Text>
         }
         {!this.props.onCrearPartida || 
-          <TouchableHighlight onPress={this.props.onCrearPartida} style={styles.btnPublicar}>
+          <TouchableOpacity onPress={this.props.onCrearPartida} style={styles.btnPublicar}>
             <View style={styles.btnPublicarWrp}>
             <Text style={styles.btnPublicarTxt}>PUBLICAR</Text>
             <Image source={require('../assets/logo.png')} style={styles.btnPublicarIcon} />
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         }
         {!this.props.onEditarMiPerfil || (
           <View style={{
@@ -136,7 +136,7 @@ class Header extends React.Component {
           </View>
         )}
         {!this.props.onAddAmigo || (
-          <TouchableHighlight onPress={this.props.onAddAmigo} >
+          <TouchableOpacity onPress={this.props.onAddAmigo} >
             <View style={styles.btnPublicarWrp}>
             <Text style={styles.btnPublicarTxt}>Agregar</Text>
             <IconButton
@@ -145,10 +145,10 @@ class Header extends React.Component {
               size={20}
             />
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         )}
         {!this.props.onSharePartida || (
-          <TouchableHighlight onPress={this.props.onSharePartida} >
+          <TouchableOpacity onPress={this.props.onSharePartida} >
             <View style={styles.btnPublicarWrp}>
             <IconButton
               icon="share-variant"
@@ -156,7 +156,7 @@ class Header extends React.Component {
               size={20}
             />
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         )}
         {this.props.headerPerfil && this.state.user != null && (
           <View style={{
@@ -171,7 +171,7 @@ class Header extends React.Component {
               fontSize:22,
               fontWeight:"400",
             }}>{this.state.user.username}</Text>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('perfil',{id_usuario: this.props.idUsuario})} ><Avatar.Image size={45} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} /></TouchableHighlight>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('perfil',{id_usuario: this.props.idUsuario})} ><Avatar.Image size={45} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} /></TouchableOpacity>
           </View>
         )}
       </Appbar.Header>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, AsyncStorage, TouchableHighlight } from 'react-native';
+import { View, StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native';
 import { Text, Caption, Avatar} from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 
@@ -66,9 +66,9 @@ class HeaderMenu extends React.Component {
         if (this.state.user == null) return null;
         return (
             <View style={styles.header}>
-                <TouchableHighlight onPress={() => this.props.navigation.navigate('perfil')}>
+                <TouchableOpacity onPress={() => this.props.navigation.navigate('perfil')}>
                   <Avatar.Image size={50} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} />
-                </TouchableHighlight>
+                </TouchableOpacity>
                 <Text style={[styles.textWhite,styles.nombreUsuario]}>{this.state.user.username}</Text>
                 <Caption style={[styles.textWhite,styles.sloganUsuario]}>{this.state.user.title}</Caption>
             </View>

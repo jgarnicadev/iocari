@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, TouchableHighlight, Alert } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Alert  } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { IconButton, Text } from 'react-native-paper';
 
@@ -8,31 +8,31 @@ class Footer extends React.Component {
     return (
         <View style={styles.container}>
           <View style={styles.footer}>
-            <TouchableHighlight onPress={this.home}>
+            <TouchableOpacity onPress={this.home}>
               <View style={styles.boton}>
                 <IconButton icon="home" color={this.props.activo!='home'?'#bbb':'black'} ></IconButton>
                 <Text style={this.props.activo!='home'?{color:'#bbb'}:{color:'black'}}>Home</Text>
               </View>
-              </TouchableHighlight>
-            <TouchableHighlight onPress={this.biblioteca}>
+              </TouchableOpacity>
+            <TouchableOpacity  onPress={this.biblioteca}>
               <View style={styles.boton}>
                 <IconButton icon="view-list" color={this.props.activo!='biblioteca'?'#bbb':'black'}></IconButton>
                 <Text style={this.props.activo!='biblioteca'?{color:'#bbb'}:{color:'black'}}>Biblioteca</Text>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity >
             <View style={styles.boton}></View>
-            <TouchableHighlight onPress={this.perfil}>
+            <TouchableOpacity onPress={this.perfil}>
               <View style={styles.boton}>
                 <IconButton icon="account" color={this.props.activo!='perfil'?'#bbb':'black'}></IconButton>
                 <Text style={this.props.activo!='perfil'?{color:'#bbb'}:{color:'black'}}>Perfil</Text>
               </View>
-            </TouchableHighlight>
-            <TouchableHighlight onPress={this.alertas}>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.alertas}>
               <View style={styles.boton}>
                 <IconButton icon="bell" color={this.props.activo!='alertas'?'#bbb':'black'}></IconButton>
                 <Text style={this.props.activo!='alertas'?{color:'#bbb'}:{color:'black'}}>Alertas</Text>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
           <IconButton
             style={styles.btnCrearPartida}

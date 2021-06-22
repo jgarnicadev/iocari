@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { Title, Text } from 'react-native-paper';
 
 import CarruselPartida from './CarruselPartida';
@@ -7,7 +7,7 @@ import CarruselPartida from './CarruselPartida';
 class CarruselPartidas extends React.Component {
     render() {
       return (
-        <View>
+        <View style={styles.container} >
             <Title style={{
               paddingHorizontal:15,
             }}>{this.props.title}</Title>
@@ -16,7 +16,7 @@ class CarruselPartidas extends React.Component {
                 paddingHorizontal:15,
               }}>{this.props.msgEmpty}</Text>
             ) : (
-              <ScrollView horizontal="true">
+              <ScrollView horizontal>
               {this.props.partidas.map((elem) => 
                 <CarruselPartida key={elem.id} partida={elem} />
               )}
@@ -27,5 +27,12 @@ class CarruselPartidas extends React.Component {
     }
 }
 
+const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      alignItems: 'stretch',
+      justifyContent:'flex-start',
+  },
+});
 
 export default CarruselPartidas;

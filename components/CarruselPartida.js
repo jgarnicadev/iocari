@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, AsyncStorage, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage, Image } from 'react-native';
 import { Card, Title, IconButton, Avatar, ThemeProvider } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 
@@ -106,8 +106,8 @@ class CarruselPartida extends React.Component {
       const init_date = new Date(this.props.partida.init_date.substr(0,19));
       const strDate = init_date.getDate().toString().padStart(2, '0')+'/'+(init_date.getMonth()+1).toString().padStart(2, '0')+'/'+init_date.getFullYear()+' '+init_date.getHours().toString().padStart(2, '0')+':'+init_date.getMinutes().toString().padStart(2, '0');
       return (
-        <TouchableHighlight onPress={this.showPartida.bind(this)}>
-        <Card style={styles.container} elevation={5}>
+        <TouchableOpacity onPress={this.showPartida.bind(this)} style={styles.container} >
+        <Card elevation={5}>
             <Card.Cover style={styles.cover} source={{uri: this.props.partida.image_url?this.props.partida.image_url:'https://images-na.ssl-images-amazon.com/images/I/A1uDIngqMDL._SX466_.jpg'}} />
             <Card.Content>
               <Text>{this.props.partida.name}</Text>
@@ -146,7 +146,7 @@ class CarruselPartida extends React.Component {
               </View>
             }
         </Card>
-        </TouchableHighlight>
+        </TouchableOpacity>
       );
     }
 }

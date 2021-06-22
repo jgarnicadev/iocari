@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Card, Title, Avatar } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 
@@ -13,14 +13,14 @@ class ListadoUsuario extends React.Component {
 
     render() {
       return (
-        <TouchableHighlight onPress={this.showUsuario}>
+        <TouchableOpacity onPress={this.showUsuario}>
         <Card style={styles.container} elevation={5}>
             <Card.Content style={styles.content}>
               <Avatar.Image size={110} source={{uri: this.props.usuario.photo_url}} />
               <Title style={styles.nombreJuego}>{this.props.usuario.username}</Title>
             </Card.Content>
         </Card>
-        </TouchableHighlight>
+        </TouchableOpacity>
       );
     }
 }

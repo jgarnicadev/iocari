@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Card, Title } from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 
@@ -13,7 +13,7 @@ class ListadoJuego extends React.Component {
 
     render() {
       return (
-        <TouchableHighlight onPress={this.showJuego}>
+        <TouchableOpacity onPress={this.showJuego}>
         <Card style={styles.container} elevation={5}>
             <Card.Cover source={{uri: this.props.juego.image_url}} style={styles.cover} />
             <Card.Content style={styles.content}>
@@ -30,7 +30,7 @@ class ListadoJuego extends React.Component {
               <Title style={styles.nombreJuego}>{this.props.juego.name}</Title>
             </Card.Content>
         </Card>
-        </TouchableHighlight>
+        </TouchableOpacity>
       );
     }
 }

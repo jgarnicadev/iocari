@@ -1,6 +1,6 @@
 import React from 'react';
 import { withNavigation } from 'react-navigation';
-import { View, StyleSheet, ImageBackground, ScrollView, Image, AsyncStorage, TouchableHighlight, FlatList } from 'react-native';
+import { View, StyleSheet, ImageBackground, ScrollView, Image, AsyncStorage, TouchableOpacity, FlatList } from 'react-native';
 import { Button, Headline, Subheading, Text  } from 'react-native-paper';
 
 class Onboarding extends React.Component {
@@ -190,7 +190,7 @@ class Onboarding extends React.Component {
                 <FlatList
                   data={this.state.mecanicas}
                   renderItem={({item}) => 
-                    <TouchableHighlight style={{
+                    <TouchableOpacity style={{
                       backgroundColor:item.selected?'#0277bd':'transparent',
                       borderRadius:5,
                       borderWidth:2,
@@ -205,7 +205,7 @@ class Onboarding extends React.Component {
                       paddingHorizontal:5,
                     }} onPress={() => this.pressMecanica(item)}>
                       <Text style={{color:'white',textAlign:'center'}}>{item.label}</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                   }
                   numColumns={3}
                   keyExtractor={ elem => elem.value}
@@ -220,7 +220,7 @@ class Onboarding extends React.Component {
                 <FlatList
                   data={this.state.categorias}
                   renderItem={({item}) => 
-                    <TouchableHighlight style={{
+                    <TouchableOpacity style={{
                       backgroundColor:item.selected?'#0277bd':'transparent',
                       borderRadius:5,
                       borderWidth:2,
@@ -235,7 +235,7 @@ class Onboarding extends React.Component {
                       paddingHorizontal:5,
                     }} onPress={() => this.pressCategoria(item)}>
                       <Text style={{color:'white',textAlign:'center'}}>{item.label}</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                   }
                   numColumns={3}
                   keyExtractor={ elem => elem.value}

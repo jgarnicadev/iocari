@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextInput, ScrollView, AsyncStorage, Image, BackHandler, ActivityIndicator, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, TextInput, ScrollView, AsyncStorage, Image, BackHandler, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Title, IconButton, Text} from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { Chevron } from 'react-native-shapes'
@@ -268,7 +268,7 @@ class HomePage extends React.Component {
               <Title style={{
                 flex:9
               }}>Partidas Disponibles</Title>
-              <TouchableHighlight style={{
+              <TouchableOpacity style={{
                 flex:1,
               }}
               onPress={
@@ -277,11 +277,11 @@ class HomePage extends React.Component {
               >
                 <View style={{flex:1,justifyContent:'center',alignItems:'stretch'}}>
                   <IconButton icon="map-marker" color="#7c7c7c" size={25} style={{margin:0,padding:0}}></IconButton>
-                  <Text style={{margin:0,padding:0}}>Mapa</Text>
+                  <Text style={{margin:0,padding:0, fontSize:10}}>Mapa</Text>
                 </View>
-              </TouchableHighlight>
+              </TouchableOpacity>
             </View>
-            <TouchableHighlight style={{
+            <TouchableOpacity style={{
               marginBottom:10,
               width:'50%',
               paddingHorizontal:10,
@@ -315,7 +315,7 @@ class HomePage extends React.Component {
                   onDateChange={this.fechaSelect}
                 />  
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />
             <CarruselPartidas title="Hoy" msgEmpty="No se han encontrado partidas para hoy" partidas={this.state.partidas_hoy} />
             <CarruselPartidas title="Cerca" msgEmpty="No se han encontrado partidas cerca" partidas={this.state.partidas_cerca} />

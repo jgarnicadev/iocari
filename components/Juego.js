@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ImageBackground, Image, ScrollView, AsyncStorage, ActivityIndicator, Text, TouchableHighlight, Alert } from 'react-native';
+import { View, StyleSheet, ImageBackground, Image, ScrollView, AsyncStorage, ActivityIndicator, Text, TouchableOpacity, Alert } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 import Header from './Header';
@@ -113,24 +113,24 @@ class Juego extends React.Component {
           <View style={styles.main}>
             <ScrollView style={styles.mainWrap}>
               <View style={{ flexDirection:'row', justifyContent: 'space-between', marginTop:30}}>
-                <TouchableHighlight onPress={this.loQuiero}>
+                <TouchableOpacity onPress={this.loQuiero}>
                   <View style={this.state.loQuiero ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
                     <Image source={require('../assets/ico-btn-loquiero.png')} style={{ width: 20, height: 20, margin:0,  marginRight:5 }}/>
                     <Text style={this.state.loQuiero ? styles.txtBtnActive : styles.txtBtnInactive}>¡Lo quiero!</Text>
                   </View>
-                </TouchableHighlight>
-                <TouchableHighlight onPress={this.quieroJugar}>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.quieroJugar}>
                   <View style={this.state.quieroJugar ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
                     <Image source={require('../assets/ico-btn-quierojugar.png')} style={{ width: 20, height: 20, margin:0,  marginRight:5 }}/>
                     <Text style={this.state.quieroJugar ? styles.txtBtnActive : styles.txtBtnInactive}>Quiero jugar</Text>
                   </View>
-                </TouchableHighlight>
-                <TouchableHighlight onPress={this.enBiblioteca}>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.enBiblioteca}>
                   <View style={this.state.enBiblioteca ? [styles.btn, styles.btnActive] : [styles.btn, styles.btnInactive]}>
                     <Image source={require('../assets/ico-btn-anadir.png')} style={{ width: 20, height: 20, margin:0,  marginRight:5 }}/>
                     <Text style={this.state.enBiblioteca ? styles.txtBtnActive : styles.txtBtnInactive}>Añadir</Text>
                   </View>
-                </TouchableHighlight>
+                </TouchableOpacity>
               </View>
               {/* <Text style={styles.descripcion}>{this.state.juego.description}</Text> */}
               <Text style={styles.descripcion} numberOfLines={this.state.textShown ? undefined : 3}>{this.state.juego.description}</Text>

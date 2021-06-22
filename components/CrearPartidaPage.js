@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableHighlight, FlatList, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
@@ -330,7 +330,7 @@ class CrearPartidaPage extends React.Component {
         <Header title="Crear Partida" onBack={this.handleBack} onCrearPartida={this.publicar} />
         <ScrollView>
           <View  style={styles.fondoNormal}>
-            <TouchableHighlight onPress={this._pickImage}>
+            <TouchableOpacity onPress={this._pickImage}>
               <View>
               {image ?
                 <Image source={{ uri: image }} style={styles.image} />
@@ -339,7 +339,7 @@ class CrearPartidaPage extends React.Component {
               }
               <Text style={[styles.btnSelectImage,styles.btnSelectImageTxt]}>Elige una imagen</Text>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
           <View  style={styles.fondoNormal}>
             <TextInputPaper 
@@ -358,19 +358,19 @@ class CrearPartidaPage extends React.Component {
             <Text style={styles.textoOscuro}>Juegos</Text>
           </View>
           <View  style={styles.fondoNormal}>
-            <TouchableHighlight onPress={this.mostrarJuegosSelect}>
+            <TouchableOpacity onPress={this.mostrarJuegosSelect}>
               <View style={styles.juegosSelect}>
                 <Image source={require('../assets/icon-search.png')} style={styles.juegosSelectIcon} />
                 <Text style={styles.juegosSelectText}>¿Qué juegos tendrás en la partida?</Text>
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <View style={{marginTop:10,flexDirection:'row',justifyContent:'flex-start', flexWrap: 'wrap'}}>
               {this.state.juegos.map((elem) => 
                 <View key={elem.key} style={[styles.juegoSeleccionado,{flexDirection:'row',justifyContent:'flex-start', flexWrap: 'wrap', alignItems:'center'}]}>
                   <Text style={{color:'white'}}>{elem.nombre}</Text>
-                  <TouchableHighlight onPress={() => this.quitarJuego(elem.key)}>
+                  <TouchableOpacity onPress={() => this.quitarJuego(elem.key)}>
                     <Text style={[styles.quitarJuego,{color:'white'}]}>X</Text>
-                  </TouchableHighlight>
+                  </TouchableOpacity>
                 </View>
               )}
             </View>
@@ -379,8 +379,8 @@ class CrearPartidaPage extends React.Component {
             <Image source={require('../assets/ico-dia-partida.png')} style={styles.iconOscuro} />
             <Text style={styles.textoOscuro}>Elige el día de la partida</Text>
           </View>
-          <ScrollView horizontal="true" style={{marginBottom:5}}>
-            <TouchableHighlight onPress={this.openCalendar}>
+          <ScrollView horizontal style={{marginBottom:5}}>
+            <TouchableOpacity onPress={this.openCalendar}>
               <View style={this.state.fecha==this.state.fechaCalendar?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
                 <IconButton icon="calendar-multiselect" size={20} color={this.state.fecha==this.state.fechaCalendar?'white':'#7C7C7C'} style={{padding:0, margin:0}}/>
                 <Text style={[this.state.fecha==this.state.fechaCalendar?{color:'white'}:{color:'#7C7C7C'},{fontSize:12}]}>Abrir Calendario</Text> 
@@ -395,19 +395,19 @@ class CrearPartidaPage extends React.Component {
                   onDateChange={this.fechaSelect}
                 />  
               </View>
-            </TouchableHighlight>
-            <TouchableHighlight onPress={this.selectFechaHoy}>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.selectFechaHoy}>
               <View style={(this.state.fechaCalendar=='-' && this.state.fecha==this.state.today)?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
                 <Text style={[(this.state.fechaCalendar=='-' && this.state.fecha==this.state.today)?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>¡HOY!</Text>  
               </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
             {this.state.proximasFechas.map((elem) => 
-              <TouchableHighlight key={elem.fecha} onPress={() => this.selectFechaProx(elem.fechaFormat)}>
+              <TouchableOpacity key={elem.fecha} onPress={() => this.selectFechaProx(elem.fechaFormat)}>
                 <View style={(this.state.fechaCalendar=='-' && this.state.fecha==elem.fechaFormat)?[styles.botonCarruselDiaPartida,{backgroundColor:'#F50057'}]:styles.botonCarruselDiaPartida}>
                   <Text style={[(this.state.fechaCalendar=='-' && this.state.fecha==elem.fechaFormat)?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>{elem.diaSemana}</Text>  
                   <Text style={[(this.state.fechaCalendar=='-' && this.state.fecha==elem.fechaFormat)?{color:'white'}:{color:'#7C7C7C'},{fontSize:14}]}>{elem.fecha}</Text>  
                 </View>
-              </TouchableHighlight>
+              </TouchableOpacity>
             )}
           </ScrollView>
           <View style={styles.fondoOscuro}>
@@ -474,7 +474,7 @@ class CrearPartidaPage extends React.Component {
                  style={{height:200}}
                  data={this.state.filterJuegos}
                  extraData={this.state.filterJuegos}
-                 renderItem={({item}) => <TouchableHighlight onPress={() => this.seleccionJuego(item.key)}><Text style={styles.listJuegosText}>{item.nombre}</Text></TouchableHighlight>}
+                 renderItem={({item}) => <TouchableOpacity onPress={() => this.seleccionJuego(item.key)}><Text style={styles.listJuegosText}>{item.nombre}</Text></TouchableOpacity>}
                  ItemSeparatorComponent={() => <View style={styles.listJuegosSeparator}/>}
                  ListHeaderComponent={this.headerListJuegos}                             
                 />

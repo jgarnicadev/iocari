@@ -7,7 +7,7 @@ import * as Linking from 'expo-linking';
 
 import Header from './Header';
 import CarruselJuegos from './CarruselJuegos';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 class Partida extends React.Component {
     state = {
@@ -300,9 +300,9 @@ class Partida extends React.Component {
               <ScrollView>
               <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                 <View  style={styles.avatarCreador}>
-                <TouchableHighlight onPress={() => this.verPerfil(this.state.partida.jugadores[0].id)}>
+                <TouchableOpacity onPress={() => this.verPerfil(this.state.partida.jugadores[0].id)}>
                   <Avatar.Image size={48} source={{ uri: this.state.partida.jugadores[0].photo_url  + '?' + new Date() }} style={{borderWidth:4,borderColor:'white'}} />
-                </TouchableHighlight>
+                </TouchableOpacity>
                 </View>
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-fecha.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
@@ -334,17 +334,19 @@ class Partida extends React.Component {
               </View>
               <View style={styles.contenedor}>
                 <Text style={[styles.txtGris, styles.txtTitulo, { marginBottom:10 }]}>Personas apuntadas</Text>
+                <View style={{display:'flex', flexDirection:'row'}}>
                 {this.state.partida.jugadores.map((elem) => {
                   if (elem.battle_role == 1 || elem.battle_role == 2) {
                     return (
-                      <TouchableHighlight key={elem.username}  onPress={() => this.handleTapJugador(elem)}>
+                      <TouchableOpacity key={elem.username}  onPress={() => this.handleTapJugador(elem)}>
                         <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
-                      </TouchableHighlight>
+                      </TouchableOpacity>
                     );
                   } else {
                     return null;
                   }
                 })}
+                </View>
               </View>
               {this.state.partidaTerminada == false && this.state.partida.private == 1 && this.state.apuntadoPartidaRole == 2 &&
                 <View style={styles.contenedor}>
@@ -352,9 +354,9 @@ class Partida extends React.Component {
                   {this.state.partida.jugadores.map((elem) => {
                     if (elem.battle_role == 0) {
                       return (
-                        <TouchableHighlight key={elem.username}  onPress={() => this.showPopupConfirmarUsuario(elem)}>
+                        <TouchableOpacity key={elem.username}  onPress={() => this.showPopupConfirmarUsuario(elem)}>
                           <Avatar.Image style={styles.avatarJugador} size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} />
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                       );
                     } else {
                       return null;
@@ -388,9 +390,9 @@ class Partida extends React.Component {
                   </View>
                   {this.state.comentarios.map((elem) => (
                     <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
-                      <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
+                      <TouchableOpacity key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
                         <Avatar.Image size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} style={styles.avatarComentario} />
-                      </TouchableHighlight>
+                      </TouchableOpacity>
                       <View style={styles.contenidoComentario}>
                         <Text style={styles.usernameComentario}>{elem.username}</Text>
                         <Text style={styles.fechaComentario}>{elem.timestamp}</Text>
@@ -399,9 +401,9 @@ class Partida extends React.Component {
                         
                         {this.state.respuestas[elem.id].map((elem) => (
                           <View style={[styles.contenedor,styles.contenedorComentario]} key={elem.id}>
-                            <TouchableHighlight key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
+                            <TouchableOpacity key={elem.username}  onPress={() => this.verPerfil(elem.id)}>
                               <Avatar.Image size={40} source={{ uri: elem.photo_url  + '?' + new Date() }} style={styles.avatarComentario} />
-                            </TouchableHighlight>
+                            </TouchableOpacity>
                             <View style={styles.contenidoComentario}>
                               <Text style={styles.usernameComentario}>{elem.username}</Text>
                               <Text style={styles.fechaComentario}>{elem.timestamp}</Text>
@@ -519,25 +521,25 @@ class Partida extends React.Component {
                               fontSize:16,
                               marginBottom:10
                           }}>{this.state.userPopupConfirmar.username}</Text>
-                          <TouchableHighlight onPress={() => this.verPerfil(this.state.userPopupConfirmar.id)}>
+                          <TouchableOpacity onPress={() => this.verPerfil(this.state.userPopupConfirmar.id)}>
                               <Avatar.Image size={100} source={{ uri: this.state.userPopupConfirmar.photo_url + '?' + new Date() }} />
-                          </TouchableHighlight>
+                          </TouchableOpacity>
                           <View style={{
                               flexDirection:'row',
                               justifyContent:'space-evenly',
                               marginTop:30,
                               alignSelf:'stretch'
                           }}>
-                              <TouchableHighlight onPress={() => this.setState({'showPopupConfirmar':false})}>
+                              <TouchableOpacity onPress={() => this.setState({'showPopupConfirmar':false})}>
                                   <View style={[styles.btn, styles.btnInactive]}>
                                       <Text style={styles.txtBtnInactive}>Ahora no</Text>
                                   </View>
-                              </TouchableHighlight>
-                              <TouchableHighlight onPress={() => this.confirmarUsuario(this.state.userPopupConfirmar.id)}>
+                              </TouchableOpacity>
+                              <TouchableOpacity onPress={() => this.confirmarUsuario(this.state.userPopupConfirmar.id)}>
                                   <View style={[styles.btn, styles.btnActive]}>
                                       <Text style={styles.txtBtnActive}>Añadir</Text>
                                   </View>
-                              </TouchableHighlight>
+                              </TouchableOpacity>
                           </View>
                       </View>
                     }
@@ -558,16 +560,16 @@ class Partida extends React.Component {
                             marginTop:30,
                             alignSelf:'stretch'
                         }}>
-                            <TouchableHighlight onPress={() => this.setState({'showPopupAbondonar':false})}>
+                            <TouchableOpacity onPress={() => this.setState({'showPopupAbondonar':false})}>
                                 <View style={[styles.btn, styles.btnInactive]}>
                                     <Text style={styles.txtBtnInactive}>Ahora no</Text>
                                 </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={this.abandonarConfirm}>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.abandonarConfirm}>
                                 <View style={[styles.btn, styles.btnActive]}>
                                     <Text style={styles.txtBtnActive}>Abandonar</Text>
                                 </View>
-                            </TouchableHighlight>
+                            </TouchableOpacity>
                         </View>
                     </View>
                   </Dialog.Content>
@@ -583,25 +585,25 @@ class Partida extends React.Component {
                               fontSize:16,
                               marginBottom:10
                           }}>{this.state.userPopupExpulsar.username}</Text>
-                          <TouchableHighlight onPress={() => this.verPerfil(this.state.userPopupExpulsar.id)}>
+                          <TouchableOpacity onPress={() => this.verPerfil(this.state.userPopupExpulsar.id)}>
                               <Avatar.Image size={100} source={{ uri: this.state.userPopupExpulsar.photo_url + '?' + new Date() }} />
-                          </TouchableHighlight>
+                          </TouchableOpacity>
                           <View style={{
                               flexDirection:'row',
                               justifyContent:'space-evenly',
                               marginTop:30,
                               alignSelf:'stretch'
                           }}>
-                              <TouchableHighlight onPress={() => this.setState({'showPopupExpulsar':false})}>
+                              <TouchableOpacity onPress={() => this.setState({'showPopupExpulsar':false})}>
                                   <View style={[styles.btn, styles.btnInactive]}>
                                       <Text style={styles.txtBtnInactive}>Ahora no</Text>
                                   </View>
-                              </TouchableHighlight>
-                              <TouchableHighlight onPress={() => this.setState({'showPopupExpulsarConfirm':true})}>
+                              </TouchableOpacity>
+                              <TouchableOpacity onPress={() => this.setState({'showPopupExpulsarConfirm':true})}>
                                   <View style={[styles.btn, styles.btnActive]}>
                                       <Text style={styles.txtBtnActive}>Expulsar</Text>
                                   </View>
-                              </TouchableHighlight>
+                              </TouchableOpacity>
                           </View>
                       </View>
                     }
@@ -624,16 +626,16 @@ class Partida extends React.Component {
                               marginTop:30,
                               alignSelf:'stretch'
                           }}>
-                              <TouchableHighlight onPress={() => this.setState({'showPopupExpulsarConfirm':false})}>
+                              <TouchableOpacity onPress={() => this.setState({'showPopupExpulsarConfirm':false})}>
                                   <View style={[styles.btn, styles.btnInactive]}>
                                       <Text style={styles.txtBtnInactive}>Cancelar</Text>
                                   </View>
-                              </TouchableHighlight>
-                              <TouchableHighlight onPress={() => this.expulsarJugador()}>
+                              </TouchableOpacity>
+                              <TouchableOpacity onPress={() => this.expulsarJugador()}>
                                   <View style={[styles.btn, styles.btnActive]}>
                                       <Text style={styles.txtBtnActive}>Confirmar</Text>
                                   </View>
-                              </TouchableHighlight>
+                              </TouchableOpacity>
                           </View>
                       </View>
                     }
