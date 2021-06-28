@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { createAppContainer } from "react-navigation";
 import { createDrawerNavigator } from "react-navigation-drawer";
+import { createStackNavigator } from 'react-navigation-stack';
 
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
@@ -21,7 +22,7 @@ import Amigos from './Amigos';
 import InvitarAmigos from './InvitarAmigos';
 import Onboarding from './Onboarding';
 
-const AppNavigator = createDrawerNavigator(
+const StackNavigator = createStackNavigator(
   {
     login: LoginPage,
     register: RegisterPage,
@@ -41,6 +42,15 @@ const AppNavigator = createDrawerNavigator(
   },
   {
     initialRouteName: "login",
+    headerMode: "none",
+  }
+);
+
+const AppNavigator = createDrawerNavigator(
+  {
+    Home: StackNavigator,
+  },
+  {
     drawerBackgroundColor: '#004c8b',
     contentComponent: props => (
       <View>
