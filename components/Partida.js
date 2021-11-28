@@ -300,9 +300,9 @@ class Partida extends React.Component {
               <ScrollView>
               <ImageBackground style={styles.cabeceraPartida} source={{ uri: this.state.partida.image_url }} imageStyle={{ resizeMode: 'cover', opacity:0.3 }} >
                 <View  style={styles.avatarCreador}>
-                <TouchableOpacity onPress={() => this.verPerfil(this.state.partida.jugadores[0].id)}>
-                  <Avatar.Image size={48} source={{ uri: this.state.partida.jugadores[0].photo_url  + '?' + new Date() }} style={{borderWidth:4,borderColor:'white'}} />
-                </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.verPerfil(this.state.partida.jugadores[0].id)}>
+                    <Avatar.Image source={{ uri: this.state.partida.jugadores[0].photo_url  + '?' + new Date() }} style={{borderWidth:4,borderColor:'white'}} />
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.cabeceraWarpTxt}>
                   <IconButton icon={require('../assets/ico-fecha.png')} color="white" size={20} style={{ margin:0, padding: 0 }}></IconButton>
@@ -943,9 +943,11 @@ const styles = StyleSheet.create({
       bottom:60,
       width:56,
       height:56,
+      margin: 0,
     },
     avatarJugador: {
       borderWidth:4,
+      margin: 0,
       borderColor:'white',
     },
     fab: {

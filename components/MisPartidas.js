@@ -18,6 +18,8 @@ class MisPartidas extends React.Component {
         loading: true,
         proximasPartidas: [],
         partidasTerminadas: [],
+        uid: '',
+        myuid: '',
     }
 
     async getAccessToken() {
@@ -31,8 +33,11 @@ class MisPartidas extends React.Component {
             payload => {
                 this.setState({'loading':true});
                 this.getAccessToken().then( value => {
+                    const uid = this.props.navigation.getParam('id_usuario', '');
+                    this.props.navigation.setParams({'id_usuario': ''});    
                     this.setState({
                         'accessToken':JSON.parse(value),
+                        'uid':uid,
                     }, this.cargarDatos);
                 });
             }
@@ -107,7 +112,7 @@ class MisPartidas extends React.Component {
           }
           return (
             <View style={styles.container}>
-                <Header title="Mis Partidas" hideBack={true} headerPerfil={true} hideTitle={true}/>
+                <Header title="Mis Partidas" hideBack={true} headerPerfil={true} hideTitle={true} idUsuario={this.state.uid}/>
                 <ScrollView style={styles.main}>
                     <View style={styles.botoneraSuperior}>
                         <TouchableRipple onPress={this.nada} style={{flex:1}}>
