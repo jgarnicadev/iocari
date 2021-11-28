@@ -18,6 +18,8 @@ class Amigos extends React.Component {
         amigos: [],
         filterAmigos: null,
         loadingBusqueda: false,
+        uid: '',
+        myuid: '',
     }
 
     async getAccessToken() {
@@ -31,10 +33,13 @@ class Amigos extends React.Component {
             payload => {
                 this.setState({'loading':true});
                 this.getAccessToken().then( value => {
+                    const uid = this.props.navigation.getParam('id_usuario', '');
+                    this.props.navigation.setParams({'id_usuario': ''});    
                     this.setState({
                         'accessToken':JSON.parse(value),
                         'filterAmigos': null,
                         'loadingBusqueda': false,
+                        'uid':uid,
                     }, this.cargarDatos);
                 });
             }
@@ -80,7 +85,7 @@ class Amigos extends React.Component {
           }
           return (
             <View style={styles.container}>
-                <Header title="Amigos" hideBack={true} headerPerfil={true} hideTitle={true}/>
+                <Header title="Amigos" hideBack={true} headerPerfil={true} hideTitle={true} idUsuario={this.state.uid}/>
                 <ScrollView style={styles.main}>
                     <View style={styles.botoneraSuperior}>
                         <TouchableRipple onPress={() => this.props.navigation.navigate('misPartidas')} style={{flex:1}}>
