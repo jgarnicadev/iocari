@@ -1,14 +1,14 @@
 {
   "expo": {
     "name": "iOcari",
-    "description": "This project is really great.",
+    "description": "Aplicación para encontrar gente con la que jugar a juegos de mesa.",
     "slug": "iOcari",
     "privacy": "public",
     "platforms": [
       "ios",
       "android"
     ],
-    "version": "0.1.0",
+    "version": "0.1.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -24,7 +24,11 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.jgd.iocari"
+      "bundleIdentifier": "com.jgd.iocari",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses your camera and photo gallery for using them as a profile/game/background picture.",
+        "NSLocationWhenInUseUsageDescription": "This app uses your location for showing you the closest games/battles you can play and detect if someone else is using your account with no permissions"
+      }
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",

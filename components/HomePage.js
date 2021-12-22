@@ -244,7 +244,7 @@ class HomePage extends React.Component {
     };
     return (
       <View style={styles.container}>
-        <Header title="Home" hideBack={true} />
+        <Header title="iOcari" hideBack={true} />
         <View style={styles.buscador}>
           <View style={styles.buscadorInputWrap}>
             <Image source={require('../assets/icon-search.png')} style={styles.buscadorIcon} />

@@ -153,7 +153,6 @@ class Header extends React.Component {
             <IconButton
               icon="share-variant"
               color="white"
-              size={20}
             />
             </View>
           </TouchableOpacity>
