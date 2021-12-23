@@ -161,44 +161,49 @@ class RegisterPage extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <LinearGradient style={styles.container} colors={['#1d253d','#0b7e8a']}>
-          <ScrollView style={styles.hPad}>
-            <Image source={require('../assets/logo.png')} style={styles.logo} />
-            <TextInput 
-                  label="Nombre de Player" style={styles.input}
-                  underlineColor="#4db6ac"
-                  dense={true}
-                  onChangeText={(text) => this.setState({nombre: text})}
-                  value={this.state.nombre}
-                  />
-            <TextInput 
-                  label="E-mail" style={styles.input}
-                  underlineColor="#4db6ac"
-                  dense={true}
-                  onChangeText={(text) => this.setState({email: text})}
-                  value={this.state.email}
-                  />
-            <TextInput 
-                  label="Contraseña" style={styles.input}
-                  underlineColor="#4db6ac"
-                  dense={true}
-                  secureTextEntry={true}
-                  onChangeText={(text) => this.setState({password: text})}
-                  value={this.state.password}
-                  />
-            <TextInput 
-                  label="Repetir contraseña" style={styles.input}
-                  underlineColor="#4db6ac"
-                  dense={true}
-                  secureTextEntry={true}
-                  onChangeText={(text) => this.setState({password_repeat: text})}
-                  value={this.state.password_repeat}
-                  />
-            <Button style={[styles.button,styles.btnWrapper]} mode="contained" dark="true" color="#f50057" onPress={this.submit.bind(this)}>Siguiente</Button>
-          </ScrollView>
-        </LinearGradient>
-      </KeyboardAvoidingView>
+      <View style={styles.container}>
+        <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+          <LinearGradient style={styles.container} colors={['#1d253d','#0b7e8a']}>
+            <ScrollView style={styles.hPad}>
+              <Image source={require('../assets/logo.png')} style={styles.logo} />
+              <TextInput 
+                    label="Nombre de Player" style={styles.input}
+                    underlineColor="#4db6ac"
+                    dense={true}
+                    onChangeText={(text) => this.setState({nombre: text})}
+                    value={this.state.nombre}
+                    />
+              <TextInput 
+                    label="E-mail" style={styles.input}
+                    underlineColor="#4db6ac"
+                    dense={true}
+                    onChangeText={(text) => this.setState({email: text})}
+                    value={this.state.email}
+                    />
+              <TextInput 
+                    label="Contraseña" style={styles.input}
+                    underlineColor="#4db6ac"
+                    dense={true}
+                    secureTextEntry={true}
+                    onChangeText={(text) => this.setState({password: text})}
+                    value={this.state.password}
+                    />
+              <TextInput 
+                    label="Repetir contraseña" style={styles.input}
+                    underlineColor="#4db6ac"
+                    dense={true}
+                    secureTextEntry={true}
+                    onChangeText={(text) => this.setState({password_repeat: text})}
+                    value={this.state.password_repeat}
+                    />
+              <Button style={[styles.button,styles.btnWrapper]} mode="contained" dark="true" color="#f50057" onPress={this.submit.bind(this)}>Siguiente</Button>
+            </ScrollView>
+          </LinearGradient>
+        </KeyboardAvoidingView>
+        <View style={[styles.footer, styles.hPad]}>
+          <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('login')}>¿Ya tienes una cuenta?</Button>
+        </View>
+      </View>
     )
   }
 }
@@ -212,8 +217,8 @@ const styles = StyleSheet.create({
     },
     logo: {
         alignSelf:'center',
-        marginTop:60,
-        marginBottom:50,
+        marginTop:50,
+        marginBottom:30,
     },
     input: {
       marginVertical: 10,
@@ -225,6 +230,23 @@ const styles = StyleSheet.create({
     button: {
         paddingVertical:10,
     },
+    footer: {
+      backgroundColor: '#f3f3f3',
+      paddingVertical:10,
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0
+    },
+    textoFooter: {
+      alignSelf:'center',
+    },
+    button: {
+      paddingVertical:10,
+    },
+    btnRegistro: {
+      marginVertical:10,
+    }
   });  
 
 export default withNavigation(RegisterPage);

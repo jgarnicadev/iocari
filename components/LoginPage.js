@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image, Alert, ScrollView, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Button, TextInput, Subheading } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import * as Device from 'expo-device';
@@ -210,8 +210,7 @@ class LoginPage extends React.Component {
           </LinearGradient>
         </KeyboardAvoidingView>
         <View style={[styles.footer, styles.hPad]}>
-            <Subheading style={styles.textoFooter}>¿No tienes una cuenta?</Subheading>
-            <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('register')}>Crea una cuenta ahora</Button>
+          <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('register')}>Crea una cuenta ahora</Button>
         </View>
       </View>
     );
@@ -226,9 +225,9 @@ const styles = StyleSheet.create({
     paddingHorizontal:20,
   },
   logo: {
-    alignSelf:'center',
-    marginTop:60,
-    marginBottom:50,
+      alignSelf:'center',
+      marginTop:50,
+      marginBottom:30,
   },
   input: {
     marginVertical: 10,

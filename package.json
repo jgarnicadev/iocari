@@ -19,6 +19,7 @@
     "expo-file-system": "~13.0.3",
     "expo-image-manipulator": "~10.1.2",
     "expo-image-picker": "~11.0.3",
+    "expo-in-app-purchases": "^12.1.0",
     "expo-linear-gradient": "~10.0.3",
     "expo-linking": "~2.4.2",
     "expo-location": "~13.0.4",
