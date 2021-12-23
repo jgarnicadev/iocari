@@ -27,7 +27,8 @@
       "bundleIdentifier": "com.jgd.iocari",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses your camera and photo gallery for using them as a profile/game/background picture.",
-        "NSLocationWhenInUseUsageDescription": "This app uses your location for showing you the closest games/battles you can play and detect if someone else is using your account with no permissions"
+        "NSLocationWhenInUseUsageDescription": "This app uses your location for showing you the closest games/battles you can play and detect if someone else is using your account with no permissions",
+        "NSPhotoLibraryUsageDescription": "This app uses your camera and photo gallery for using them as a profile/game/background picture."
       }
     },
     "android": {
