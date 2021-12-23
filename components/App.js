@@ -7,6 +7,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import RegisterPage2 from './RegisterPage2';
+import RegisterCompany from './RegisterCompany';
 import HomePage from './HomePage';
 import CrearPartidaPage from './CrearPartidaPage';
 import Partida from './Partida';
@@ -27,6 +28,7 @@ const StackNavigator = createStackNavigator(
     login: LoginPage,
     register: RegisterPage,
     register2: RegisterPage2,
+    registerCompany: RegisterCompany,
     home: HomePage,
     crearPartida: CrearPartidaPage,
     partida: Partida,
