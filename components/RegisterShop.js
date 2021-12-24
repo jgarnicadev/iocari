@@ -3,12 +3,11 @@ import { StyleSheet, View, Image, Alert, ScrollView, KeyboardAvoidingView, Async
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
-import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 
-class RegisterCompany extends React.Component {
+class RegisterShop extends React.Component {
   state = {
     nombre: '',
     email: '',
@@ -19,7 +18,7 @@ class RegisterCompany extends React.Component {
   };
 
   getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status === 'granted') {
       let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
       this.setState({ location });
@@ -107,7 +106,8 @@ class RegisterCompany extends React.Component {
           email: this.state.email,
           username: this.state.nombre,
           password: this.state.password,
-          nif: this.state.nif
+          nif: this.state.nif,
+          type: 2
         }
       })
     })
@@ -170,7 +170,7 @@ class RegisterCompany extends React.Component {
             <ScrollView style={styles.hPad}>
               <Image source={require('../assets/logo.png')} style={styles.logo} />
               <TextInput 
-                    label="Nombre de empresa" style={styles.input}
+                    label="Nombre de la tienda" style={styles.input}
                     underlineColor="#4db6ac"
                     dense={true}
                     onChangeText={(text) => this.setState({nombre: text})}
@@ -181,7 +181,7 @@ class RegisterCompany extends React.Component {
                     underlineColor="#4db6ac"
                     dense={true}
                     onChangeText={(text) => this.setState({nif: text})}
-                    value={this.state.nombre}
+                    value={this.state.nif}
                     />
               <TextInput 
                     label="E-mail" style={styles.input}
@@ -259,4 +259,4 @@ const styles = StyleSheet.create({
     }
   });  
 
-export default withNavigation(RegisterCompany);
+export default withNavigation(RegisterShop);

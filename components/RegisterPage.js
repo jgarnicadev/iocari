@@ -201,7 +201,7 @@ class RegisterPage extends React.Component {
           </LinearGradient>
         </KeyboardAvoidingView>
         <View style={[styles.footer, styles.hPad]}>
-        <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#4db6ac" onPress={() => this.props.navigation.navigate('registerCompany')}>¿Eres una empresa?</Button>
+          {/* <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#4db6ac" onPress={() => this.props.navigation.navigate('registerShop')}>¿Eres una tienda?</Button> */}
           <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('login')}>¿Ya tienes una cuenta?</Button>
         </View>
       </View>

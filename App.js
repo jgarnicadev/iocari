@@ -19,4 +19,4 @@ export default function Main() {
   );
 }
 
-AppRegistry.registerComponent('main', () => Main);
+AppRegistry.registerComponent('main', () => App);
