@@ -8,12 +8,13 @@ import * as Location from 'expo-location';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 
-class RegisterPage extends React.Component {
+class RegisterCompany extends React.Component {
   state = {
     nombre: '',
     email: '',
     password: '',
     password_repeat: '',
+    nif: '',
     location: null,
   };
 
@@ -44,7 +45,8 @@ class RegisterPage extends React.Component {
       !this.state.nombre ||
       !this.state.email ||
       !this.state.password ||
-      !this.state.password_repeat
+      !this.state.password_repeat ||
+      !this.state.nif
     ) {
       Alert.alert(
         'Debes rellenar todos los campos'
@@ -104,7 +106,8 @@ class RegisterPage extends React.Component {
         user: {
           email: this.state.email,
           username: this.state.nombre,
-          password: this.state.password
+          password: this.state.password,
+          nif: this.state.nif
         }
       })
     })
@@ -167,10 +170,17 @@ class RegisterPage extends React.Component {
             <ScrollView style={styles.hPad}>
               <Image source={require('../assets/logo.png')} style={styles.logo} />
               <TextInput 
-                    label="Nombre de Player" style={styles.input}
+                    label="Nombre de empresa" style={styles.input}
                     underlineColor="#4db6ac"
                     dense={true}
                     onChangeText={(text) => this.setState({nombre: text})}
+                    value={this.state.nombre}
+                    />
+              <TextInput 
+                    label="NIF" style={styles.input}
+                    underlineColor="#4db6ac"
+                    dense={true}
+                    onChangeText={(text) => this.setState({nif: text})}
                     value={this.state.nombre}
                     />
               <TextInput 
@@ -201,8 +211,7 @@ class RegisterPage extends React.Component {
           </LinearGradient>
         </KeyboardAvoidingView>
         <View style={[styles.footer, styles.hPad]}>
-        <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#4db6ac" onPress={() => this.props.navigation.navigate('registerCompany')}>¿Eres una empresa?</Button>
-          <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('login')}>¿Ya tienes una cuenta?</Button>
+          <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#4db6ac" onPress={() => this.props.navigation.navigate('register')}>No soy una empresa</Button>
         </View>
       </View>
     )
@@ -250,4 +259,4 @@ const styles = StyleSheet.create({
     }
   });  
 
-export default withNavigation(RegisterPage);
+export default withNavigation(RegisterCompany);
