@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Image, Button, TextInput, Text, Switch, ScrollView, Alert, AsyncStorage, TouchableOpacity, FlatList, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import { TextInput as TextInputPaper, Dialog, Portal, Searchbar, IconButton, Snackbar } from 'react-native-paper';
 import DatePicker from 'react-native-datepicker';
 import TimePicker from "react-native-24h-timepicker";
 import * as ImageManipulator from 'expo-image-manipulator';
+import { Camera } from 'expo-camera';
 
 import Header from './Header';
 
@@ -487,7 +487,7 @@ class CrearPartidaPage extends React.Component {
     );
   }
   _pickImage = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { status } = await Camera.requestCameraPermissionsAsync();
     if (status === 'granted') {
       let result = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,

@@ -4,9 +4,9 @@ import { Text, TouchableRipple, Title, Avatar, Portal, Dialog } from 'react-nati
 import { withNavigation } from 'react-navigation';
 import { IconButton } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { Location } from 'expo-location';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -360,7 +360,7 @@ class Perfil extends React.Component {
         if (this.state.uid != '') {
             return; //solo perfil propio
         }
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        let { status } = await Location.requestForegroundPermissionsAsync();
         if (status === 'granted') {
           let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
@@ -426,7 +426,7 @@ class Perfil extends React.Component {
         if (this.state.uid != '') {
             return; //solo perfil propio
         }
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        const { status } = await Camera.requestCameraPermissionsAsync();
         if (status === 'granted') {
           let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,

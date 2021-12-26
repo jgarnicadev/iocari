@@ -3,7 +3,6 @@ import { withNavigation } from 'react-navigation';
 import { StyleSheet, View, AsyncStorage , Image, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
 import MapView, {Marker, Callout} from 'react-native-maps';
-import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import { IconButton, Avatar } from 'react-native-paper';
 
@@ -99,7 +98,7 @@ class Mapa extends React.Component {
   }
 
   getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status === 'granted') {
       let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
       this.setState({ location }, this.cargarPartidasCerca);

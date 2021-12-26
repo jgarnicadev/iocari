@@ -3,7 +3,6 @@ import { StyleSheet, View, Image, Alert, ScrollView, KeyboardAvoidingView, Async
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
-import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
@@ -18,7 +17,7 @@ class RegisterPage extends React.Component {
   };
 
   getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status === 'granted') {
       let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
       this.setState({ location });
@@ -201,7 +200,7 @@ class RegisterPage extends React.Component {
           </LinearGradient>
         </KeyboardAvoidingView>
         <View style={[styles.footer, styles.hPad]}>
-          {/* <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#4db6ac" onPress={() => this.props.navigation.navigate('registerShop')}>¿Eres una tienda?</Button> */}
+          <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#4db6ac" onPress={() => this.props.navigation.navigate('registerShop')}>¿Eres una tienda?</Button>
           <Button style={[styles.button, styles.btnRegistro]} mode="contained" dark="true" color="#0277bd" onPress={() => this.props.navigation.navigate('login')}>¿Ya tienes una cuenta?</Button>
         </View>
       </View>
