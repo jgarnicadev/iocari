@@ -58,7 +58,7 @@ class HomePage extends React.Component {
   }  
 
   getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status === 'granted') {
       let location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
       // location = {

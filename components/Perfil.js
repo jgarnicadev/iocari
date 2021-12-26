@@ -426,7 +426,7 @@ class Perfil extends React.Component {
         if (this.state.uid != '') {
             return; //solo perfil propio
         }
-        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        const { status } = await Camera.requestCameraPermissionsAsync();
         if (status === 'granted') {
           let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
