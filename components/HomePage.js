@@ -4,7 +4,6 @@ import { Title, IconButton, Text} from 'react-native-paper';
 import { withNavigation } from 'react-navigation';
 import { Chevron } from 'react-native-shapes'
 import DatePicker from 'react-native-datepicker';
-import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 
 import Header from './Header';

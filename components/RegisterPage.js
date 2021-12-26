@@ -3,7 +3,6 @@ import { StyleSheet, View, Image, Alert, ScrollView, KeyboardAvoidingView, Async
 import { withNavigation } from 'react-navigation';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button, TextInput } from 'react-native-paper';
-import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
