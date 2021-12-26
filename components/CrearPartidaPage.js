@@ -26,6 +26,7 @@ class CrearPartidaPage extends React.Component {
     players: '',
     descripcion: '',
     privada: true,
+    featured: false,
     selectorJuegosVisible: false,
     todosJuegos: [],
     filterJuegos: [],
@@ -89,6 +90,7 @@ class CrearPartidaPage extends React.Component {
       'players': '4',
       'descripcion': '',
       'privada': true,
+      'featured': false,
       'selectorJuegosVisible': false,
       'todosJuegos': [],
       'filterJuegos': [],
@@ -259,7 +261,8 @@ class CrearPartidaPage extends React.Component {
         num_players: this.state.players,
         address: this.state.lugar,
         games: games,
-        private: this.state.privada ? 1:0
+        private: this.state.privada ? 1:0,
+        featured_level: this.state.featured ? 1:0
       }
     }
     var dataStr2 = JSON.stringify(data2);
@@ -273,6 +276,7 @@ class CrearPartidaPage extends React.Component {
     .then((response) => response.json())
     .then((response) => {
       if (response.result == 'OK') {
+        Alert.alert('Partida creada, subiendo foto');
         if (this.state.imageBase64 != '') {
           //subir imagen
           fetch('https://25lpkzypn8.execute-api.eu-west-1.amazonaws.com/default/uploadBattleImage',{
@@ -457,11 +461,20 @@ class CrearPartidaPage extends React.Component {
           <View style={styles.fondoOscuro}>
             <Text style={styles.textoOscuro}>Partida Privada</Text>
             <Switch
-			onValueChange={(nuevo) => this.setState({privada: nuevo})}
-			value={this.state.privada}
-			trackColor={{false:'#999',true:'#f50057'}}
-			thumbColor='white'
-			/>
+              onValueChange={(nuevo) => this.setState({privada: nuevo})}
+              value={this.state.privada}
+              trackColor={{false:'#999',true:'#f50057'}}
+              thumbColor='white'
+            />
+          </View>
+          <View style={styles.fondoOscuro}>
+            <Text style={styles.textoOscuro}>Destacar partida (0,99 €)</Text>
+            <Switch
+              onValueChange={(nuevo2) => this.setState({featured: nuevo2})}
+              value={this.state.featured}
+              trackColor={{false:'#999',true:'#f50057'}}
+              thumbColor='white'
+            />
           </View>
           <View style={styles.fondoNormal}>
             <Button title="Publicar" color="#f50057" onPress={this.publicar}/>
