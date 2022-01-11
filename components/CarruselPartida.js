@@ -105,11 +105,15 @@ class CarruselPartida extends React.Component {
     render() {
       const init_date = new Date(this.props.partida.init_date.substr(0,19));
       const strDate = init_date.getDate().toString().padStart(2, '0')+'/'+(init_date.getMonth()+1).toString().padStart(2, '0')+'/'+init_date.getFullYear()+' '+init_date.getHours().toString().padStart(2, '0')+':'+init_date.getMinutes().toString().padStart(2, '0');
+      var CONTENT_STYLE = styles.content;  
+      if (this.state.datosBattle != null && this.state.datosBattle.featured_level > 0) {
+        CONTENT_STYLE = styles.content_featured;
+      }
       return (
         <TouchableOpacity onPress={this.showPartida.bind(this)} style={styles.container} >
         <Card elevation={5}>
             <Card.Cover style={styles.cover} source={{uri: this.props.partida.image_url?this.props.partida.image_url:'https://images-na.ssl-images-amazon.com/images/I/A1uDIngqMDL._SX466_.jpg'}} />
-            <Card.Content>
+            <Card.Content style={CONTENT_STYLE}>
               <Text>{this.props.partida.name}</Text>
               <Text>{strDate}</Text>
             </Card.Content>
@@ -118,7 +122,11 @@ class CarruselPartida extends React.Component {
               <Text style={{ color: 'white' }}>{this.props.partida.current_players} / {this.props.partida.num_players}</Text>
             </View>
             {this.state.datosUser != null && <Avatar.Image size={35} source={{ uri: this.state.datosUser.photo_url + '?' + new Date() }} style={styles.avatarUser} />}
-            {this.state.partidaTerminada == true && this.state.datosBattle.jugadores[0].username == this.state.accessToken.username && this.state.datosBattle.rating != null && this.state.datosBattle.rating != 0 && (
+            {this.state.partidaTerminada == true 
+              && this.state.datosBattle.jugadores[0].username == this.state.accessToken.username 
+              && this.state.datosBattle.rating != null 
+              && this.state.datosBattle.rating != 0 
+              && (
               <View style={styles.rating}>
                 <IconButton
                   icon="star"
@@ -158,10 +166,17 @@ const styles = StyleSheet.create({
       marginLeft:10,
       marginTop:5,
       width:190,
-      paddingBottom:5,
+      paddingBottom:5
     },
     cover: {
       height:150,
+    },
+    content: {
+      padding: "2%"
+    },
+    content_featured: {
+      backgroundColor: "#ea3e67",
+      padding: "2%"
     },
     txtJugadores: {
       position:"absolute",

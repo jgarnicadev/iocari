@@ -23,7 +23,7 @@ class HomePage extends React.Component {
     partidas_cerca: [],
     busquedaText: '',
     busquedaResultados: [],
-    realizandoBusqueda: false,
+    realizandoBusqueda: false
   };
 
   async getAccessToken() {
@@ -258,12 +258,7 @@ class HomePage extends React.Component {
             {this.state.busquedaText != '' &&
               this.state.realizandoBusqueda == false && <View style={{marginVertical:20}}><CarruselPartidas title="Resultado de búsqueda" msgEmpty="Nos se han encontrado partidas" partidas={this.state.busquedaResultados} /></View>
             }
-            <View style={[styles.mainWrap,{
-              marginTop:20,
-              marginBottom:10,
-              flexDirection:'row',
-              justifyContent:'space-between'
-            }]}>
+            <View style={styles.mainWrap}>
               <Title style={{
                 flex:9
               }}>Partidas Disponibles</Title>
@@ -274,50 +269,13 @@ class HomePage extends React.Component {
                 () => this.props.navigation.navigate('mapa')
               }
               >
-                <View style={{flex:1,justifyContent:'center',alignItems:'stretch'}}>
-                  <IconButton icon="map-marker" color="#7c7c7c" size={25} style={{margin:0,padding:0}}></IconButton>
-                  <Text style={{margin:0,padding:0, fontSize:10}}>Mapa</Text>
+                <View style={{justifyContent:'center'}}>
+                  <IconButton icon="map" color="#7c7c7c" ></IconButton>
                 </View>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={{
-              marginBottom:10,
-              width:'50%',
-              paddingHorizontal:10,
-              paddingVertical:2,
-              borderRadius: 4,
-              backgroundColor: '#0277bd',
-              marginLeft:15,
-            }}
-            onPress={
-              () => this.refs.datepicker.onPressDate()
-            }
-            >
-              <View style={{
-                flexDirection:'row',
-                justifyContent:'space-between'
-              }}>
-                <Text style={{
-                  fontSize:14,
-                  color:'white',
-                  fontWeight:'300',
-                }}
-                >Cuándo</Text>
-                <Chevron size={1.5} color="white" style={{marginTop:5,marginRight:5}} />
-                <DatePicker
-                  style={{display:'none'}}
-                  showIcon={false}
-                  ref="datepicker"
-                  // date={this.state.fecha}
-                  mode="date"
-                  format="DD/MM/YYYY"
-                  onDateChange={this.fechaSelect}
-                />  
-              </View>
-            </TouchableOpacity>
-            <CarruselPartidas title="Mis Partidas" msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />
-            <CarruselPartidas title="Hoy" msgEmpty="No se han encontrado partidas para hoy" partidas={this.state.partidas_hoy} />
-            <CarruselPartidas title="Cerca" msgEmpty="No se han encontrado partidas cerca" partidas={this.state.partidas_cerca} />
+            <CarruselPartidas title="Hoy" collapsed = {false} msgEmpty="No se han encontrado partidas para hoy" partidas={this.state.partidas_hoy} />
+            <CarruselPartidas title="Mis Partidas" collapsed = {true} msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />            
           </ScrollView>
         </View>
         <Footer activo="home" />
@@ -357,7 +315,9 @@ const styles = StyleSheet.create({
   },
   mainWrap: {
     paddingHorizontal:15,
-
+    marginTop:20,
+    marginBottom:10,
+    flexDirection:'row'
   }
 });
 

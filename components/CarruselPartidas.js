@@ -1,16 +1,32 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { Title, Text } from 'react-native-paper';
+import { Title, Text, IconButton } from 'react-native-paper';
+import { TouchableOpacity } from 'react-native';
+import Collapsible from 'react-native-collapsible';
 
 import CarruselPartida from './CarruselPartida';
 
 class CarruselPartidas extends React.Component {
-    render() {
-      return (
-        <View style={styles.container} >
+  state = {
+    collapsed: this.props.collapsed
+  }
+
+  toggleExpanded = () => {
+    //Toggling the state of single Collapsible
+    this.setState({collapsed: !this.state.collapsed});
+  };
+
+  render() {
+    return (
+      <View style={styles.container} >
+          <TouchableOpacity onPress={this.toggleExpanded} style={styles.listTitle} >
+            {this.state.collapsed && <IconButton icon="chevron-right" color="black" size={20} style={{ margin:0, padding: 0 }}></IconButton>}
+            {!this.state.collapsed && <IconButton icon="chevron-down" color="black" size={20} style={{ margin:0, padding: 0 }}></IconButton>}
             <Title style={{
-              paddingHorizontal:15,
-            }}>{this.props.title}</Title>
+                paddingHorizontal:15,
+              }}>{this.props.title}</Title>
+          </TouchableOpacity>
+          <Collapsible collapsed={this.state.collapsed} >
             {this.props.partidas.length == 0 ? (
               <Text style={{
                 paddingHorizontal:15,
@@ -22,9 +38,10 @@ class CarruselPartidas extends React.Component {
               )}
               </ScrollView>
             )}
-        </View>
-      );
-    }
+          </Collapsible>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -33,6 +50,9 @@ const styles = StyleSheet.create({
       alignItems: 'stretch',
       justifyContent:'flex-start',
   },
+  listTitle: {
+    flexDirection: "row"
+  }
 });
 
 export default CarruselPartidas;
