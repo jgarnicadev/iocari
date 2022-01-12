@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, AsyncStorage } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, AsyncStorage } from 'react-native';
 import { Appbar, IconButton, Avatar } from 'react-native-paper';
+import TouchHistoryMath from 'react-native/Libraries/Interaction/TouchHistoryMath';
 import { withNavigation } from 'react-navigation';
 import { DrawerActions } from 'react-navigation-drawer';
 
@@ -95,6 +96,8 @@ class Header extends React.Component {
           },
         }}
       >
+        {//left
+        }
         {this.props.hideBack || 
           <Appbar.BackAction onPress={this.back} />
           //<IconButton icon="chevron-left" color="white" size={30} style={styles.icoBtn} onPress={this.back}></IconButton> 
@@ -103,6 +106,16 @@ class Header extends React.Component {
           <Appbar.Action icon="menu" onPress={this.menu} />
           //<IconButton icon="menu" color="white" size={30} style={styles.icoBtn} onPress={this.menu}></IconButton> 
         }
+        {//middle
+        }
+        {this.props.search &&
+         <View style={styles.buscador}>
+         <View style={styles.buscadorInputWrap}>
+           <Image source={require('../assets/icon-search.png')} style={styles.buscadorIcon} />
+           <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?" onSubmitEditing={this.props.searchCallback}/>
+         </View>
+        </View>
+        }
         {this.props.hideTitle || 
           <Appbar.Content
             title={this.props.title}
@@ -110,6 +123,8 @@ class Header extends React.Component {
         }
         {
           //<Text style={styles.texto}>{this.props.title}</Text>
+        }
+        {//right
         }
         {!this.props.onCrearPartida || 
           <TouchableOpacity onPress={this.props.onCrearPartida} style={styles.btnPublicar}>
@@ -173,6 +188,19 @@ class Header extends React.Component {
             <TouchableOpacity onPress={() => this.props.navigation.navigate('perfil',{id_usuario: this.props.idUsuario})} ><Avatar.Image size={45} source={{ uri: this.state.user.photo_url  + '?' + new Date() }} /></TouchableOpacity>
           </View>
         )}
+        {this.props.onBattleLists && (
+          <View style={{
+            justifyContent:'flex-end',
+          }}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('mapa')} >
+              <IconButton
+                icon="map"
+                color="white"
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </Appbar.Header>
     );
   }
@@ -202,6 +230,27 @@ const styles = StyleSheet.create({
     width:25,
     height:25,
     marginLeft:10
+  },
+  buscador: {
+    //backgroundColor:'#03a9f4',
+    padding:0,
+    flex: 8
+  },
+  buscadorInputWrap: {
+    backgroundColor:'white',
+    flexDirection:'row',
+    borderRadius:5,
+  },
+  buscadorIcon: {
+    alignSelf:'center',
+    marginLeft:15,
+    marginRight:5,
+  },
+  buscadorInput: {
+    backgroundColor:'white',
+    padding:10,
+    fontSize:15,
+    borderRadius:5,
   }
 });
 

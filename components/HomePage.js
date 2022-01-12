@@ -243,38 +243,18 @@ class HomePage extends React.Component {
     };
     return (
       <View style={styles.container}>
-        <Header title="iOcari" hideBack={true} />
-        <View style={styles.buscador}>
-          <View style={styles.buscadorInputWrap}>
-            <Image source={require('../assets/icon-search.png')} style={styles.buscadorIcon} />
-            <TextInput style={styles.buscadorInput} placeholder="¿Qué estás buscando?" onSubmitEditing={this.submitSearch}/>
-          </View>
-        </View>
+        <Header title="iOcari" hideBack={true} search = {true} searchCallback = {this.submitSearch} hideTitle = {true} onBattleLists = {true}/>
         <View style={styles.main}>
           <ScrollView>
             {this.state.busquedaText != '' &&
               this.state.realizandoBusqueda == true && <View style={[styles.container,styles.mainWrap,{justifyContent:'center', marginTop:20}]}><ActivityIndicator  /></View>
             }
-            {this.state.busquedaText != '' &&
-              this.state.realizandoBusqueda == false && <View style={{marginVertical:20}}><CarruselPartidas title="Resultado de búsqueda" msgEmpty="Nos se han encontrado partidas" partidas={this.state.busquedaResultados} /></View>
+            {this.state.busquedaText != '' && this.state.realizandoBusqueda == false && 
+              <View style={{marginVertical:20}}>
+                <CarruselPartidas title="Resultado de búsqueda" collapsed = {false} msgEmpty="Nos se han encontrado partidas" partidas={this.state.busquedaResultados} />
+              </View>
             }
-            <View style={styles.mainWrap}>
-              <Title style={{
-                flex:9
-              }}>Partidas Disponibles</Title>
-              <TouchableOpacity style={{
-                flex:1,
-              }}
-              onPress={
-                () => this.props.navigation.navigate('mapa')
-              }
-              >
-                <View style={{justifyContent:'center'}}>
-                  <IconButton icon="map" color="#7c7c7c" ></IconButton>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <CarruselPartidas title="Hoy" collapsed = {false} msgEmpty="No se han encontrado partidas para hoy" partidas={this.state.partidas_hoy} />
+            <CarruselPartidas title="Partidas hoy" collapsed = {false} msgEmpty="No se han encontrado partidas para hoy" partidas={this.state.partidas_hoy} />
             <CarruselPartidas title="Mis Partidas" collapsed = {true} msgEmpty="No tienes partidas activas, crea una o busca partida para unirte!" partidas={this.state.mis_partidas} />            
           </ScrollView>
         </View>
@@ -286,7 +266,7 @@ class HomePage extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   buscador: {
     backgroundColor:'#03a9f4',
@@ -311,6 +291,7 @@ const styles = StyleSheet.create({
   main: {
     flex:1,
     backgroundColor:'#f3f1f1',
+    paddingTop: "5%",
     // paddingVertical:20,
   },
   mainWrap: {

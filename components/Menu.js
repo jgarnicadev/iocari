@@ -37,7 +37,7 @@ class Menu extends React.Component {
                     <Drawer.Item label="Ajustes" icon="cellphone-settings" style={styles.elementMenu} theme={{ colors: { text: 'grey' } }} />    
                 </TouchableOpacity>
                 <TouchableOpacity onPress={this.closeSession}>
-                    <Drawer.Item label="Cerrar Sesión" icon="logout" style={styles.elementMenu} theme={{ colors: { text: 'white' } }} />
+                    <Drawer.Item label="Cerrar Sesión" icon="logout" style={styles.lastEelementMenu} theme={{ colors: { text: '#ea3e67' } }} />
                 </TouchableOpacity>
             </View>
         );
@@ -49,6 +49,9 @@ const styles = StyleSheet.create({
     container: {
     },
     elementMenu: {
+    },
+    lastElementMenu: {
+        bottom: 0,
     }
 });
 
